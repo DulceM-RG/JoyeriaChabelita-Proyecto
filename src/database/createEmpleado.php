@@ -1,0 +1,1 @@
+/*Necesitas un script diferente (ej. createEmpleado.php) que reciba los datos del formulario y ejecute una consulta INSERT INTO en la base de datos */
