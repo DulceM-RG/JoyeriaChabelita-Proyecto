@@ -1,6 +1,6 @@
 <?php
 // Incluir la clase de conexión (ajusta la ruta si es necesario)
-require_once 'ConexionDB.php'; // Archivo donde está la clase ConexionDB
+require_once 'src\database\connection.php'; // Archivo donde está la clase ConexionDB
 
 // Función para verificar login y extraer datos de la tabla 'credenciales'
 function verificarLogin($credencialesInput, $password) {

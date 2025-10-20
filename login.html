@@ -176,10 +176,7 @@
           <h1>Bienvenido</h1>
           <p>Inicia sesión en Joyería Chavelita</p>
         </div>
-        <form
-          id="loginForm"
-          style="width: 100%; max-width: 320px"
-        >
+        <form id="loginForm" style="width: 100%; max-width: 320px">
           <div class="form-group">
             <label for="credenciales">Credenciales</label>
             <input
@@ -206,10 +203,7 @@
       </div>
 
       <div class="image-container">
-        <img
-          src="src\assets\image\logoChavela2.jpg"  <!-- Ajusta la ruta si es necesario -->
-          alt="Joyería Chavelita - Imagen de bienvenida"
-        />
+        <img src="src\assets\image\logoChavela2.jpg"
       </div>
     </div>
 
@@ -227,32 +221,34 @@
       }
 
       // Manejo del formulario con AJAX para enviar a PHP y procesar respuesta
-      document.getElementById("loginForm").addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevenir recarga de página
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault(); // Prevenir recarga de página
 
-        const formData = new FormData(this); // Recopilar datos del form
+          const formData = new FormData(this); // Recopilar datos del form
 
-        // Enviar POST a login.php (ajusta la ruta si es necesario, e.g., '/path/login.php')
-        fetch('login.php', {
-          method: 'POST',
-          body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-          hideError();
-          if (data.success) {
-            // Login exitoso: redirigir según la respuesta del PHP
-            window.location.href = data.redirect;
-          } else {
-            // Mostrar error del PHP
-            showError(data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          showError('Error de conexión. Inténtalo de nuevo.');
+          // Enviar POST a login.php (ajusta la ruta si es necesario, e.g., '/path/login.php')
+          fetch("src\database\login.php", {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              hideError();
+              if (data.success) {
+                // Login exitoso: redirigir según la respuesta del PHP
+                window.location.href = data.redirect;
+              } else {
+                // Mostrar error del PHP
+                showError(data.error);
+              }
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+              showError("Error de conexión. Inténtalo de nuevo.");
+            });
         });
-      });
     </script>
   </body>
 </html>
