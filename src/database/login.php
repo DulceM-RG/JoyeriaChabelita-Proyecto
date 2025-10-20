@@ -1,107 +1,84 @@
 <?php
-// Incluir la clase de conexión (ajusta la ruta si es necesario)
-require_once 'src\database\connection.php'; // Archivo donde está la clase ConexionDB
+// updateCredenciales.php - VERSIÓN CORREGIDA E INTEGRADA
+header('Content-Type: application/json');
+require_once 'Conexion.php'; // Corregido: usa el mismo archivo que el login
 
-// Función para verificar login y extraer datos de la tabla 'credenciales'
-function verificarLogin($credencialesInput, $password) {
-    try {
-        $pdo = ConexionDB::setConnection();
-        
-        // Preparar consulta para buscar en la tabla 'credenciales' por el campo 'credenciales'
-        $stmt = $pdo->prepare("SELECT id, credenciales, password, rol, intentos_fallidos FROM credenciales WHERE credenciales = :credenciales");
-        $stmt->bindParam(':credenciales', $credencialesInput, PDO::PARAM_STR);
-        $stmt->execute();
-        
-        $usuario = $stmt->fetch();
-        
-        if (!$usuario) {
-            return ['success' => false, 'error' => 'Credenciales no encontradas.'];
-        }
-        
-        // Verificar si la cuenta está bloqueada (3 o más intentos fallidos)
-        if ($usuario['intentos_fallidos'] >= 3) {
-            return ['success' => false, 'error' => 'Cuenta bloqueada después de 3 intentos fallidos. Comunícate con el gerente para revisar tu problema.'];
-        }
-        
-        if (password_verify($password, $usuario['password'])) {
-            // Contraseña correcta: resetear intentos fallidos y devolver datos
-            $stmtReset = $pdo->prepare("UPDATE credenciales SET intentos_fallidos = 0 WHERE id = :id");
-            $stmtReset->bindParam(':id', $usuario['id'], PDO::PARAM_INT);
-            $stmtReset->execute();
-            
-            return [
-                'id' => $usuario['id'],
-                'credenciales' => $usuario['credenciales'],
-                'rol' => $usuario['rol'],
-                'success' => true
-            ];
-        } else {
-            // Contraseña incorrecta: incrementar intentos fallidos
-            $nuevosIntentos = $usuario['intentos_fallidos'] + 1;
-            $stmtUpdate = $pdo->prepare("UPDATE credenciales SET intentos_fallidos = :intentos WHERE id = :id");
-            $stmtUpdate->bindParam(':intentos', $nuevosIntentos, PDO::PARAM_INT);
-            $stmtUpdate->bindParam(':id', $usuario['id'], PDO::PARAM_INT);
-            $stmtUpdate->execute();
-            
-            $intentosRestantes = 3 - $nuevosIntentos;
-            if ($intentosRestantes > 0) {
-                return ['success' => false, 'error' => "Contraseña incorrecta. Intentos restantes: $intentosRestantes"];
-            } else {
-                return ['success' => false, 'error' => 'Cuenta bloqueada después de 3 intentos fallidos. Comunícate con el gerente para revisar tu problema.'];
-            }
-        }
-    } catch (PDOException $e) {
-        error_log("Error en login: " . $e->getMessage());
-        return ['success' => false, 'error' => 'Error interno del servidor'];
-    }
-}
+try {
+    $conn = ConexionDB::setConnection();
 
-// Procesar el formulario POST desde el HTML
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $credenciales = trim($_POST['credenciales'] ?? '');
-    $password = $_POST['password'] ?? '';
-    
-    // Validación básica del formato de credenciales (9 caracteres, empezando con G/V/A/C)
-    if (strlen($credenciales) !== 9 || !preg_match('/^[GVAC][A-Za-z0-9]{8}$/', $credenciales)) {
-        echo json_encode(['success' => false, 'error' => 'Credenciales inválidas. Deben tener exactamente 9 caracteres y empezar con G, V, A o C.']);
+    // 1. Recibir datos del frontend (JSON)
+    $entrada = json_decode(file_get_contents('php://input'), true);
+    $datosFormulario = $entrada['datosFormulario'] ?? [];
+
+    // 2. Validar datos requeridos
+    if (empty($datosFormulario['idEmpleado'])) {
+        http_response_code(400);
+        echo json_encode(["errorDB" => "ID de empleado no proporcionado."]);
         exit;
     }
-    
-    if (empty($password)) {
-        echo json_encode(['success' => false, 'error' => 'Por favor, ingresa tu contraseña.']);
+
+    $idEmpleado = $datosFormulario['idEmpleado'];
+    $contrasenaPlana = $datosFormulario['contrasena'] ?? '';
+    $activo = $datosFormulario['activo'] ?? 'Activo'; // Default a 'Activo'
+    $intentosFallidos = (int)($datosFormulario['intentosFallidos'] ?? 0);
+    $ultimoCambio = date("Y-m-d H:i:s");
+
+    // Validar 'activo' (solo 'Activo' o 'Baja')
+    if (!in_array($activo, ['Activo', 'Baja'])) {
+        http_response_code(400);
+        echo json_encode(["errorDB" => "Valor de 'activo' inválido. Debe ser 'Activo' o 'Baja'."]);
         exit;
     }
-    
-    // Verificar login contra la base de datos
-    $resultado = verificarLogin($credenciales, $password);
-    
-    if ($resultado['success']) {
-        // Login exitoso: iniciar sesión
-        session_start();
-        $_SESSION['usuario'] = $resultado;
-        
-        // Redirecciones basadas en el rol
-        // Solo el rol 'G' (Gerente) puede acceder a 'credenciales.html' (como administrador)
-        // Los otros roles van a sus páginas específicas
-        $rol = $resultado['rol'];
-        $redirecciones = [
-            'G' => '/JoyeriaChabelita-Proyecto/credenciales.html', // Gerente: acceso a credenciales
-            'V' => '/JoyeriaChabelita-Proyecto/venta.html',       // Venta
-            'A' => '/JoyeriaChabelita-Proyecto/almacen.html',     // Almacén
-            'C' => '/JoyeriaChabelita-Proyecto/contador.html'     // Contador
-        ];
-        
-        if (isset($redirecciones[$rol])) {
-            echo json_encode(['success' => true, 'redirect' => $redirecciones[$rol]]);
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Rol no reconocido.']);
-        }
+
+    // Validar intentosFallidos (número entre 0 y 3)
+    if ($intentosFallidos < 0 || $intentosFallidos > 3) {
+        http_response_code(400);
+        echo json_encode(["errorDB" => "Intentos fallidos debe ser un número entre 0 y 3."]);
+        exit;
+    }
+
+    // 3. Hashear la contraseña (consistente con el login)
+    $contrasenaHashed = password_hash($contrasenaPlana, PASSWORD_DEFAULT);
+
+    // 4. Preparar consulta SQL (usa 'password' en lugar de 'contrasena' para consistencia)
+    $sql = "UPDATE credenciales 
+            SET password = :password,  -- Cambiado a 'password' (hashed)
+                activo = :activo, 
+                intentos_fallidos = :intentos_fallidos,  -- Cambiado a snake_case
+                ultimoCambio = :ultimoCambio 
+            WHERE idEmpleado = :idEmpleado";  -- Asumiendo que 'idEmpleado' es la FK correcta
+            
+    $stmt = $conn->prepare($sql);
+
+    // 5. Ejecutar actualización
+    $stmt->execute([
+        ':password' => $contrasenaHashed,
+        ':activo' => $activo,
+        ':intentos_fallidos' => $intentosFallidos,
+        ':ultimoCambio' => $ultimoCambio,
+        ':idEmpleado' => $idEmpleado
+    ]);
+
+    // 6. Verificar resultado
+    if ($stmt->rowCount() > 0) {
+        echo json_encode([
+            "mensaje" => "Credencial actualizada exitosamente", 
+            "actualizado" => true, 
+            "ultimoCambio" => date('d/m/Y', strtotime($ultimoCambio))
+        ]);
     } else {
-        echo json_encode($resultado);
+        echo json_encode([
+            "errorDB" => "No se realizó actualización. Verifica el ID o que los datos sean diferentes."
+        ]);
     }
-} else {
-    // Si no es una solicitud POST, devolver error
-    http_response_code(405);
-    echo json_encode(['error' => 'Método no permitido']);
+
+} catch (PDOException $e) {
+    error_log("Error en updateCredenciales: " . $e->getMessage()); // Logging como en login
+    http_response_code(500);
+    echo json_encode(["errorDB" => "Error de base de datos: " . $e->getMessage()]);
+} catch (Exception $e) {
+    error_log("Error general en updateCredenciales: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(["errorServer" => "Error del servidor: " . $e->getMessage()]);
 }
 ?>

@@ -203,7 +203,10 @@
       </div>
 
       <div class="image-container">
-        <img src="src\assets\image\logoChavela2.jpg"
+        <img
+          src="src\assets\image\logoChavela2.jpg"
+          alt="Joyería Chavelita - Imagen de bienvenida"
+        />
       </div>
     </div>
 
@@ -228,8 +231,8 @@
 
           const formData = new FormData(this); // Recopilar datos del form
 
-          // Enviar POST a login.php (ajusta la ruta si es necesario, e.g., '/path/login.php')
-          fetch("src\database\login.php", {
+          // Enviar POST a login.php (ruta corregida a relativa/absoluta)
+          fetch("login.php", {
             method: "POST",
             body: formData,
           })
