@@ -39,7 +39,7 @@ const agregarFilaTabla = (dataDB, tbody) => {
         newRow.dataset.idEmpleado = data.idEmpleado;
 
         // Convertir 'Activo'/'Baja' a 'Sí'/'No' con badges
-        const estadoTexto = (data.activo === 'Activo') ? 'Sí' : 'No';
+        const estadoTexto = data.activo;
         const badgeClass = (data.activo === 'Activo') ? 'badge-activo' : 'badge-inactivo';
 
         // Crear celdas de datos
@@ -141,10 +141,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                     input = document.createElement('select');
                     input.className = 'select-editar';
-                    const isSI = badgeTexto === 'Sí';
+                    const isActivo = badgeTexto === 'Activo';
                     input.innerHTML = `
-                        <option value="SI" ${isSI ? 'selected' : ''}>Sí</option>
-                        <option value="NO" ${!isSI ? 'selected' : ''}>No</option>
+                        <option value="Activo" ${isActivo ? 'selected' : ''}>Activo</option>
+                        <option value="Baja" ${!isActivo ? 'selected' : ''}>Baja</option>
                     `;
 
                 } else if (index === 6) {
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 if (index < cells.length - 1) {
                     if (index === 5) {
                         const estadoOriginal = datosCeldas[index];
-                        const badgeClass = (estadoOriginal === 'Sí') ? 'badge-activo' : 'badge-inactivo';
+                        const badgeClass = (estadoOriginal === 'Activo') ? 'badge-activo' : 'badge-inactivo';
                         cell.innerHTML = `<span class="badge ${badgeClass}">${estadoOriginal}</span>`;
                     } else {
                         cell.textContent = datosCeldas[index];
