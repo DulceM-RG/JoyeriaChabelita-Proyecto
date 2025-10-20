@@ -20,9 +20,8 @@ try {
     $idEmpleado = $datosFormulario['idEmpleado'];
     $contrasena = $datosFormulario['contrasena'];
     
-    // ✅ CONVERSIÓN CRÍTICA: 'SI'/'NO' (JS) → 'Activo'/'Baja' (BD)
-    $activoJS = $datosFormulario['activo']; // Recibe 'SI' o 'NO'
-    $activo = ($activoJS === 'SI') ? 'Activo' : 'Baja';
+   // ✅ CORRECCIÓN CRÍTICA: Asignar directamente el valor de JS
+    $activo = $datosFormulario['activo']; // Recibe 'Activo' o 'Baja' directamente.
     
     $intentosFallidos = $datosFormulario['intentosFallidos'];
     $ultimoCambio = date("Y-m-d H:i:s"); 

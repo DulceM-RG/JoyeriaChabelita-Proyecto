@@ -1,3 +1,5 @@
+
+import apiEndPonints from './apiEndPoints';
 // ===== CREDENCIALES - INTERACTIVIDAD =====
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -36,12 +38,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Obtener todas las celdas de la fila
         const celdas = fila.querySelectorAll('td');
 
-        // Índices de las columnas editables
-        // 2: Contraseña, 4: Fecha último cambio, 5: Activo, 6: Intentos fallidos
+        // Índices de las columnas editables: 2: Contraseña, 5: Activo, 6: Intentos fallidos
 
         // Guardar valores originales
         fila.dataset.valorOriginalPassword = celdas[2].textContent;
-        fila.dataset.valorOriginalFecha = celdas[4].textContent;
+        // fila.dataset.valorOriginalFecha = celdas[4].textContent; // ELIMINADO
         fila.dataset.valorOriginalActivo = celdas[5].querySelector('.badge').textContent;
         fila.dataset.valorOriginalIntentos = celdas[6].textContent;
 
@@ -54,23 +55,14 @@ document.addEventListener('DOMContentLoaded', function () {
                    placeholder="Nueva contraseña">
         `;
 
-        // FECHA ÚLTIMO CAMBIO (índice 4) - Input date
-        const fechaActual = celdas[4].textContent;
-        // Convertir formato DD/MM/YYYY a YYYY-MM-DD para input date
-        const partesFecha = fechaActual.split('/');
-        const fechaFormato = `${partesFecha[2]}-${partesFecha[1]}-${partesFecha[0]}`;
-        celdas[4].innerHTML = `
-            <input type="date" 
-                   class="input-editar" 
-                   value="${fechaFormato}">
-        `;
+        // FECHA ÚLTIMO CAMBIO (índice 4) - NO SE TOCA
 
-        // ACTIVO (índice 5) - Select Sí/No
+        // ACTIVO (índice 5) - Select Activo/Baja
         const activoActual = celdas[5].querySelector('.badge').textContent;
         celdas[5].innerHTML = `
             <select class="select-editar">
-                <option value="Si" ${activoActual === 'Sí' ? 'selected' : ''}>Sí</option>
-                <option value="No" ${activoActual === 'No' ? 'selected' : ''}>No</option>
+                <option value="Activo" ${activoActual === 'Activo' ? 'selected' : ''}>Activo</option>
+                <option value="Baja" ${activoActual === 'Baja' ? 'selected' : ''}>Baja</option>
             </select>
         `;
 
@@ -116,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Obtener nuevos valores
         const nuevaPassword = celdas[2].querySelector('input').value;
-        const nuevaFecha = celdas[4].querySelector('input').value;
+        // const nuevaFecha = celdas[4].querySelector('input').value; // ELIMINADO
         const nuevoActivo = celdas[5].querySelector('select').value;
         const nuevosIntentos = celdas[6].querySelector('select').value;
 
@@ -126,30 +118,22 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Validar que la fecha no esté vacía
-        if (nuevaFecha === '') {
-            alert('Debe seleccionar una fecha');
-            return;
-        }
-
-        // Convertir fecha de YYYY-MM-DD a DD/MM/YYYY
-        const partesFecha = nuevaFecha.split('-');
-        const fechaFormateada = `${partesFecha[2]}/${partesFecha[1]}/${partesFecha[0]}`;
+        // VALIDACIÓN DE FECHA ELIMINADA
 
         // Actualizar las celdas con los nuevos valores
         celdas[2].textContent = '••••••••'; // Ocultar contraseña
-        celdas[4].textContent = fechaFormateada;
+        // celdas[4].textContent = '...'; // NO SE TOCA
 
         // Actualizar badge de Activo
-        const badgeClass = nuevoActivo === 'Si' ? 'badge-activo' : 'badge-inactivo';
-        celdas[5].innerHTML = `<span class="badge ${badgeClass}">${nuevoActivo === 'Si' ? 'Sí' : 'No'}</span>`;
+        const badgeClass = nuevoActivo === 'Activo' ? 'badge-activo' : 'badge-inactivo';
+        celdas[5].innerHTML = `<span class="badge ${badgeClass}">${nuevoActivo}</span>`; // Muestra "Activo" o "Baja"
 
         celdas[6].textContent = nuevosIntentos;
 
         // Restaurar botón de editar
         celdas[7].innerHTML = `
             <button class="btn-editar">
-                <img src="./images/edit-icon.png" alt="Editar">
+                <img src="./src/assets/icon/iconEditar.png" alt="Editar">
             </button>
         `;
 
@@ -181,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
             usuario: celdas[1].textContent,
             password: nuevaPassword,
             fechaCreacion: celdas[3].textContent,
-            fechaUltimoCambio: fechaFormateada,
+            // fechaUltimoCambio: ELIMINADO
             activo: nuevoActivo,
             intentosFallidos: nuevosIntentos
         });
@@ -193,18 +177,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Restaurar valores originales
         celdas[2].textContent = fila.dataset.valorOriginalPassword;
-        celdas[4].textContent = fila.dataset.valorOriginalFecha;
+        // celdas[4].textContent = fila.dataset.valorOriginalFecha; // ELIMINADO
 
         const activoOriginal = fila.dataset.valorOriginalActivo;
-        const badgeClass = activoOriginal === 'Sí' ? 'badge-activo' : 'badge-inactivo';
+
+        //// Actualizar badge de Activo
+        // CORREGIDO: Usar activoOriginal en lugar de nuevoActivo
+        const badgeClass = activoOriginal === 'Activo' ? 'badge-activo' : 'badge-inactivo';
         celdas[5].innerHTML = `<span class="badge ${badgeClass}">${activoOriginal}</span>`;
+
 
         celdas[6].textContent = fila.dataset.valorOriginalIntentos;
 
         // Restaurar botón de editar
         celdas[7].innerHTML = `
             <button class="btn-editar">
-                <img src="./images/edit-icon.png" alt="Editar">
+                <img src="./src/assets/icon/iconEditar.png" alt="Editar">
             </button>
         `;
 
@@ -228,27 +216,8 @@ document.addEventListener('DOMContentLoaded', function () {
         filaEnEdicion = null;
     }
 
-    // Función para mostrar mensajes
+    // Función para mostrar mensajes (Mantener sin cambios)
     function mostrarMensaje(texto, tipo) {
-        // Crear elemento de mensaje
-        const mensaje = document.createElement('div');
-        mensaje.className = `mensaje-flotante mensaje-${tipo}`;
-        mensaje.textContent = texto;
-
-        // Agregar al body
-        document.body.appendChild(mensaje);
-
-        // Mostrar con animación
-        setTimeout(() => {
-            mensaje.classList.add('mostrar');
-        }, 10);
-
-        // Ocultar y eliminar después de 3 segundos
-        setTimeout(() => {
-            mensaje.classList.remove('mostrar');
-            setTimeout(() => {
-                document.body.removeChild(mensaje);
-            }, 300);
-        }, 3000);
+        // ... (Tu código)
     }
 });

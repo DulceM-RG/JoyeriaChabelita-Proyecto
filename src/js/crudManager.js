@@ -1,4 +1,6 @@
-/*gestionar y estandarizar las peticiones HTTP */
+
+
+
 export default class CrudManager {
     constructor(urlBase) {
         this.apiUrl = urlBase;
@@ -88,6 +90,4 @@ export default class CrudManager {
             return { errorServer: 'Error al eliminar los datos: ' + error.message };
         }
     }
-    // ----
-
 } 
