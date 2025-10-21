@@ -17,151 +17,149 @@
              Mobile: 768px x 200px -->
     <!--</header> -->
 
-    <headerr class="header">
+    <header class="header">
         <!-- Imagen decorativa del footer -->
-        <div class="header-image" style="background-image: url('src/assets/image/Rectangle\ 14.png');"></div>
+        <div class="header-image" style="background-image: url('src/assets/image/header.png');"></div>
 
 
-        </header>
+    </header>
 
-        <!-- CONTENIDO PRINCIPAL -->
-        <main class="main-content">
-            <div class="form-container">
-                <h1 class="form-title">Registro</h1>
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="form-title">Registro</h1>
 
-                <form id="registroForm">
-                    <!-- DATOS PERSONALES -->
-                    <h2 class="section-title">Datos Personales</h2>
+            <form id="registroForm">
+                <!-- DATOS PERSONALES -->
+                <h2 class="section-title">Datos Personales</h2>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Nombre</label>
-                            <div class="icon-input">
-                                <img src="/src/assets/icon/iconUsuario.png" alt="Usuario">
-                                <input type="text" class="form-input" placeholder="Nombre" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Apellido Paterno</label>
-                            <div class="icon-input">
-                                <img src="/src/assets/icon/iconUsuario.png" alt="Usuario">
-                                <input type="text" class="form-input" placeholder="Apellido Paterno" required>
-                            </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre</label>
+                        <div class="icon-input">
+                            <img src="./src/assets/icon/iconUsuario.png" alt="Usuario">
+                            <input type="text" name="nombre" id="txtNombre" class="form-input" placeholder="Nombre"
+                                required>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Apellido Materno</label>
-                            <div class="icon-input">
-                                <img src="/src/assets/icon/iconUsuario.png" alt="Usuario">
-                                <input type="text" class="form-input" placeholder="Apellido Materno">
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label class="form-label">Apellido Paterno</label>
+                        <div class="icon-input">
+                            <img src="./src/assets/icon/iconUsuario.png" alt="Usuario">
+                            <input type="text" name="apellidoPaterno" id="txtApPaterno" class="form-input"
+                                placeholder="Apellido Paterno" required>
 
-                        <div class="form-group">
-                            <label class="form-label">CURP</label>
-                            <input type="text" class="form-input" placeholder="CURP" maxlength="18">
+
+
                         </div>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Número de teléfono</label>
-                            <div class="icon-input">
-                                <img src="/src/assets/icon/iconCelular.png" alt="Teléfono">
-                                <input type="tel" class="form-input" placeholder="Número de teléfono" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Puesto</label>
-                            <select class="form-select" required>
-                                <option value="">Puesto</option>
-                                <option value="gerente">Gerente</option>
-                                <option value="supervisor">Almacén</option>
-                                <option value="empleado">Venta</option>
-
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- DIRECCIÓN -->
-                    <h2 class="section-title">Dirección</h2>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Nombre de Calle</label>
-                            <input type="text" class="form-input" placeholder="Nombre de Calle" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Num. Calle</label>
-                            <input type="text" class="form-input" placeholder="Num. Calle" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Localidad</label>
-                            <input type="text" class="form-input" placeholder="Localidad" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Código Postal</label>
-                            <input type="text" class="form-input" placeholder="Código Postal" maxlength="5" required>
-                        </div>
-                    </div>
-
-                    <!-- CREDENCIALES -->
-                    <h2 class="section-title">Credenciales</h2>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Usuario</label>
-                            <div class="icon-input">
-                                <img src="/src/assets/icon/iconUsuario.png" alt="Usuario">
-                                <input type="text" class="form-input" placeholder="Usuario" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Contraseña</label>
-                            <div class="icon-input">
-                                <img src="/src/assets/icon/iconCandado.png" alt="Contraseña">
-                                <input type="password" class="form-input" placeholder="Contraseña" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Crear cuenta</button>
-                </form>
-            </div>
-        </main>
-
-        <!-- FOOTER -->
-
-        <footer class="footer">
-            <!-- Imagen decorativa del footer -->
-            <div class="footer-image" style="background-image: url('src/assets/image/Rectangle\ 14.png');"></div>
-
-            <!-- Barra negra con logo -->
-            <div class="footer-bar">
-                <div class="footer-content">
-                    <img src="/src/assets/image/dorado.png" alt="50px" class="footer-logo">
                 </div>
-            </div>
-        </footer>
 
-        <script>
-            // Script básico para manejar el envío del formulario
-            document.getElementById('registroForm').addEventListener('submit', function (e) {
-                e.preventDefault();
-                alert('Formulario enviado correctamente');
-                // Aquí puedes agregar la lógica para enviar los datos al servidor
-            });
-        </script>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Apellido Materno</label>
+                        <div class="icon-input">
+                            <img src="./src/assets/icon/iconUsuario.png" alt="Usuario">
+                            <input type="text" name="apellidoMaterno" id="txtMaterno" class="form-input"
+                                placeholder="Apellido Materno" required>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Número de teléfono</label>
+                        <div class="icon-input">
+                            <img src="./src/assets/icon/iconCelular.png" alt="Teléfono">
+                            <input type="tel" name="telefono" id="txtTelefono" class="form-input"
+                                placeholder="Número de teléfono" pattern="[0-9]{10}" maxlength="10" minlength="10"
+                                title="Debe ingresar exactamente 10 dígitos numéricos" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Puesto</label>
+                        <select name="puesto" id="selPuesto" class="form-select" required>
+                            <option value="">Selecciona Puesto</option>
+                            <option value="gerente">Gerente</option>
+                            <option value="venta">Venta</option>
+                            <option value="almacen">Almacén</option>
+                            <option value="contador">Contador</option>
+
+                        </select>
+                    </div>
+                </div>
+
+                <!-- DIRECCIÓN -->
+                <h2 class="section-title">Dirección</h2>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Nombre de Calle</label>
+                        <input type="text" name="calle" id="txtCalle" class="form-input" placeholder="Nombre de Calle"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Num. Calle</label>
+                        <input type="text" name="numCalle" id="txtNumCalle" class="form-input" placeholder="Num. Calle"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Localidad</label>
+                        <input type="text" name="localidad" id="txtLocalidad" class="form-input" placeholder="Localidad"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Código Postal</label>
+                        <input type="text" name="codigoPostal" id="txtCP" class="form-input" placeholder="Código Postal"
+                            maxlength="5" required>
+                    </div>
+                </div>
+
+                <!-- CREDENCIALES -->
+                <h2 class="section-title">Credenciales</h2>
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+                        <label class="form-label">Contraseña</label>
+                        <div class="icon-input">
+                            <img src="./src/assets/icon/iconCandado.png" alt="Contraseña">
+                            <input type="password" name="contrasena" id="txtContraseña" class="form-input"
+                                placeholder="Contraseña" required>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Crear cuenta</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+        <!-- Imagen decorativa del footer -->
+        <div class="footer-image" style="background-image: url('./src/assets/image/header.png');"></div>
+
+        <!-- Barra negra con logo -->
+        <div class="footer-bar">
+            <div class="footer-content">
+                <img src="./src/assets/image/dorado.png" alt="50px" class="footer-logo">
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="module" src="./src/js/registro.js"></script>
 </body>
 
 </html>

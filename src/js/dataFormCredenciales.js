@@ -1,7 +1,8 @@
 // ============================================
-// IMPORTACIONES
+// IMPORTACIONES SOLO MOSTRAR CREDENCIALES
 // ============================================
-import apiEndPonints from './apiEndPoints.js';
+import apiEndPoints from './apiEndPoints.js';
+//import apiEndPonints from './apiEndPoints.js';
 import Buttons from './buttonsCredenciales.js';
 import DataManager from './dataManagerCredenciales.js';
 
@@ -82,28 +83,28 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Cargar datos al iniciar
     try {
-        const resultCredenciales = await apiEndPonints.selectAllCredenciales();
+        const resultCredenciales = await apiEndPoints.selectAllCredenciales();
 
-        console.log('📊 Datos recibidos:', resultCredenciales);
+        console.log('Datos recibidos:', resultCredenciales);
 
         if (resultCredenciales && Array.isArray(resultCredenciales) && resultCredenciales.length > 0) {
             dataManager.saveAllData(resultCredenciales);
             agregarFilaTabla(resultCredenciales, tbody);
-            console.log('✅ Credenciales cargadas:', resultCredenciales.length, 'registros');
+            console.log('Credenciales cargadas:', resultCredenciales.length, 'registros');
         } else {
-            console.warn('⚠️ No se recibieron datos del servidor');
+            console.warn('No se recibieron datos del servidor');
             // Intentar cargar desde localStorage
             const credencialesLocal = dataManager.readData();
             if (credencialesLocal.length > 0) {
                 agregarFilaTabla(credencialesLocal, tbody);
-                console.log('📦 Cargando desde localStorage');
+                console.log('Cargando desde localStorage');
             } else {
                 agregarFilaTabla([], tbody);
-                console.log('❌ No hay datos disponibles');
+                console.log('No hay datos disponibles');
             }
         }
     } catch (error) {
-        console.error('❌ Error al cargar credenciales:', error);
+        console.error('Error al cargar credenciales:', error);
         agregarFilaTabla([], tbody);
     }
 
@@ -197,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const selectIntentos = rowSave.querySelector('td:nth-child(7) select');
 
             if (!inputContrasena || inputContrasena.value.trim() === '') {
-                alert('⚠️ Debe ingresar una nueva contraseña.');
+                alert('Debe ingresar una nueva contraseña.');
                 return;
             }
 
@@ -208,22 +209,22 @@ document.addEventListener('DOMContentLoaded', async function () {
                 intentosFallidos: parseInt(selectIntentos.value, 10)
             };
 
-            console.log('💾 Guardando:', objCredencialActualizada);
+            console.log('Guardando:', objCredencialActualizada);
 
             try {
-                const response = await apiEndPonints.updateCredencial(idEmpleado, objCredencialActualizada);
+                const response = await apiEndPoints.updateCredencial(idEmpleado, objCredencialActualizada);
 
                 if (response.errorDB || response.errorServer) {
-                    alert("❌ Error: " + (response.errorDB || response.errorServer));
+                    alert("Error: " + (response.errorDB || response.errorServer));
                     return;
                 }
 
                 dataManager.updateData(parseInt(idEmpleado), objCredencialActualizada);
 
-                const credenciales = await apiEndPonints.selectAllCredenciales();
+                const credenciales = await apiEndPoints.selectAllCredenciales();
                 agregarFilaTabla(credenciales, tbody);
 
-                alert("✅ Credencial actualizada correctamente");
+                alert("Credencial actualizada correctamente");
                 console.log('✅ Actualización exitosa');
 
             } catch (error) {

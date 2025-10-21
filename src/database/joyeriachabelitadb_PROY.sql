@@ -160,7 +160,7 @@ CREATE TABLE `direccion` (
   `nombreCalle` varchar(100) NOT NULL,
   `numeroCalle` int(11) NOT NULL,
   `localidad` varchar(100) NOT NULL,
-  `codigoPostal` varchar(10) DEFAULT NULL,
+  `codigoPostal` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`idDireccion`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -199,15 +199,15 @@ DROP TABLE IF EXISTS `empleado`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `empleado` (
   `idEmpleado` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(20) NOT NULL,
-  `apellidoPaterno` varchar(10) DEFAULT NULL,
-  `apellidoMaterno` varchar(10) DEFAULT NULL,
-  `telefono` bigint(20) DEFAULT NULL,
-  `idPuesto` int(11) DEFAULT NULL,
-  `idDireccion` int(11) DEFAULT NULL,
+  `nombre` varchar(30) NOT NULL,
+  `apellidoPaterno` varchar(30) NOT NULL,
+  `apellidoMaterno` varchar(30) NOT NULL,
+  `telefono` bigint(10) NOT NULL,
+  `idPuesto` int(11) NOT NULL,
+  `idDireccion` int(11) NOT NULL,
   PRIMARY KEY (`idEmpleado`),
   UNIQUE KEY `telefono` (`telefono`),
-  UNIQUE KEY `telefono_2` (`telefono`),
+  
   KEY `fkPuestoEmpleado` (`idPuesto`),
   KEY `fkDireccion` (`idDireccion`),
   CONSTRAINT `fkDireccion` FOREIGN KEY (`idDireccion`) REFERENCES `direccion` (`idDireccion`) ON DELETE CASCADE ON UPDATE CASCADE,

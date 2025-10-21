@@ -13,19 +13,19 @@ try {
    $tablasValidas = [
     'categoria',
     'producto',
-    'productoPedido',
+    'productopedido',
     'pedido',
     'proveedor',
     'direccion',
     'empleado',
-    'puestoEmpleado',
+    'puestoempleado',
     'credenciales',
-    'tipoCliente',
+    'tipocliente',
     'cliente',
     'venta',
     'productoVenta',
     'ingreso'
-];
+    ];
 
     if (!in_array($tabla, $tablasValidas)) {
         echo json_encode(["errorDB" => "Tabla no permitida."]);

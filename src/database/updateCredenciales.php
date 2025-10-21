@@ -1,5 +1,5 @@
 <?php
-// updateCredenciales.php - VERSIÓN CORREGIDA
+// updateCredenciales.php - VERSIÓN CORREGIDA FINAL
 header('Content-Type: application/json');
 require_once 'connection.php'; 
 
@@ -18,11 +18,14 @@ try {
     }
 
     $idEmpleado = $datosFormulario['idEmpleado'];
-    $contrasena = $datosFormulario['contrasena'];
+    $contrasenaPlana = $datosFormulario['contrasena'];
     
-   // ✅ CORRECCIÓN CRÍTICA: Asignar directamente el valor de JS
-    $activo = $datosFormulario['activo']; // Recibe 'Activo' o 'Baja' directamente.
-    
+    // ✅ HASHEAR LA CONTRASEÑA (SÓLO UNA VEZ, AQUÍ)
+    $contrasenaHash = password_hash($contrasenaPlana, PASSWORD_DEFAULT);
+    // -------------------------------------------------------------------
+
+    // Asignar los demás datos
+    $activo = $datosFormulario['activo'];
     $intentosFallidos = $datosFormulario['intentosFallidos'];
     $ultimoCambio = date("Y-m-d H:i:s"); 
 
@@ -38,7 +41,8 @@ try {
 
     // 4. Ejecutar actualización
     $stmt->execute([
-        ':contrasena' => $contrasena,
+        // PASAR EL HASH DE LA CONTRASEÑA A LA CONSULTA
+        ':contrasena' => $contrasenaHash, 
         ':activo' => $activo,
         ':intentosFallidos' => $intentosFallidos,
         ':ultimoCambio' => $ultimoCambio,

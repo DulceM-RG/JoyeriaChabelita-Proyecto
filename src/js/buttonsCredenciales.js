@@ -5,7 +5,7 @@ const botones = {
     btnEdit:
     {
         'id': 'btnEditar',
-        'ruta': './src/assets/icon/boligrafo.png',
+        'ruta': './src/assets/icon/22.png',
         'title': 'Editar',
         'alt': 'Editar',
         'className': 'btn-img'

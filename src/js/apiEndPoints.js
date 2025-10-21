@@ -1,14 +1,14 @@
 // apiEndPoints.js
 
 import CrudManager from './crudManager.js';
-// Asegúrate de que la ruta sea correcta
-// La URL debe apuntar a la carpeta donde están tus scripts PHP
+// AsegÃºrate de que la ruta sea correcta
+// La URL debe apuntar a la carpeta donde estÃ¡n tus scripts PHP
 const URL_BASE = 'http://localhost/JoyeriaChabelita-Proyecto/src/database/';
 
 // 1. Instanciar CrudManager
 const crud = new CrudManager(URL_BASE);
 
-const apiEndPonints = {
+const apiEndPoints = {
     // 1. OBTENER TODOS LOS DATOS (usando CrudManager)
     selectAllCredenciales: async () => {
         // Llama a CrudManager.readAllData enviando el nombre de la tabla
@@ -29,7 +29,12 @@ const apiEndPonints = {
         return await crud.updateData('credenciales', datosParaUpdate);
     },
 
+    registrarUsuario: async (datos) => {
+        return await crud.createData('credenciales', datos, 'insertCredencial');
+    },
+
 
 };
 
-export default apiEndPonints;
+
+export default apiEndPoints;

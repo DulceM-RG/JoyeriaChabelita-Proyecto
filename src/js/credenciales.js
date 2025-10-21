@@ -1,5 +1,4 @@
 
-import apiEndPonints from './apiEndPoints';
 // ===== CREDENCIALES - INTERACTIVIDAD =====
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -133,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Restaurar botón de editar
         celdas[7].innerHTML = `
             <button class="btn-editar">
-                <img src="./src/assets/icon/iconEditar.png" alt="Editar">
+                <img src="./src/assets/icon/22.png" alt="Editar">
             </button>
         `;
 
@@ -192,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Restaurar botón de editar
         celdas[7].innerHTML = `
             <button class="btn-editar">
-                <img src="./src/assets/icon/iconEditar.png" alt="Editar">
+                <img src="./src/assets/icon/22.png" alt="Editar">
             </button>
         `;
 

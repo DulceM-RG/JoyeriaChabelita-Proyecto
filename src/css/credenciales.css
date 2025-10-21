@@ -169,14 +169,15 @@ body {
 }
 
 /* ===== BOTÓN EDITAR ===== */
+/*
 .credenciales-table .btn-img {
-    width: 32px !important;
-    height: 32px !important;
-    max-width: 32px !important;
-    max-height: 32px !important;
+    width: 24px !important;
+    height: 24px !important;
+    max-width: 24px !important;
+    max-height: 24px !important;
     object-fit: contain !important;
 }
-
+*/
 /* Botón de imagen (Editar, Guardar, Cancelar) */
 
 
