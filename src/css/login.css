@@ -14,7 +14,7 @@ body {
 /* ==== CONTENEDOR PRINCIPAL ==== */
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: row; /* Formulario a la izquierda, imagen a la derecha */
   width: 100%;
   max-width: 1000px;
   height: 550px;
@@ -32,7 +32,7 @@ body {
   justify-content: center; /* Centra verticalmente */
   align-items: center; /* Centra horizontalmente */
   padding: 40px;
-  text-align: center;
+  text-align: center; /* Centra el texto dentro del formulario (izquierda) */
   background-color: #ffffff;
 }
 
@@ -132,7 +132,7 @@ input[type="password"]:focus {
 /* ==== RESPONSIVE ==== */
 @media (max-width: 768px) {
   .container {
-    flex-direction: column-reverse;
+    flex-direction: column-reverse; /* Imagen abajo en móviles, formulario arriba */
     height: auto;
     max-width: 100%;
   }
@@ -149,5 +149,5 @@ input[type="password"]:focus {
   .image-container img {
     width: 100%;
     height: auto;
-  }
+ }
 }
