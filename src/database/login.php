@@ -45,7 +45,7 @@ try {
     $reset->execute([':credenciales' => $credenciales]);
 
     $redirecciones = [
-        1 => "panel_gerente.php",
+        1 => "credenciales.html",
         2 => "panel_venta.php",
         3 => "panel_almacen.php",
         4 => "panel_contador.php"

@@ -11,15 +11,20 @@ function hideError() {
 document.getElementById("loginForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const credenciales = document.getElementById("credenciales").value;
-  const password = document.getElementById("password").value;
+  const credenciales = document.getElementById("credenciales").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!credenciales || !password) {
+    showError("Por favor, complete todos los campos.");
+    return;
+  }
 
   fetch("login.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ credenciales, password }),
   })
-    .then((response) => response.json())
+    .then((res) => res.json())
     .then((data) => {
       hideError();
       if (data.success) {
