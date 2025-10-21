@@ -1,37 +1,178 @@
-function showError(message) {
-  const errorDiv = document.getElementById("errorMessage");
-  errorDiv.textContent = message;
-  errorDiv.style.display = "block";
-}
+// login.js
 
-function hideError() {
-  document.getElementById("errorMessage").style.display = "none";
-}
+const URL_BASE = "http://localhost/JoyeriaChabelita-Proyecto/src/database/";
 
-document.getElementById("loginForm").addEventListener("submit", function (e) {
-  e.preventDefault();
+// 🎯 MAPEO DE RUTAS POR PUESTO
+const RUTAS_POR_PUESTO = {
+  gerente: "credenciales.html",
+  venta: "./pages/dashboard-venta.html",
+  almacen: "./pages/dashboard-almacen.html",
+  contador: "./pages/dashboard-contador.html",
+};
 
-  const credenciales = document.getElementById("credenciales").value.trim();
-  const password = document.getElementById("password").value.trim();
+document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = document.getElementById("loginForm");
+  const inputIdControl = document.getElementById("txtIdControl");
+  const inputContrasena = document.getElementById("txtContrasena");
 
-  if (!credenciales || !password) {
-    showError("Por favor, complete todos los campos.");
-    return;
-  }
+  // Verificar si ya hay sesión activa
+  verificarSesionActiva();
 
-  fetch("login.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ credenciales, password }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      hideError();
-      if (data.success) {
-        window.location.href = data.redirect;
-      } else {
-        showError(data.error || "Credenciales incorrectas.");
+  if (loginForm) {
+    loginForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      // Obtener valores
+      const idControl = inputIdControl.value.trim();
+      const contrasena = inputContrasena.value;
+
+      // Validaciones básicas
+      if (!idControl || !contrasena) {
+        mostrarError("Por favor, complete todos los campos.");
+        return;
       }
-    })
-    .catch(() => showError("Error de conexión con el servidor."));
+
+      // Validar formato de ID Control (ej: G25102001)
+      if (!/^[A-Z]\d{8,9}$/.test(idControl)) {
+        mostrarError("El formato del ID de Control no es válido.");
+        inputIdControl.focus();
+        return;
+      }
+
+      // Deshabilitar botón mientras se procesa
+      const btnLogin = loginForm.querySelector('button[type="submit"]');
+      const textoOriginal = btnLogin.textContent;
+      btnLogin.disabled = true;
+      btnLogin.textContent = "Iniciando sesión...";
+
+      try {
+        console.log("📤 Enviando credenciales...");
+
+        const response = await fetch(URL_BASE + "login.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            idControl: idControl,
+            contrasena: contrasena,
+          }),
+        });
+
+        const contentType = response.headers.get("content-type");
+
+        if (contentType && contentType.includes("application/json")) {
+          const resultado = await response.json();
+
+          console.log("📥 Respuesta del servidor:", resultado);
+
+          if (resultado.success && resultado.usuario) {
+            // ✅ LOGIN EXITOSO
+            console.log("✅ Login exitoso. Puesto:", resultado.usuario.puesto);
+
+            // Guardar sesión en localStorage
+            guardarSesion(resultado.usuario);
+
+            // Redirigir según el puesto
+            redirigirSegunPuesto(resultado.usuario.puesto);
+          } else {
+            // ❌ ERROR DE LOGIN
+            mostrarError(resultado.errorLogin || "Error al iniciar sesión");
+            btnLogin.disabled = false;
+            btnLogin.textContent = textoOriginal;
+          }
+        } else {
+          // Error: respuesta no es JSON
+          const textResponse = await response.text();
+          console.error("❌ Respuesta no JSON:", textResponse);
+          mostrarError("Error del servidor. Por favor, intente más tarde.");
+          btnLogin.disabled = false;
+          btnLogin.textContent = textoOriginal;
+        }
+      } catch (error) {
+        console.error("❌ Error de conexión:", error);
+        mostrarError(
+          "Error de conexión. Verifique su red e intente nuevamente."
+        );
+        btnLogin.disabled = false;
+        btnLogin.textContent = textoOriginal;
+      }
+    });
+  }
 });
+
+// 🔐 Guardar sesión en localStorage
+function guardarSesion(usuario) {
+  const sesion = {
+    idControl: usuario.idControl,
+    idEmpleado: usuario.idEmpleado,
+    nombre: usuario.nombre,
+    apellidoPaterno: usuario.apellidoPaterno,
+    apellidoMaterno: usuario.apellidoMaterno,
+    nombreCompleto: usuario.nombreCompleto,
+    puesto: usuario.puesto,
+    idPuesto: usuario.idPuesto,
+    fechaLogin: new Date().toISOString(),
+  };
+
+  localStorage.setItem("sesionUsuario", JSON.stringify(sesion));
+  console.log("💾 Sesión guardada:", sesion);
+}
+
+// 🔍 Verificar si ya hay sesión activa
+function verificarSesionActiva() {
+  const sesion = obtenerSesion();
+
+  if (sesion && sesion.puesto) {
+    console.log("🔍 Sesión activa detectada. Redirigiendo...");
+    redirigirSegunPuesto(sesion.puesto);
+  }
+}
+
+// 📖 Obtener sesión actual
+function obtenerSesion() {
+  const sesionJSON = localStorage.getItem("sesionUsuario");
+  return sesionJSON ? JSON.parse(sesionJSON) : null;
+}
+
+// 🚪 Cerrar sesión
+function cerrarSesion() {
+  localStorage.removeItem("sesionUsuario");
+  console.log("🚪 Sesión cerrada");
+  window.location.href = "./login.html";
+}
+
+// 🎯 Redirigir según el puesto
+function redirigirSegunPuesto(puesto) {
+  const puestoNormalizado = puesto.toLowerCase();
+  const ruta = RUTAS_POR_PUESTO[puestoNormalizado];
+
+  if (ruta) {
+    console.log(`🎯 Redirigiendo a: ${ruta}`);
+
+    // Mostrar mensaje de bienvenida antes de redirigir
+    mostrarExito(`¡Bienvenido! Redirigiendo al panel de ${puesto}...`);
+
+    // Redirigir después de 1 segundo
+    setTimeout(() => {
+      window.location.href = ruta;
+    }, 1000);
+  } else {
+    console.error("❌ Puesto no reconocido:", puesto);
+    mostrarError("Error: Puesto no válido. Contacte al administrador.");
+  }
+}
+
+// 🎨 Mostrar mensaje de error
+function mostrarError(mensaje) {
+  alert("❌ " + mensaje);
+  console.error("Error:", mensaje);
+}
+
+// ✅ Mostrar mensaje de éxito
+function mostrarExito(mensaje) {
+  alert("✅ " + mensaje);
+  console.log("Éxito:", mensaje);
+}
+
+// 🔒 Exportar funciones para uso global
+window.cerrarSesion = cerrarSesion;
+window.obtenerSesion = obtenerSesion;

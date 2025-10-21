@@ -1,62 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Joyería Chavelita</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/login.css" /> <!-- Enlaza al CSS separado -->
-  </head>
-  <body>
-    <div class="container">
-      <!-- FORMULARIO A LA IZQUIERDA -->
-      <div class="form-container">
-        <div class="welcome-text">
-          <h1>Bienvenido</h1>
-          <p>Inicia sesión en Joyería Chavelita</p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Joyería Chabelita</title>
+    <link rel="stylesheet" href="src/css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <!-- Logo -->
+            <div class="logo-container">
+                <img src="./src/assets/image/dorado.png" alt="Logo Joyería Chabelita" class="logo">
+            </div>
+            
+            <h1 class="login-title">Iniciar Sesión</h1>
+            <p class="login-subtitle">Joyería Chabelita</p>
+            
+            <form id="loginForm" class="login-form">
+                <!-- ID de Control -->
+                <div class="form-group">
+                    <label for="txtIdControl" class="form-label">ID de Control</label>
+                    <div class="input-wrapper">
+                        <img src="./src/assets/icon/iconUsuario.png" alt="Usuario" class="input-icon">
+                        <input 
+                            type="text" 
+                            id="txtIdControl" 
+                            name="idControl" 
+                            class="form-input"
+                            placeholder="Ej: G25102001"
+                            pattern="[A-Z]\d{8,9}"
+                            title="Formato: Letra mayúscula seguida de 8-9 dígitos"
+                            maxlength="10"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                    <small class="form-hint">Formato: Letra + 8-9 dígitos (Ej: G25102001)</small>
+                </div>
+                
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <label for="txtContrasena" class="form-label">Contraseña</label>
+                    <div class="input-wrapper">
+                        <img src="./src/assets/icon/iconCandado.png" alt="Contraseña" class="input-icon">
+                        <input 
+                            type="password" 
+                            id="txtContrasena" 
+                            name="contrasena" 
+                            class="form-input"
+                            placeholder="Ingrese su contraseña"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            👁
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Botón de Login -->
+                <button type="submit" class="btn-login">Iniciar Sesión</button>
+                
+                <!-- Enlace a registro (solo para gerentes) -->
+                <div class="login-footer">
+                    <p class="text-center">
+                        <a href="./registro.html" class="link-registro">¿Necesitas registrar un empleado?</a>
+                    </p>
+                </div>
+            </form>
         </div>
-
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="credenciales">Credenciales</label>
-            <input
-              type="text"
-              id="credenciales"
-              name="credenciales"
-              required
-              maxlength="12"
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              placeholder="••••••••"
-            />
-          </div>
-
-          <button type="submit" class="submit-btn">Ingresar</button>
-        </form>
-
-        <div id="errorMessage" class="error-message"></div>
-      </div>
-
-      <!-- IMAGEN A LA DERECHA -->
-      <div class="image-container">
-        <img
-          src="src/assets/image/logoChavela2.jpg"
-          alt="Joyería Chavelita - Imagen de bienvenida"
-        />
-      </div>
     </div>
-
-    <script src="js/login.js"></script> <!-- Enlaza al JS separado -->
-  </body>
+    
+    <script>
+        // Función para mostrar/ocultar contraseña
+        function togglePassword() {
+            const input = document.getElementById('txtContrasena');
+            const button = document.querySelector('.toggle-password');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                button.textContent = '👁';
+            }
+        }
+        
+        // Convertir ID de Control a mayúsculas automáticamente
+        document.getElementById('txtIdControl').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+    
+    <script type="module" src="./src/js/login.js"></script>
+</body>
 </html>
