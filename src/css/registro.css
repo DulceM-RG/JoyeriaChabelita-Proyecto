@@ -1,0 +1,287 @@
+/* ===== RESET Y CONFIGURACIÓN GENERAL ===== */
+/* ===== RESET Y CONFIGURACIÓN GENERAL ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== HEADER ===== */
+/*.header {
+    width: 100%;
+    height: 30px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}*/
+
+.header {
+    width: 100%;
+    /* margin-top: auto;*/
+    height: 30px;
+}
+
+.header-image {
+    width: 100%;
+    height: 30px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+
+/* Dimensiones recomendadas para imagen de header:
+   - Desktop: 1920px x 200px
+   - Tablet: 1024px x 200px
+   - Mobile: 768px x 200px
+*/
+
+/* ===== BODY/CONTENIDO PRINCIPAL ===== */
+
+/* ===== BODY/CONTENIDO PRINCIPAL ===== */
+.main-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    width: 100%;
+    margin-top: auto;
+}
+
+.footer-image {
+    width: 100%;
+    height: 20px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Dimensiones recomendadas para imagen de footer:
+   - Desktop: 1920px x 150px
+   - Tablet: 1024px x 150px
+   - Mobile: 768px x 150px
+*/
+
+.footer-bar {
+    width: 100%;
+    background-color: #1a1a1a;
+    padding: 5px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.footer-logo {
+    max-width: 150px;
+    height: auto;
+}
+
+/* ===== FORMULARIOS GENÉRICOS ===== */
+.form-container {
+    background-color: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 40px 60px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/*TITULO DE REGISTRP*/
+.form-title {
+    color: #B58D43;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/*ITULOS SECUNDARIOS DEL FORMULARIO : DATOS PERS, DIRECCIÓN , CREDENCIALES*/
+.section-title {
+    color: black;
+    /*Define el tamaño de la fuente del texto a 18 píxeles.*/
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    /*relleno interior izquierdo de 10 píxeles (espacio entre el texto y el borde izquierdo)*/
+    padding-left: 10px;
+    border-left: 8px solid #c9a661;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    background-color: #e8e4f3;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    background-color: #ddd6f0;
+    box-shadow: 0 0 0 3px rgba(201, 166, 97, 0.2);
+}
+
+.form-input::placeholder {
+    color: #999;
+}
+
+.form-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    background-color: #e8e4f3;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-select:focus {
+    outline: none;
+    background-color: #ddd6f0;
+    box-shadow: 0 0 0 3px rgba(201, 166, 97, 0.2);
+}
+
+.icon-input {
+    position: relative;
+}
+
+.icon-input img {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+}
+
+.icon-input .form-input {
+    padding-left: 40px;
+}
+
+/**BOTÓN CREAR CUENTA*/
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background-color: #B58D43;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-submit:hover {
+    background-color: #b8954e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201, 166, 97, 0.4);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .header {
+        height: 150px;
+    }
+
+    .form-container {
+        padding: 30px 20px;
+    }
+
+    .form-title {
+        font-size: 26px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .main-content {
+        padding: 30px 15px;
+    }
+
+    .footer {
+        padding: 25px 15px;
+    }
+
+    .footer-logo {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        height: 120px;
+    }
+
+    .form-container {
+        padding: 25px 15px;
+    }
+
+    .form-title {
+        font-size: 22px;
+    }
+
+    .section-title {
+        font-size: 14px;
+    }
+}

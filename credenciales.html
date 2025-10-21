@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credenciales de Usuarios - Joyería Chabelita</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="src/assets/image/chabelitanegro.png" type="image/x-icon">
+
+    <!-- CSS - Ruta relativa sin barra inicial -->
+    <link rel="stylesheet" href="src/css/credenciales.css">
+</head>
+
+<body>
+    <!-- ========== HEADER ========== -->
+    <header class="header">
+        <div class="header-image" style="background-image: url('src/assets/image/header.png');"></div>
+    </header>
+
+    <!-- ========== CONTENIDO PRINCIPAL ========== -->
+    <main class="main-content">
+        <div class="credenciales-container">
+            <h1 class="page-title">CREDENCIALES DE USUARIOS</h1>
+
+            <!-- Tabla de Credenciales -->
+            <div class="table-wrapper">
+                <table class="credenciales-table">
+                    <thead>
+                        <tr>
+                            <th>Empleado</th>
+                            <th>Usuario</th>
+                            <th>Contraseña</th>
+                            <th>Fecha de Creación</th>
+                            <th>Fecha de último cambio</th>
+                            <th>Activo</th>
+                            <th>Número de intentos fallidos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyCredenciales">
+                        <!-- Las filas se agregarán dinámicamente con JavaScript -->
+                        <!-- NO agregues filas estáticas aquí -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Botón opcional para recargar datos (si lo necesitas) -->
+            <!-- <div class="button-container">
+                <button id="btnMostrarCredenciales" class="btn-primary">
+                    Recargar Datos
+                </button>
+            </div> -->
+        </div>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="footer-image" style="background-image: url('src/assets/image/header.png');"></div>
+        <div class="footer-bar">
+            <div class="footer-content">
+                <img src="src/assets/image/dorado.png" alt="Logo Joyería Chabelita" class="footer-logo">
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== JAVASCRIPT ========== -->
+    <!-- Script principal con módulos ES6 -->
+    <script type="module" src="./src/js/dataFormCredenciales.js"></script>
+</body>
+
+</html>
