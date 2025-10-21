@@ -173,20 +173,20 @@ LOCK TABLES `direccion` WRITE;
 /*!40000 ALTER TABLE `direccion` DISABLE KEYS */;
 INSERT INTO `direccion` VALUES
 (1,'Calle de Los Libres',123,'Centro',NULL),
-(2,'Calle Macedonio Alcalá',456,'Centro Histórico',NULL),
-(3,'Calle García Vigil',789,'Centro',NULL),
+(2,'Calle Macedonio AlcalÃ¡',456,'Centro HistÃ³rico',NULL),
+(3,'Calle GarcÃ­a Vigil',789,'Centro',NULL),
 (4,'Avenida Universidad',101,'Ex-Hacienda Candiani',NULL),
 (5,'Calle Manuel Sabino Crespo',202,'Reforma',NULL),
 (6,'Avenida Eduardo Mata',303,'Del Maestro',NULL),
-(7,'Calle Porfirio Díaz',404,'Centro',NULL),
+(7,'Calle Porfirio DÃ­az',404,'Centro',NULL),
 (8,'Calle de la Noria',505,'Centro',NULL),
 (9,'Boulevard Eduardo Vasconcelos',606,'Figueroa',NULL),
 (10,'Calle Hidalgo',707,'San Felipe del Agua',NULL),
-(11,'Avenida Juárez',808,'Centro',NULL),
-(12,'Calle Constitución',909,'Centro',NULL),
+(11,'Avenida JuÃ¡rez',808,'Centro',NULL),
+(12,'Calle ConstituciÃ³n',909,'Centro',NULL),
 (13,'Calle Independencia',111,'Centro',NULL),
-(14,'Prolongación de Benito Juárez',222,'Xochimilco',NULL),
-(15,'Calle de Madero',333,'Centro Histórico',NULL);
+(14,'ProlongaciÃ³n de Benito JuÃ¡rez',222,'Xochimilco',NULL),
+(15,'Calle de Madero',333,'Centro HistÃ³rico',NULL);
 /*!40000 ALTER TABLE `direccion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -348,15 +348,15 @@ INSERT INTO `producto` VALUES
 ('P004',4,10,'10K','Dormilonas',1000.00,1.00),
 ('P005',5,25,'14K','Arete violador en forma de flor',9000.00,4.50),
 ('P006',6,18,'14K','Arete asa mariposa florentino',12000.00,6.00),
-('P007',7,40,'10K','Filigrana oaxaqueña artesanal',7100.00,7.10),
-('P008',8,35,'14K','Argolla matrimonial clásica',16000.25,8.00),
+('P007',7,40,'10K','Filigrana oaxaqueÃ±a artesanal',7100.00,7.10),
+('P008',8,35,'14K','Argolla matrimonial clÃ¡sica',16000.25,8.00),
 ('P009',9,12,'14K','Reloj oro florentino de 14K',73600.00,36.80),
-('P010',10,8,'14K','Dije con diseño corazon',5000.00,2.50),
+('P010',10,8,'14K','Dije con diseÃ±o corazon',5000.00,2.50),
 ('P011',11,15,'10K','Esclava tejido chino',6500.00,6.50),
 ('P012',12,22,'14K','Medalla virgen guadalupe con zirconia',17000.00,8.50),
 ('P013',13,5,'10K','Gargantilla de oro con detalles florales',12750.00,12.75),
-('P014',14,7,'14K','Tobillera de oro con piedras pequeñas',11200.00,5.25),
-('P015',15,10,'10K','Pulsera con diseño minimalista',6800.00,6.90);
+('P014',14,7,'14K','Tobillera de oro con piedras pequeÃ±as',11200.00,5.25),
+('P015',15,10,'10K','Pulsera con diseÃ±o minimalista',6800.00,6.90);
 /*!40000 ALTER TABLE `producto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -480,18 +480,18 @@ LOCK TABLES `proveedor` WRITE;
 INSERT INTO `proveedor` VALUES
 ('JY0001234A12','Joyeros del Oro S.A. de C.V.',9511234561),
 ('JY0001235B13','Gemas y Minerales Oaxaca S.A.',9511234562),
-('JY0001236C14','Filigranas Oaxaqueñas S.A.',9511234563),
+('JY0001236C14','Filigranas OaxaqueÃ±as S.A.',9511234563),
 ('JY0001237D15','Oro y Plata de la Mixteca S.A.',9511234564),
-('JY0001238E16','Joyas del Valle Oaxaqueño S.A.',9511234565),
-('JY0001239F17','Diseños Artesanales S.A. de C.V.',9511234566),
+('JY0001238E16','Joyas del Valle OaxaqueÃ±o S.A.',9511234565),
+('JY0001239F17','DiseÃ±os Artesanales S.A. de C.V.',9511234566),
 ('JY0001240G18','Alhajas del Sol S.A. de C.V.',9511234567),
-('JY0001241H19','Oaxaqueña de Joyeros S.A.',9511234568),
+('JY0001241H19','OaxaqueÃ±a de Joyeros S.A.',9511234568),
 ('JY0001242I20','Arte en Filigrana S.A.',9511234569),
-('JY0001243J21','Joyería Colonial S.A.',9511234570),
+('JY0001243J21','JoyerÃ­a Colonial S.A.',9511234570),
 ('JY0001244K22','Oro Puro de Oaxaca S.A.',9511234571),
 ('JY0001245L23','Brillante Oaxaca S.A.',9511234572),
 ('JY0001246M24','El Tesoro del Oro S.A.',9511234573),
-('JY0001247N25','Joyas del Edén S.A. de C.V.',9511234574),
+('JY0001247N25','Joyas del EdÃ©n S.A. de C.V.',9511234574),
 ('JY0001248O26','Gemas y Joyas de la Sierra S.A.',9511234575);
 /*!40000 ALTER TABLE `proveedor` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -520,7 +520,7 @@ LOCK TABLES `puestoempleado` WRITE;
 INSERT INTO `puestoempleado` VALUES
 (1,'Gerente',5000.00),
 (2,'Venta',4000.00),
-(3,'Almacén',8000.00),
+(3,'AlmacÃ©n',8000.00),
 (4,'Contador',10000.00);
 /*!40000 ALTER TABLE `puestoempleado` ENABLE KEYS */;
 UNLOCK TABLES;
