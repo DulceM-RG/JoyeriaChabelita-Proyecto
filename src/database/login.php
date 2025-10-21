@@ -1,11 +1,19 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require_once 'connection.php';
+require_once 'connection.php';  // Asegúrate de que este archivo tenga las credenciales de la BD configuradas correctamente
 
 try {
-    // Recibir datos del login
+    // Recibir y validar JSON de entrada
     $entrada = json_decode(file_get_contents('php://input'), true);
+    if ($entrada === null) {
+        http_response_code(400);
+        echo json_encode([
+            "success" => false,
+            "errorLogin" => "Datos de entrada inválidos."
+        ]);
+        exit;
+    }
     
     $idControl = $entrada['idControl'] ?? '';
     $contrasena = $entrada['contrasena'] ?? '';
@@ -22,7 +30,7 @@ try {
     
     $conn = ConexionDB::setConnection();
     
-    // Consulta para obtener datos del usuario con su puesto
+    // Consulta para obtener datos del usuario con su puesto (optimizada, sin sueldo en respuesta por seguridad)
     $sql = "SELECT 
                 c.idControl,
                 c.idEmpleado,
@@ -34,8 +42,7 @@ try {
                 e.apellidoMaterno,
                 e.telefono,
                 e.idPuesto,
-                p.puesto,
-                p.sueldo
+                p.puesto
             FROM credenciales c
             INNER JOIN empleado e ON c.idEmpleado = e.idEmpleado
             INNER JOIN puestoempleado p ON e.idPuesto = p.idPuesto
@@ -65,7 +72,7 @@ try {
         exit;
     }
     
-    // Verificar intentos fallidos (bloqueo de cuenta después de 5 intentos)
+    // Verificar intentos fallidos (bloqueo después de 5)
     if ($usuario['intentosFallidos'] >= 5) {
         http_response_code(403);
         echo json_encode([
@@ -75,16 +82,19 @@ try {
         exit;
     }
     
-    // Verificar contraseña
+    // Verificar contraseña (IMPORTANTE: Debe estar hasheada en la BD con password_hash())
     if (password_verify($contrasena, $usuario['contrasena'])) {
-        // ✅ CONTRASEÑA CORRECTA
+        // Contraseña correcta
         
         // Resetear intentos fallidos
         $sqlReset = "UPDATE credenciales SET intentosFallidos = 0 WHERE idControl = :idControl";
         $stmtReset = $conn->prepare($sqlReset);
         $stmtReset->execute([':idControl' => $idControl]);
         
-        // Crear sesión
+        // Regenerar ID de sesión por seguridad (previene fixation attacks)
+        session_regenerate_id(true);
+        
+        // Crear sesión (almacena datos del usuario, pero no expone sueldo)
         $_SESSION['usuario'] = [
             'idControl' => $usuario['idControl'],
             'idEmpleado' => $usuario['idEmpleado'],
@@ -93,8 +103,7 @@ try {
             'apellidoMaterno' => $usuario['apellidoMaterno'],
             'nombreCompleto' => $usuario['nombre'] . ' ' . $usuario['apellidoPaterno'] . ' ' . $usuario['apellidoMaterno'],
             'puesto' => strtolower($usuario['puesto']),
-            'idPuesto' => $usuario['idPuesto'],
-            'sueldo' => $usuario['sueldo']
+            'idPuesto' => $usuario['idPuesto']
         ];
         
         // Respuesta exitosa
@@ -103,19 +112,19 @@ try {
             "success" => true,
             "mensaje" => "Inicio de sesión exitoso",
             "usuario" => [
-                'idControl' => $usuario['idControl'],
-                'idEmpleado' => $usuario['idEmpleado'],
-                'nombre' => $usuario['nombre'],
-                'apellidoPaterno' => $usuario['apellidoPaterno'],
-                'apellidoMaterno' => $usuario['apellidoMaterno'],
-                'nombreCompleto' => $usuario['nombre'] . ' ' . $usuario['apellidoPaterno'] . ' ' . $usuario['apellidoMaterno'],
-                'puesto' => strtolower($usuario['puesto']),
-                'idPuesto' => $usuario['idPuesto']
+                "idControl" => $usuario['idControl'],
+                "idEmpleado" => $usuario['idEmpleado'],
+                "nombre" => $usuario['nombre'],
+                "apellidoPaterno" => $usuario['apellidoPaterno'],
+                "apellidoMaterno" => $usuario['apellidoMaterno'],
+                "nombreCompleto" => $usuario['nombre'] . ' ' . $usuario['apellidoPaterno'] . ' ' . $usuario['apellidoMaterno'],
+                "puesto" => strtolower($usuario['puesto']),
+                "idPuesto" => $usuario['idPuesto']
             ]
         ]);
         
     } else {
-        // ❌ CONTRASEÑA INCORRECTA
+        // Contraseña incorrecta
         
         // Incrementar intentos fallidos
         $intentos = $usuario['intentosFallidos'] + 1;
@@ -139,13 +148,13 @@ try {
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "errorLogin" => "Error del servidor: " . $e->getMessage()
+        "errorLogin" => "Error del servidor: " . $e->getMessage()  // En producción, no expongas detalles
     ]);
 } catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
         "success" => false,
         "errorLogin" => "Error inesperado: " . $e->getMessage()
-    ]);
+    ]);
 }
 ?>
