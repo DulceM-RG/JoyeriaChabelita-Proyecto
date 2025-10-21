@@ -6,10 +6,10 @@ class ConexionDB {
     public static function setConnection() {
         /*variables para la conexión a la base de datos */
 
-        $host = "localhost"; // usa IP en lugar de localhost para evitar problemas
-        $dbName = "joyeria";
+        $host = "127.0.0.1"; // usa IP en lugar de localhost para evitar problemas
+        $dbName = "joyeriachabelitaproy";
         $user = "root";
-        $password = "";
+        $password = "root";
         $characterSet = "utf8mb4";
         $port = 3306;
 
