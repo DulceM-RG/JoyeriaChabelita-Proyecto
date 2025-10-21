@@ -1,257 +1,242 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Joyería Chavelita</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      /* [El CSS completo del HTML original, sin cambios] */
-      body {
-        background-color: #f9f9f9;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        margin: 0;
-        font-family: "Poppins", sans-serif;
-        padding: 20px;
-        box-sizing: border-box;
-      }
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Joyería Chavelita</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />7
+  <style>
+    /* [El CSS completo del HTML original, sin cambios] */
+    body {
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .container {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      border-radius: 15px;
+      overflow: hidden;
+      background: white;
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      flex-direction: row;
+      height: 550px;
+    }
+
+    .form-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 50px;
+      background-color: white;
+      text-align: center;
+    }
+
+    .welcome-text {
+      margin-bottom: 30px;
+    }
+
+    .welcome-text h1 {
+      color: #333;
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 10px 0;
+    }
+
+    .welcome-text p {
+      color: #666;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .form-group {
+      width: 100%;
+      max-width: 320px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #4a90e2;
+    }
+
+    .submit-btn {
+      width: 100%;
+      max-width: 320px;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-bottom: 10px;
+      background-color: #d4af37;
+      color: white;
+    }
+
+    .submit-btn:hover {
+      background-color: #b8962e;
+    }
+
+    .image-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+    }
+
+    .image-container img {
+      width: 85%;
+      height: 85%;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .error-message {
+      color: #d9534f;
+      font-size: 14px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
       .container {
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        border-radius: 15px;
-        overflow: hidden;
-        background: white;
-        width: 100%;
-        max-width: 1000px;
-        display: flex;
-        flex-direction: row;
-        height: 550px;
+        flex-direction: column;
+        height: auto;
+        max-width: 100%;
       }
 
       .form-container {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 50px;
-        background-color: white;
-        text-align: center;
-      }
-
-      .welcome-text {
-        margin-bottom: 30px;
+        padding: 30px 20px;
+        height: auto;
       }
 
       .welcome-text h1 {
-        color: #333;
-        font-size: 24px;
-        font-weight: 600;
-        margin: 0 0 10px 0;
+        font-size: 20px;
       }
 
-      .welcome-text p {
-        color: #666;
-        font-size: 14px;
-        margin: 0;
-      }
-
-      .form-group {
-        width: 100%;
-        max-width: 320px;
-        margin-bottom: 20px;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 8px;
-        color: #555;
-        font-weight: 500;
-        font-size: 12px;
-        text-align: left;
-      }
-
-      input[type="text"],
-      input[type="password"] {
-        width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 14px;
-        box-sizing: border-box;
-        transition: border-color 0.3s ease;
-      }
-
-      input[type="text"]:focus,
-      input[type="password"]:focus {
-        outline: none;
-        border-color: #4a90e2;
-      }
-
+      .form-group,
       .submit-btn {
-        width: 100%;
-        max-width: 320px;
-        padding: 14px;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin-bottom: 10px;
-        background-color: #d4af37;
-        color: white;
-      }
-
-      .submit-btn:hover {
-        background-color: #b8962e;
+        max-width: 100%;
       }
 
       .image-container {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: white;
+        min-height: 250px;
+        padding: 20px;
       }
 
       .image-container img {
-        width: 85%;
-        height: 85%;
-        object-fit: cover;
-        border-radius: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        height: 100%;
       }
+    }
+  </style>
+</head>
 
-      .error-message {
-        color: #d9534f;
-        font-size: 14px;
-        margin-top: 10px;
-        display: none;
-      }
-
-      @media (max-width: 768px) {
-        .container {
-          flex-direction: column;
-          height: auto;
-          max-width: 100%;
-        }
-
-        .form-container {
-          padding: 30px 20px;
-          height: auto;
-        }
-
-        .welcome-text h1 {
-          font-size: 20px;
-        }
-
-        .form-group,
-        .submit-btn {
-          max-width: 100%;
-        }
-
-        .image-container {
-          min-height: 250px;
-          padding: 20px;
-        }
-
-        .image-container img {
-          width: 100%;
-          height: 100%;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="form-container">
-        <div class="welcome-text">
-          <h1>Bienvenido</h1>
-          <p>Inicia sesión en Joyería Chavelita</p>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <div class="welcome-text">
+        <h1>Bienvenido</h1>
+        <p>Inicia sesión en Joyería Chavelita</p>
+      </div>
+      <form id="loginForm" style="width: 100%; max-width: 320px">
+        <div class="form-group">
+          <label for="credenciales">Credenciales</label>
+          <input type="text" id="credenciales" name="credenciales" required maxlength="9" />
         </div>
-        <form id="loginForm" style="width: 100%; max-width: 320px">
-          <div class="form-group">
-            <label for="credenciales">Credenciales</label>
-            <input
-              type="text"
-              id="credenciales"
-              name="credenciales"
-              required
-              maxlength="9"
-            />
-          </div>
-          <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              placeholder="••••••••"
-            />
-          </div>
-          <button type="submit" class="submit-btn">Ingresar</button>
-        </form>
-        <div id="errorMessage" class="error-message"></div>
-      </div>
-
-      <div class="image-container">
-        <img
-          src="src\assets\image\logoChavela2.jpg"
-          alt="Joyería Chavelita - Imagen de bienvenida"
-        />
-      </div>
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input type="password" id="password" name="password" required placeholder="••••••••" />
+        </div>
+        <button type="submit" class="submit-btn">Ingresar</button>
+      </form>
+      <div id="errorMessage" class="error-message"></div>
     </div>
 
-    <script>
-      // Función para mostrar mensajes de error
-      function showError(message) {
-        const errorDiv = document.getElementById("errorMessage");
-        errorDiv.textContent = message;
-        errorDiv.style.display = "block";
-      }
+    <div class="image-container">
+      <img src="src\assets\image\logoChavela2.jpg" alt="Joyería Chavelita - Imagen de bienvenida" />
+    </div>
+  </div>
 
-      function hideError() {
-        const errorDiv = document.getElementById("errorMessage");
-        errorDiv.style.display = "none";
-      }
+  <script>
+    // Función para mostrar mensajes de error
+    function showError(message) {
+      const errorDiv = document.getElementById("errorMessage");
+      errorDiv.textContent = message;
+      errorDiv.style.display = "block";
+    }
 
-      // Manejo del formulario con AJAX para enviar a PHP y procesar respuesta
-      document
-        .getElementById("loginForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault(); // Prevenir recarga de página
+    function hideError() {
+      const errorDiv = document.getElementById("errorMessage");
+      errorDiv.style.display = "none";
+    }
 
-          const formData = new FormData(this); // Recopilar datos del form
+    // Manejo del formulario con AJAX para enviar a PHP y procesar respuesta
+    document
+      .getElementById("loginForm")
+      .addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevenir recarga de página
 
-          // Enviar POST a login.php (ruta corregida a relativa/absoluta)
-          fetch("login.php", {
-            method: "POST",
-            body: formData,
+        const formData = new FormData(this); // Recopilar datos del form
+
+        // Enviar POST a login.php (ruta corregida a relativa/absoluta)
+        fetch("login.php", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            hideError();
+            if (data.success) {
+              // Login exitoso: redirigir según la respuesta del PHP
+              window.location.href = data.redirect;
+            } else {
+              // Mostrar error del PHP
+              showError(data.error);
+            }
           })
-            .then((response) => response.json())
-            .then((data) => {
-              hideError();
-              if (data.success) {
-                // Login exitoso: redirigir según la respuesta del PHP
-                window.location.href = data.redirect;
-              } else {
-                // Mostrar error del PHP
-                showError(data.error);
-              }
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-              showError("Error de conexión. Inténtalo de nuevo.");
-            });
-        });
-    </script>
-  </body>
+          .catch((error) => {
+            console.error("Error:", error);
+            showError("Error de conexión. Inténtalo de nuevo.");
+          });
+      });
+  </script>
+</body>
+
 </html>
