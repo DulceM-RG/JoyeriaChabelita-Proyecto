@@ -1,242 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login - Joyería Chavelita</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />7
-  <style>
-    /* [El CSS completo del HTML original, sin cambios] */
-    body {
-      background-color: #f9f9f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      padding: 20px;
-      box-sizing: border-box;
-    }
-
-    .container {
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      border-radius: 15px;
-      overflow: hidden;
-      background: white;
-      width: 100%;
-      max-width: 1000px;
-      display: flex;
-      flex-direction: row;
-      height: 550px;
-    }
-
-    .form-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 50px;
-      background-color: white;
-      text-align: center;
-    }
-
-    .welcome-text {
-      margin-bottom: 30px;
-    }
-
-    .welcome-text h1 {
-      color: #333;
-      font-size: 24px;
-      font-weight: 600;
-      margin: 0 0 10px 0;
-    }
-
-    .welcome-text p {
-      color: #666;
-      font-size: 14px;
-      margin: 0;
-    }
-
-    .form-group {
-      width: 100%;
-      max-width: 320px;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #555;
-      font-weight: 500;
-      font-size: 12px;
-      text-align: left;
-    }
-
-    input[type="text"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 14px;
-      box-sizing: border-box;
-      transition: border-color 0.3s ease;
-    }
-
-    input[type="text"]:focus,
-    input[type="password"]:focus {
-      outline: none;
-      border-color: #4a90e2;
-    }
-
-    .submit-btn {
-      width: 100%;
-      max-width: 320px;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-bottom: 10px;
-      background-color: #d4af37;
-      color: white;
-    }
-
-    .submit-btn:hover {
-      background-color: #b8962e;
-    }
-
-    .image-container {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: white;
-    }
-
-    .image-container img {
-      width: 85%;
-      height: 85%;
-      object-fit: cover;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .error-message {
-      color: #d9534f;
-      font-size: 14px;
-      margin-top: 10px;
-      display: none;
-    }
-
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-        height: auto;
-        max-width: 100%;
-      }
-
-      .form-container {
-        padding: 30px 20px;
-        height: auto;
-      }
-
-      .welcome-text h1 {
-        font-size: 20px;
-      }
-
-      .form-group,
-      .submit-btn {
-        max-width: 100%;
-      }
-
-      .image-container {
-        min-height: 250px;
-        padding: 20px;
-      }
-
-      .image-container img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Joyería Chabelita</title>
+    <link rel="stylesheet" href="src/css/login.css">
 </head>
-
 <body>
-  <div class="container">
-    <div class="form-container">
-      <div class="welcome-text">
-        <h1>Bienvenido</h1>
-        <p>Inicia sesión en Joyería Chavelita</p>
-      </div>
-      <form id="loginForm" style="width: 100%; max-width: 320px">
-        <div class="form-group">
-          <label for="credenciales">Credenciales</label>
-          <input type="text" id="credenciales" name="credenciales" required maxlength="9" />
+    <div class="login-container">
+        <div class="login-box">
+            <!-- Logo -->
+            <div class="logo-container">
+                <img src="./src/assets/image/dorado.png" alt="Logo Joyería Chabelita" class="logo">
+            </div>
+            
+            <h1 class="login-title">Iniciar Sesión</h1>
+            <p class="login-subtitle">Joyería Chabelita</p>
+            
+            <form id="loginForm" class="login-form">
+                <!-- ID de Control -->
+                <div class="form-group">
+                    <label for="txtIdControl" class="form-label">ID de Control</label>
+                    <div class="input-wrapper">
+                        <img src="./src/assets/icon/iconUsuario.png" alt="Usuario" class="input-icon">
+                        <input 
+                            type="text" 
+                            id="txtIdControl" 
+                            name="idControl" 
+                            class="form-input"
+                            placeholder="Ej: G25102001"
+                            pattern="[A-Z]\d{8,9}"
+                            title="Formato: Letra mayúscula seguida de 8-9 dígitos"
+                            maxlength="10"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                    <small class="form-hint">Formato: Letra + 8-9 dígitos (Ej: G25102001)</small>
+                </div>
+                
+                <!-- Contraseña -->
+                <div class="form-group">
+                    <label for="txtContrasena" class="form-label">Contraseña</label>
+                    <div class="input-wrapper">
+                        <img src="./src/assets/icon/iconCandado.png" alt="Contraseña" class="input-icon">
+                        <input 
+                            type="password" 
+                            id="txtContrasena" 
+                            name="contrasena" 
+                            class="form-input"
+                            placeholder="Ingrese su contraseña"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <button type="button" class="toggle-password" onclick="togglePassword()">
+                            👁
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Botón de Login -->
+                <button type="submit" class="btn-login">Iniciar Sesión</button>
+                
+                <!-- Enlace a registro (solo para gerentes) -->
+                <div class="login-footer">
+                    <p class="text-center">
+                        <a href="./registro.html" class="link-registro">¿Necesitas registrar un empleado?</a>
+                    </p>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-          <label for="password">Contraseña</label>
-          <input type="password" id="password" name="password" required placeholder="••••••••" />
-        </div>
-        <button type="submit" class="submit-btn">Ingresar</button>
-      </form>
-      <div id="errorMessage" class="error-message"></div>
     </div>
-
-    <div class="image-container">
-      <img src="src\assets\image\logoChavela2.jpg" alt="Joyería Chavelita - Imagen de bienvenida" />
-    </div>
-  </div>
-
-  <script>
-    // Función para mostrar mensajes de error
-    function showError(message) {
-      const errorDiv = document.getElementById("errorMessage");
-      errorDiv.textContent = message;
-      errorDiv.style.display = "block";
-    }
-
-    function hideError() {
-      const errorDiv = document.getElementById("errorMessage");
-      errorDiv.style.display = "none";
-    }
-
-    // Manejo del formulario con AJAX para enviar a PHP y procesar respuesta
-    document
-      .getElementById("loginForm")
-      .addEventListener("submit", function (e) {
-        e.preventDefault(); // Prevenir recarga de página
-
-        const formData = new FormData(this); // Recopilar datos del form
-
-        // Enviar POST a login.php (ruta corregida a relativa/absoluta)
-        fetch("login.php", {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            hideError();
-            if (data.success) {
-              // Login exitoso: redirigir según la respuesta del PHP
-              window.location.href = data.redirect;
+    
+    <script>
+        // Función para mostrar/ocultar contraseña
+        function togglePassword() {
+            const input = document.getElementById('txtContrasena');
+            const button = document.querySelector('.toggle-password');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.textContent = '🙈';
             } else {
-              // Mostrar error del PHP
-              showError(data.error);
+                input.type = 'password';
+                button.textContent = '👁';
             }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            showError("Error de conexión. Inténtalo de nuevo.");
-          });
-      });
-  </script>
+        }
+        
+        // Convertir ID de Control a mayúsculas automáticamente
+        document.getElementById('txtIdControl').addEventListener('input', function() {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+    
+    <script type="module" src="./src/js/login.js"></script>
 </body>
-
 </html>

@@ -1,270 +1,295 @@
 // ============================================
 // IMPORTACIONES SOLO MOSTRAR CREDENCIALES
 // ============================================
-import apiEndPoints from './apiEndPoints.js';
+import apiEndPoints from "./apiEndPoints.js";
 //import apiEndPonints from './apiEndPoints.js';
-import Buttons from './buttonsCredenciales.js';
-import DataManager from './dataManagerCredenciales.js';
+import Buttons from "./buttonsCredenciales.js";
+import DataManager from "./dataManagerCredenciales.js";
 
 // ============================================
 // UTILIDADES
 // ============================================
-const dataManager = new DataManager('credenciales');
+const dataManager = new DataManager("credenciales");
 let datosCeldas = [];
 
 function createCell(row, text) {
-    const cell = document.createElement('td');
-    cell.textContent = text;
-    row.appendChild(cell);
+  const cell = document.createElement("td");
+  cell.textContent = text;
+  row.appendChild(cell);
 }
 
 // ============================================
 // FUNCIÓN PRINCIPAL: DIBUJAR TABLA
 // ============================================
 const agregarFilaTabla = (dataDB, tbody) => {
-    tbody.textContent = ""; // Limpiar tabla
+  tbody.textContent = ""; // Limpiar tabla
 
-    if (!dataDB || dataDB.length === 0) {
-        const emptyRow = document.createElement('tr');
-        const emptyCell = document.createElement('td');
-        emptyCell.colSpan = 8;
-        emptyCell.textContent = 'No hay datos disponibles';
-        emptyCell.style.textAlign = 'center';
-        emptyRow.appendChild(emptyCell);
-        tbody.appendChild(emptyRow);
-        return;
-    }
+  if (!dataDB || dataDB.length === 0) {
+    const emptyRow = document.createElement("tr");
+    const emptyCell = document.createElement("td");
+    emptyCell.colSpan = 8;
+    emptyCell.textContent = "No hay datos disponibles";
+    emptyCell.style.textAlign = "center";
+    emptyRow.appendChild(emptyCell);
+    tbody.appendChild(emptyRow);
+    return;
+  }
 
-    for (const data of dataDB) {
-        const newRow = document.createElement('tr');
-        newRow.dataset.idEmpleado = data.idEmpleado;
+  for (const data of dataDB) {
+    const newRow = document.createElement("tr");
+    newRow.dataset.idEmpleado = data.idEmpleado;
 
-        // Convertir 'Activo'/'Baja' a 'Sí'/'No' con badges
-        const estadoTexto = data.activo;
-        const badgeClass = (data.activo === 'Activo') ? 'badge-activo' : 'badge-inactivo';
+    // Convertir 'Activo'/'Baja' a 'Sí'/'No' con badges
+    const estadoTexto = data.activo;
+    const badgeClass =
+      data.activo === "Activo" ? "badge-activo" : "badge-inactivo";
 
-        // Crear celdas de datos
-        createCell(newRow, data.nombreCompleto || 'N/A');
-        createCell(newRow, data.usuario);
-        createCell(newRow, '••••••••'); // Contraseña oculta
-        createCell(newRow, data.fechaCreacion);
-        createCell(newRow, data.ultimoCambio);
+    // Crear celdas de datos
+    createCell(newRow, data.nombreCompleto || "N/A");
+    createCell(newRow, data.usuario);
+    createCell(newRow, "••••••••"); // Contraseña oculta
+    createCell(newRow, data.fechaCreacion);
+    createCell(newRow, data.ultimoCambio);
 
-        // Celda de Estado con Badge
-        const estadoCell = document.createElement('td');
-        estadoCell.innerHTML = `<span class="badge ${badgeClass}">${estadoTexto}</span>`;
-        newRow.appendChild(estadoCell);
+    // Celda de Estado con Badge
+    const estadoCell = document.createElement("td");
+    estadoCell.innerHTML = `<span class="badge ${badgeClass}">${estadoTexto}</span>`;
+    newRow.appendChild(estadoCell);
 
-        createCell(newRow, data.intentosFallidos);
+    createCell(newRow, data.intentosFallidos);
 
-        // Celda de ACCIONES (solo botón Editar)
-        const actionsCell = document.createElement('td');
-        const editButton = document.createElement('img');
-        Buttons.crearBotonesAcciones(
-            actionsCell,
-            editButton,
-            Buttons.botones.btnEdit.id,
-            Buttons.botones.btnEdit.ruta,
-            Buttons.botones.btnEdit.title
-        );
+    // Celda de ACCIONES (solo botón Editar)
+    const actionsCell = document.createElement("td");
+    const editButton = document.createElement("img");
+    Buttons.crearBotonesAcciones(
+      actionsCell,
+      editButton,
+      Buttons.botones.btnEdit.id,
+      Buttons.botones.btnEdit.ruta,
+      Buttons.botones.btnEdit.title
+    );
 
-        newRow.appendChild(actionsCell);
-        tbody.appendChild(newRow);
-    }
-}
+    newRow.appendChild(actionsCell);
+    tbody.appendChild(newRow);
+  }
+};
 
 // ============================================
 // INICIALIZACIÓN
 // ============================================
-document.addEventListener('DOMContentLoaded', async function () {
-    const tbody = document.getElementById('tbodyCredenciales');
+document.addEventListener("DOMContentLoaded", async function () {
+  const tbody = document.getElementById("tbodyCredenciales");
 
-    console.log('🔄 Iniciando carga de credenciales...');
+  console.log("🔄 Iniciando carga de credenciales...");
 
-    // Cargar datos al iniciar
-    try {
-        const resultCredenciales = await apiEndPoints.selectAllCredenciales();
+  // Cargar datos al iniciar
+  try {
+    const resultCredenciales = await apiEndPoints.selectAllCredenciales();
 
-        console.log('Datos recibidos:', resultCredenciales);
+    console.log("Datos recibidos:", resultCredenciales);
 
-        if (resultCredenciales && Array.isArray(resultCredenciales) && resultCredenciales.length > 0) {
-            dataManager.saveAllData(resultCredenciales);
-            agregarFilaTabla(resultCredenciales, tbody);
-            console.log('Credenciales cargadas:', resultCredenciales.length, 'registros');
-        } else {
-            console.warn('No se recibieron datos del servidor');
-            // Intentar cargar desde localStorage
-            const credencialesLocal = dataManager.readData();
-            if (credencialesLocal.length > 0) {
-                agregarFilaTabla(credencialesLocal, tbody);
-                console.log('Cargando desde localStorage');
-            } else {
-                agregarFilaTabla([], tbody);
-                console.log('No hay datos disponibles');
-            }
-        }
-    } catch (error) {
-        console.error('Error al cargar credenciales:', error);
+    if (
+      resultCredenciales &&
+      Array.isArray(resultCredenciales) &&
+      resultCredenciales.length > 0
+    ) {
+      dataManager.saveAllData(resultCredenciales);
+      agregarFilaTabla(resultCredenciales, tbody);
+      console.log(
+        "Credenciales cargadas:",
+        resultCredenciales.length,
+        "registros"
+      );
+    } else {
+      console.warn("No se recibieron datos del servidor");
+      // Intentar cargar desde localStorage
+      const credencialesLocal = dataManager.readData();
+      if (credencialesLocal.length > 0) {
+        agregarFilaTabla(credencialesLocal, tbody);
+        console.log("Cargando desde localStorage");
+      } else {
         agregarFilaTabla([], tbody);
+        console.log("No hay datos disponibles");
+      }
+    }
+  } catch (error) {
+    console.error("Error al cargar credenciales:", error);
+    agregarFilaTabla([], tbody);
+  }
+
+  // ============================================
+  // EVENT LISTENER - ACCIONES DE LA TABLA
+  // ============================================
+  tbody.addEventListener("click", async function (event) {
+    // ========== ACCIÓN EDITAR ==========
+    if (event.target.id === Buttons.botones.btnEdit.id) {
+      const rowEdit = event.target.closest("tr");
+      const cells = rowEdit.querySelectorAll("td");
+      datosCeldas = [];
+
+      cells.forEach((cell, index) => {
+        if (index >= cells.length - 1) return;
+
+        const valorActual = cell.textContent.trim();
+        datosCeldas.push(valorActual);
+        cell.textContent = "";
+
+        let input;
+
+        // Columna 2: Contraseña
+        if (index === 2) {
+          input = document.createElement("input");
+          input.type = "password";
+          input.value = "";
+          input.placeholder = "Nueva Contraseña";
+          input.className = "input-editar";
+        } else if (index === 5) {
+          const badgeTexto =
+            cell.querySelector(".badge")?.textContent.trim() || valorActual;
+          datosCeldas[index] = badgeTexto;
+
+          input = document.createElement("select");
+          input.className = "select-editar";
+          const isActivo = badgeTexto === "Activo";
+          input.innerHTML = `
+                        <option value="Activo" ${
+                          isActivo ? "selected" : ""
+                        }>Activo</option>
+                        <option value="Baja" ${
+                          !isActivo ? "selected" : ""
+                        }>Baja</option>
+                    `;
+        } else if (index === 6) {
+          input = document.createElement("select");
+          input.className = "select-editar";
+          input.innerHTML = `
+                        <option value="0" ${
+                          valorActual === "0" ? "selected" : ""
+                        }>0</option>
+                        <option value="1" ${
+                          valorActual === "1" ? "selected" : ""
+                        }>1</option>
+                        <option value="2" ${
+                          valorActual === "2" ? "selected" : ""
+                        }>2</option>
+                        <option value="3" ${
+                          valorActual === "3" ? "selected" : ""
+                        }>3</option>
+                    `;
+        } else if (index === 0 || index === 1 || index === 3 || index === 4) {
+          cell.textContent = valorActual;
+          return;
+        }
+
+        if (input) {
+          cell.appendChild(input);
+        }
+      });
+
+      Buttons.changeButtonEvent(
+        event,
+        Buttons.botones.btnSave.id,
+        Buttons.botones.btnSave.ruta,
+        Buttons.botones.btnSave.title
+      );
+
+      const btnCancelar = document.createElement("img");
+      Buttons.crearBotonesAcciones(
+        cells[cells.length - 1],
+        btnCancelar,
+        Buttons.botones.btnCancel.id,
+        Buttons.botones.btnCancel.ruta,
+        Buttons.botones.btnCancel.title
+      );
+
+      console.log("🔧 Modo edición activado");
+      return;
     }
 
-    // ============================================
-    // EVENT LISTENER - ACCIONES DE LA TABLA
-    // ============================================
-    tbody.addEventListener('click', async function (event) {
+    // ========== ACCIÓN GUARDAR ==========
+    if (event.target.id === Buttons.botones.btnSave.id) {
+      const rowSave = event.target.closest("tr");
+      const idEmpleado = rowSave.dataset.idEmpleado;
 
-        // ========== ACCIÓN EDITAR ==========
-        if (event.target.id === Buttons.botones.btnEdit.id) {
-            const rowEdit = event.target.closest('tr');
-            const cells = rowEdit.querySelectorAll('td');
-            datosCeldas = [];
+      const inputContrasena = rowSave.querySelector("td:nth-child(3) input");
+      const selectActivo = rowSave.querySelector("td:nth-child(6) select");
+      const selectIntentos = rowSave.querySelector("td:nth-child(7) select");
 
-            cells.forEach((cell, index) => {
-                if (index >= cells.length - 1) return;
+      if (!inputContrasena || inputContrasena.value.trim() === "") {
+        alert("Debe ingresar una nueva contraseña.");
+        return;
+      }
 
-                const valorActual = cell.textContent.trim();
-                datosCeldas.push(valorActual);
-                cell.textContent = '';
+      const objCredencialActualizada = {
+        idEmpleado: parseInt(idEmpleado),
+        contrasena: inputContrasena.value,
+        activo: selectActivo.value,
+        intentosFallidos: parseInt(selectIntentos.value, 10),
+      };
 
-                let input;
+      console.log("Guardando:", objCredencialActualizada);
 
-                // Columna 2: Contraseña
-                if (index === 2) {
-                    input = document.createElement('input');
-                    input.type = 'password';
-                    input.value = '';
-                    input.placeholder = 'Nueva Contraseña';
-                    input.className = 'input-editar';
+      try {
+        const response = await apiEndPoints.updateCredencial(
+          idEmpleado,
+          objCredencialActualizada
+        );
 
-                } else if (index === 5) {
-                    const badgeTexto = cell.querySelector('.badge')?.textContent.trim() || valorActual;
-                    datosCeldas[index] = badgeTexto;
-
-                    input = document.createElement('select');
-                    input.className = 'select-editar';
-                    const isActivo = badgeTexto === 'Activo';
-                    input.innerHTML = `
-                        <option value="Activo" ${isActivo ? 'selected' : ''}>Activo</option>
-                        <option value="Baja" ${!isActivo ? 'selected' : ''}>Baja</option>
-                    `;
-
-                } else if (index === 6) {
-                    input = document.createElement('select');
-                    input.className = 'select-editar';
-                    input.innerHTML = `
-                        <option value="0" ${valorActual === '0' ? 'selected' : ''}>0</option>
-                        <option value="1" ${valorActual === '1' ? 'selected' : ''}>1</option>
-                        <option value="2" ${valorActual === '2' ? 'selected' : ''}>2</option>
-                        <option value="3" ${valorActual === '3' ? 'selected' : ''}>3</option>
-                    `;
-
-                } else if (index === 0 || index === 1 || index === 3 || index === 4) {
-                    cell.textContent = valorActual;
-                    return;
-                }
-
-                if (input) {
-                    cell.appendChild(input);
-                }
-            });
-
-            Buttons.changeButtonEvent(
-                event,
-                Buttons.botones.btnSave.id,
-                Buttons.botones.btnSave.ruta,
-                Buttons.botones.btnSave.title
-            );
-
-            const btnCancelar = document.createElement('img');
-            Buttons.crearBotonesAcciones(
-                cells[cells.length - 1],
-                btnCancelar,
-                Buttons.botones.btnCancel.id,
-                Buttons.botones.btnCancel.ruta,
-                Buttons.botones.btnCancel.title
-            );
-
-            console.log('🔧 Modo edición activado');
-            return;
+        if (response.errorDB || response.errorServer) {
+          alert("Error: " + (response.errorDB || response.errorServer));
+          return;
         }
 
-        // ========== ACCIÓN GUARDAR ==========
-        if (event.target.id === Buttons.botones.btnSave.id) {
-            const rowSave = event.target.closest('tr');
-            const idEmpleado = rowSave.dataset.idEmpleado;
+        dataManager.updateData(parseInt(idEmpleado), objCredencialActualizada);
 
-            const inputContrasena = rowSave.querySelector('td:nth-child(3) input');
-            const selectActivo = rowSave.querySelector('td:nth-child(6) select');
-            const selectIntentos = rowSave.querySelector('td:nth-child(7) select');
+        const credenciales = await apiEndPoints.selectAllCredenciales();
+        agregarFilaTabla(credenciales, tbody);
 
-            if (!inputContrasena || inputContrasena.value.trim() === '') {
-                alert('Debe ingresar una nueva contraseña.');
-                return;
-            }
+        alert("Credencial actualizada correctamente");
+        console.log("✅ Actualización exitosa");
+      } catch (error) {
+        console.error("❌ Error:", error);
+        alert("❌ Error de conexión con el servidor");
+      }
 
-            const objCredencialActualizada = {
-                idEmpleado: parseInt(idEmpleado),
-                contrasena: inputContrasena.value,
-                activo: selectActivo.value,
-                intentosFallidos: parseInt(selectIntentos.value, 10)
-            };
+      return;
+    }
 
-            console.log('Guardando:', objCredencialActualizada);
+    // ========== ACCIÓN CANCELAR ==========
+    if (event.target.id === Buttons.botones.btnCancel.id) {
+      const rowCancel = event.target.closest("tr");
+      const cells = rowCancel.querySelectorAll("td");
 
-            try {
-                const response = await apiEndPoints.updateCredencial(idEmpleado, objCredencialActualizada);
-
-                if (response.errorDB || response.errorServer) {
-                    alert("Error: " + (response.errorDB || response.errorServer));
-                    return;
-                }
-
-                dataManager.updateData(parseInt(idEmpleado), objCredencialActualizada);
-
-                const credenciales = await apiEndPoints.selectAllCredenciales();
-                agregarFilaTabla(credenciales, tbody);
-
-                alert("Credencial actualizada correctamente");
-                console.log('✅ Actualización exitosa');
-
-            } catch (error) {
-                console.error('❌ Error:', error);
-                alert("❌ Error de conexión con el servidor");
-            }
-
-            return;
+      cells.forEach((cell, index) => {
+        if (index < cells.length - 1) {
+          if (index === 5) {
+            const estadoOriginal = datosCeldas[index];
+            const badgeClass =
+              estadoOriginal === "Activo" ? "badge-activo" : "badge-inactivo";
+            cell.innerHTML = `<span class="badge ${badgeClass}">${estadoOriginal}</span>`;
+          } else {
+            cell.textContent = datosCeldas[index];
+          }
         }
+      });
 
-        // ========== ACCIÓN CANCELAR ==========
-        if (event.target.id === Buttons.botones.btnCancel.id) {
-            const rowCancel = event.target.closest('tr');
-            const cells = rowCancel.querySelectorAll('td');
+      const btnCancelar = cells[cells.length - 1].querySelector(
+        "#" + Buttons.botones.btnCancel.id
+      );
+      if (btnCancelar) btnCancelar.remove();
 
-            cells.forEach((cell, index) => {
-                if (index < cells.length - 1) {
-                    if (index === 5) {
-                        const estadoOriginal = datosCeldas[index];
-                        const badgeClass = (estadoOriginal === 'Activo') ? 'badge-activo' : 'badge-inactivo';
-                        cell.innerHTML = `<span class="badge ${badgeClass}">${estadoOriginal}</span>`;
-                    } else {
-                        cell.textContent = datosCeldas[index];
-                    }
-                }
-            });
+      const btnGuardar = cells[cells.length - 1].querySelector(
+        "#" + Buttons.botones.btnSave.id
+      );
+      Buttons.changeButtonNotEvent(
+        btnGuardar,
+        Buttons.botones.btnEdit.id,
+        Buttons.botones.btnEdit.ruta,
+        Buttons.botones.btnEdit.title
+      );
 
-            const btnCancelar = cells[cells.length - 1].querySelector('#' + Buttons.botones.btnCancel.id);
-            if (btnCancelar) btnCancelar.remove();
-
-            const btnGuardar = cells[cells.length - 1].querySelector('#' + Buttons.botones.btnSave.id);
-            Buttons.changeButtonNotEvent(
-                btnGuardar,
-                Buttons.botones.btnEdit.id,
-                Buttons.botones.btnEdit.ruta,
-                Buttons.botones.btnEdit.title
-            );
-
-            console.log('❌ Edición cancelada');
-            return;
-        }
-    });
+      console.log("❌ Edición cancelada");
+      return;
+    }
+  });
 });
