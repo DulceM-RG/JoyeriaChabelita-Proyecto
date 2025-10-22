@@ -135,7 +135,7 @@ try {
             ':idControl' => $idControl
         ]);
         
-        $intentosRestantes = 5 - $intentos;
+        $intentosRestantes = 3 - $intentos;
         
         http_response_code(401);
         echo json_encode([
