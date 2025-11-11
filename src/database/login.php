@@ -73,7 +73,7 @@ try {
     }
     
     // Verificar intentos fallidos (bloqueo después de 5)
-    if ($usuario['intentosFallidos'] >= 5) {
+    if ($usuario['intentosFallidos'] >= 3) {
         http_response_code(403);
         echo json_encode([
             "success" => false,
