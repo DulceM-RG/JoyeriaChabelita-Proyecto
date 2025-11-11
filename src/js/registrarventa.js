@@ -1,3 +1,43 @@
+// 🔹 AGREGAR AL INICIO DEL ARCHIVO (línea 1)
+const URL_BASE = 'http://localhost/JoyeriaChabelita-Proyecto/src/database/';
+
+// 🔹 REEMPLAZAR la sección "// Función para actualizar la fecha y hora de CDMX"
+// AGREGAR ANTES de actualizarFechaHora():
+
+// ==================== CARGAR DATOS DEL EMPLEADO ====================
+/*let empleadoActual = null;
+
+async function cargarDatosEmpleado() {
+    try {
+        const response = await fetch(URL_BASE + 'getEmpleadoSesion.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.success && resultado.empleado) {
+            empleadoActual = resultado.empleado;
+            document.getElementById('empleadoNombre').textContent = resultado.empleado.nombreCompleto;
+            console.log('✅ Empleado cargado:', resultado.empleado);
+        } else {
+            console.error('❌ Error al cargar empleado');
+            alert('Error al cargar datos del empleado. Redirigiendo al login...');
+            window.location.href = '../login.html';
+        }
+    } catch (error) {
+        console.error('❌ Error de conexión:', error);
+        alert('Error de conexión. Por favor, intente nuevamente.');
+    }
+}
+
+// Cargar empleado al iniciar
+document.addEventListener('DOMContentLoaded', async () => {
+    await cargarDatosEmpleado();
+    actualizarFechaHora();
+    setInterval(actualizarFechaHora, 1000);
+});
+*/
 // Función para actualizar la fecha y hora de CDMX
 function actualizarFechaHora() {
     const ahora = new Date();
@@ -112,8 +152,12 @@ btnMayorista.addEventListener('click', function () {
     acordeonNuevo.classList.remove('show');
 });
 
-// Event listener para el botón Buscar
-btnBuscar.addEventListener('click', function () {
+// ============================================
+// BOTON BUSCAR CLIENTES
+// ============================================
+
+// 🔹 REEMPLAZAR el Event listener de btnBuscar (línea ~175)
+btnBuscar.addEventListener('click', async function () {
     const inputBuscar = document.getElementById('inputBuscar').value.trim();
 
     if (!inputBuscar) {
@@ -121,9 +165,34 @@ btnBuscar.addEventListener('click', function () {
         return;
     }
 
-    // Aquí se conectará con la base de datos
-    console.log('Buscando cliente:', inputBuscar);
-    alert('Funcionalidad de búsqueda - Pendiente de conexión con base de datos');
+    try {
+        const response = await fetch(URL_BASE + 'clientes.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                accion: 'buscar',
+                busqueda: inputBuscar
+            })
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.success && resultado.clientes.length > 0) {
+            const cliente = resultado.clientes[0];
+            document.getElementById('inputTelefono').value = cliente.telefono;
+            document.getElementById('inputNombreCompleto').value = cliente.nombreCompleto;
+            document.getElementById('inputAcciones').value = 'Seleccionar';
+
+            // Guardar cliente para la venta
+            window.clienteSeleccionado = cliente;
+            console.log('✅ Cliente encontrado:', cliente);
+        } else {
+            alert('No se encontraron clientes');
+        }
+    } catch (error) {
+        console.error('❌ Error:', error);
+        alert('Error al buscar cliente');
+    }
 });
 
 // Event listener para el botón Seleccionar cliente
@@ -146,7 +215,7 @@ btnCancelar.addEventListener('click', function () {
 // ============================================
 // VALIDACIÓN ROBUSTA AL GUARDAR CLIENTE
 // ============================================
-btnGuardar.addEventListener('click', function () {
+btnGuardar.addEventListener('click', async function () {
     const nombre = document.getElementById('nuevoNombre').value.trim();
     const apellidoP = document.getElementById('nuevoApellidoP').value.trim();
     const apellidoM = document.getElementById('nuevoApellidoM').value.trim();
@@ -233,20 +302,42 @@ btnGuardar.addEventListener('click', function () {
     // ============================================
     // SI PASA TODAS LAS VALIDACIONES
     // ============================================
-    const nombreCompleto = `${nombre} ${apellidoP} ${apellidoM}`.trim();
+    try {
+        const response = await fetch(URL_BASE + 'clientes.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                accion: 'crear',
+                nombre: nombre,
+                apellidoPaterno: apellidoP,
+                apellidoMaterno: apellidoM,
+                telefono: telefono
+            })
+        });
 
-    // Aquí se guardará en la base de datos
-    console.log('✅ Guardando cliente:', {
-        nombre: nombre,
-        apellidoPaterno: apellidoP,
-        apellidoMaterno: apellidoM,
-        telefono: telefono
-    });
+        const resultado = await response.json();
 
-    alert(`✅ Cliente guardado exitosamente!\n\nNombre: ${nombreCompleto}\nTeléfono: ${telefono}\n\n(Pendiente de conexión con base de datos)`);
+        if (resultado.success) {
+            alert(`✅ Cliente creado exitosamente!\n\n${resultado.cliente.nombreCompleto}`);
 
-    acordeonNuevo.classList.remove('show');
-    limpiarFormularioNuevoCliente();
+            // Mostrar en campos de búsqueda
+            document.getElementById('inputTelefono').value = resultado.cliente.telefono;
+            document.getElementById('inputNombreCompleto').value = resultado.cliente.nombreCompleto;
+
+            // Guardar para la venta
+            window.clienteSeleccionado = resultado.cliente;
+
+            acordeonNuevo.classList.remove('show');
+            limpiarFormularioNuevoCliente();
+        } else {
+            alert('❌ Error: ' + resultado.error);
+        }
+    } catch (error) {
+        console.error('❌ Error:', error);
+        alert('Error al crear cliente');
+    }
+
+
 });
 
 // Función para limpiar el formulario de nuevo cliente
@@ -279,13 +370,7 @@ let productosEnVenta = [];
 
 
 // Datos de ejemplo de joyas (esto se reemplazará con consulta a BD)
-const joyasEjemplo = [
-    { codigo: 'P001', categoria: 'Pulsera', descripcion: 'Pulsera Oro', stock: 5, precio: 2100 },
-    { codigo: 'A001', categoria: 'Anillo', descripcion: 'Anillo Plata', stock: 10, precio: 1500 },
-    { codigo: 'C001', categoria: 'Collar', descripcion: 'Collar Diamante', stock: 3, precio: 5000 },
-    { codigo: 'P002', categoria: 'Pulsera', descripcion: 'Pulsera Plata', stock: 8, precio: 1800 },
-    { codigo: 'A002', categoria: 'Anillo', descripcion: 'Anillo Oro', stock: 6, precio: 3200 }
-];
+
 
 // Referencias a elementos
 const inputCodigoJoya = document.getElementById('inputCodigoJoya');
@@ -299,48 +384,53 @@ const btnCobrarVenta = document.getElementById('btnCobrarVenta');
 // ============================================
 // FUNCIÓN: BUSCAR JOYA
 // ============================================
+// 🔹 REEMPLAZAR la función buscarJoya() completa (línea ~260)
 function buscarJoya() {
-    const codigoBusqueda = inputCodigoJoya.value.trim().toLowerCase();
+    const codigoBusqueda = inputCodigoJoya.value.trim();
 
     if (!codigoBusqueda) {
-        alert('⚠️ Por favor, ingresa un código de joya para buscar');
-        inputCodigoJoya.focus();
+        alert("⚠️ Ingresa un código");
         return;
     }
 
-    // Filtrar joyas que coincidan con el código
-    const resultados = joyasEjemplo.filter(joya =>
-        joya.codigo.toLowerCase().includes(codigoBusqueda) ||
-        joya.descripcion.toLowerCase().includes(codigoBusqueda) ||
-        joya.categoria.toLowerCase().includes(codigoBusqueda)
-    );
-
-    if (resultados.length === 0) {
-        alert('❌ No se encontraron joyas con ese código');
-        tablaResultadosContainer.style.display = 'none';
-        return;
-    }
-
-    // Mostrar resultados en la tabla
-    mostrarResultadosBusqueda(resultados);
+    // 🔹 CONECTAR CON PHP
+    fetch(URL_BASE + 'buscarProducto.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigoProducto: codigoBusqueda })
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.productos.length > 0) {
+                mostrarResultadosBusqueda(data.productos);
+            } else {
+                alert("❌ No se encontraron productos");
+                tablaResultadosContainer.style.display = "none";
+            }
+        })
+        .catch(error => {
+            console.error('❌ Error:', error);
+            alert('Error al buscar producto');
+        });
 }
 
 // ============================================
 // FUNCIÓN: MOSTRAR RESULTADOS DE BÚSQUEDA
 // ============================================
+
 function mostrarResultadosBusqueda(resultados) {
     tablaResultadosBody.innerHTML = '';
 
     resultados.forEach(joya => {
         const fila = document.createElement('tr');
         fila.innerHTML = `
-            <td>${joya.codigo}</td>
+            <td>${joya.idProducto}</td>
             <td>${joya.categoria}</td>
             <td>${joya.descripcion}</td>
             <td>${joya.stock}</td>
-            <td>$${joya.precio.toLocaleString('es-MX', { minimumFractionDigits: 1 })}</td>
+            <td>$${parseFloat(joya.precioUnitario).toFixed(2)}</td>
             <td>
-                <button class="btn-agregar-producto" onclick="agregarProductoAVenta('${joya.codigo}')">
+                <button class="btn-agregar-producto" onclick="agregarProductoAVenta('${joya.idProducto}', '${joya.categoria}', '${joya.descripcion}', ${joya.precioUnitario}, ${joya.stock})">
                     Agregar
                 </button>
             </td>
@@ -354,37 +444,34 @@ function mostrarResultadosBusqueda(resultados) {
 // ============================================
 // FUNCIÓN: AGREGAR PRODUCTO A LA VENTA
 // ============================================
-window.agregarProductoAVenta = function (codigoProducto) {
-    // Buscar el producto
-    const producto = joyasEjemplo.find(j => j.codigo === codigoProducto);
-
-    if (!producto) {
-        alert('❌ Producto no encontrado');
-        return;
-    }
+// 🔹 REEMPLAZAR la función agregarProductoAVenta() (línea ~312)
+window.agregarProductoAVenta = function (idProducto, categoria, descripcion, precio, stockDisponible) {
+    // Convertir precio a número
+    precio = parseFloat(precio);
+    stockDisponible = parseInt(stockDisponible);
 
     // Verificar si ya está en el carrito
-    const productoExistente = productosEnVenta.find(p => p.codigo === codigoProducto);
+    const productoExistente = productosEnVenta.find(p => p.codigo === idProducto);
 
     if (productoExistente) {
         // Si ya existe, aumentar cantidad
-        if (productoExistente.cantidad < producto.stock) {
+        if (productoExistente.cantidad < stockDisponible) {
             productoExistente.cantidad++;
             productoExistente.subtotal = productoExistente.cantidad * productoExistente.precio;
         } else {
-            alert(`⚠️ Stock insuficiente\n\nSolo hay ${producto.stock} unidades disponibles.`);
+            alert(`⚠️ Stock insuficiente\n\nSolo hay ${stockDisponible} unidades disponibles.`);
             return;
         }
     } else {
         // Si no existe, agregarlo
         productosEnVenta.push({
-            codigo: producto.codigo,
-            categoria: producto.categoria,
-            descripcion: producto.descripcion,
-            precio: producto.precio,
+            codigo: idProducto,
+            categoria: categoria,
+            descripcion: descripcion,
+            precio: precio,
             cantidad: 1,
-            subtotal: producto.precio,
-            stockDisponible: producto.stock
+            subtotal: precio,
+            stockDisponible: stockDisponible
         });
     }
 
@@ -392,8 +479,7 @@ window.agregarProductoAVenta = function (codigoProducto) {
     actualizarTablaVenta();
     actualizarTotal();
 
-    // Mensaje de confirmación
-    console.log('✅ Producto agregado:', producto.descripcion);
+    console.log('✅ Producto agregado:', descripcion);
 };
 
 // ============================================
@@ -981,54 +1067,77 @@ function generarTicket() {
 // ============================================
 // FUNCIÓN: GUARDAR VENTA EN BASE DE DATOS
 // ============================================
-function guardarVentaBD() {
-    // Preparar datos de la venta
+// 🔹 REEMPLAZAR COMPLETAMENTE la función guardarVentaBD() (línea ~783)
+async function guardarVentaBD() {
+    // Determinar ID del cliente
+    let idCliente = 1; // Por defecto público
+
+    if (tipoClienteActual === 'mayorista' && window.clienteSeleccionado) {
+        idCliente = window.clienteSeleccionado.idCliente;
+    }
+
+    // Preparar productos
+    const productos = productosEnVenta.map(p => ({
+        idProducto: p.codigo,
+        cantidad: p.cantidad
+    }));
+
+    // Preparar efectivo y cambio
+    let efectivoRecibido = null;
+    let cambio = null;
+
+    if (metodoPagoSeleccionado === 'efectivo') {
+        efectivoRecibido = parseFloat(inputEfectivoRecibido.value);
+        cambio = efectivoRecibido - totalVenta;
+    }
+
+    // Preparar datos
     const datosVenta = {
-        cliente: modalCliente.textContent,
-        tipoCliente: tipoClienteActual,
-        productos: productosEnVenta,
-        total: totalVenta,
+        idCliente: idCliente,
+        productos: productos,
         metodoPago: metodoPagoSeleccionado,
-        fecha: new Date().toISOString(),
-        empleado: document.getElementById('empleadoNombre').textContent
+        efectivoRecibido: efectivoRecibido,
+        cambio: cambio
     };
 
-    console.log('💾 Guardando venta en BD:', datosVenta);
+    console.log('💾 Guardando venta:', datosVenta);
 
-    // Aquí conectarás con tu backend PHP
-    /*
-    fetch('api/guardar-venta.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(datosVenta)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('✅ Venta registrada exitosamente');
+    try {
+        const response = await fetch(URL_BASE + 'registrarVenta.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosVenta)
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.success) {
+            alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}`);
+
             // Limpiar carrito
             productosEnVenta = [];
             actualizarTablaVenta();
             actualizarTotal();
+
+            // Resetear cliente
+            if (tipoClienteActual === 'mayorista') {
+                limpiarResultadosClientes();
+            }
         } else {
-            alert('❌ Error al guardar la venta');
+            alert('❌ Error: ' + resultado.error);
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('❌ Error de conexión con el servidor');
-    });
-    */
+    } catch (error) {
+        console.error('❌ Error:', error);
+        alert('Error al registrar la venta');
+    }
+}
 
-    // Por ahora, solo simulamos
-    alert('✅ Venta registrada exitosamente!\n\nTicket generado en nueva ventana');
-
-    // Limpiar carrito
-    productosEnVenta = [];
-    actualizarTablaVenta();
-    actualizarTotal();
+// Función helper para limpiar resultados de clientes
+function limpiarResultadosClientes() {
+    document.getElementById('inputTelefono').value = '';
+    document.getElementById('inputNombreCompleto').value = '';
+    document.getElementById('inputAcciones').value = '';
+    window.clienteSeleccionado = null;
 }
 
 // ============================================
