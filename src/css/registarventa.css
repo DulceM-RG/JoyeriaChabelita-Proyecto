@@ -1117,3 +1117,78 @@ body {
         flex-direction: column;
     }
 }
+
+/* ==================== TABLA DE CLIENTES ==================== */
+.tabla-clientes-container {
+    margin-top: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #D4CFC4;
+    border-radius: 8px;
+    background: white;
+}
+
+.tabla-clientes {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-clientes thead {
+    background: #6B5D4F;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.tabla-clientes th {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.tabla-clientes tbody tr {
+    border-bottom: 1px solid #E8E4DD;
+    transition: background-color 0.2s;
+}
+
+.tabla-clientes tbody tr:hover {
+    background-color: #F5F2ED;
+}
+
+.tabla-clientes td {
+    padding: 12px;
+    font-size: 14px;
+    color: #333;
+}
+
+.btn-seleccionar-cliente {
+    background: #A89075;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-seleccionar-cliente:hover {
+    background: #8B7760;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-seleccionar-cliente:active {
+    transform: translateY(0);
+}
+
+/* Mensaje cuando no hay resultados */
+.sin-resultados {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}
