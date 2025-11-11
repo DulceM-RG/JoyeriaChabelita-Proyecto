@@ -4,8 +4,8 @@ const URL_BASE = "http://localhost/JoyeriaChabelita-Proyecto/src/database/";
 
 // 🎯 MAPEO DE RUTAS POR PUESTO
 const RUTAS_POR_PUESTO = {
-  gerente: "credenciales.html",
-  venta: "./pages/dashboard-venta.html",
+  gerente: "menuAdministracion.html",
+  venta: "menuVentas.html",
   almacen: "./pages/dashboard-almacen.html",
   contador: "./pages/dashboard-contador.html",
 };
