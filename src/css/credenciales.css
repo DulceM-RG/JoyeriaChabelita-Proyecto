@@ -70,6 +70,39 @@ body {
     height: auto;
 }
 
+
+/* ===== BOTÓN MENÚ (parte superior derecha) ===== */
+.salir-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 40px 0 0;
+}
+
+.btn-salir {
+    background-color: #b8903b;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-salir:hover {
+    background-color: #a67d2f;
+}
+
+.icono-salir {
+    width: 18px;
+    height: 18px;
+}
+
 /* ===== PÁGINA DE CREDENCIALES ===== */
 
 .credenciales-container {

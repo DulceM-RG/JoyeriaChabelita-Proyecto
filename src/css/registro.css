@@ -38,13 +38,39 @@ body {
     background-repeat: no-repeat;
 }
 
+/* ===== BOTÓN SALIR (parte superior derecha) ===== */
+.salir-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 40px 0 0;
+}
+
+.btn-salir {
+    background-color: #b8903b;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-salir:hover {
+    background-color: #a67d2f;
+}
+
+.icono-salir {
+    width: 18px;
+    height: 18px;
+}
 
 
-/* Dimensiones recomendadas para imagen de header:
-   - Desktop: 1920px x 200px
-   - Tablet: 1024px x 200px
-   - Mobile: 768px x 200px
-*/
 
 /* ===== BODY/CONTENIDO PRINCIPAL ===== */
 
@@ -106,10 +132,10 @@ body {
     margin: 0 auto;
 }
 
-/*TITULO DE REGISTRP*/
+/*TITULO DE REGISTRO*/
 .form-title {
     color: #B58D43;
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
     text-align: center;
     margin-bottom: 10px;
