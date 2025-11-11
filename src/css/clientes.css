@@ -1,0 +1,228 @@
+/* Reset y base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+.header {
+    width: 100%;
+    height: 80px;
+    overflow: hidden;
+}
+
+.header-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.9);
+}
+
+/* MAIN CONTENT */
+.main-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 40px auto 40px auto;
+    padding: 0 20px;
+}
+
+.clientes-container {
+    width: 100%;
+}
+
+.page-title {
+    color: #b18212;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* TABLA */
+.table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.clientes-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.clientes-table thead {
+    background-color: #dbc16a;
+}
+
+.clientes-table thead th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    color: #4f3f0d;
+    border-right: 1px solid #bda95f;
+    text-transform: none;
+}
+
+.clientes-table thead th:last-child {
+    border-right: none;
+}
+
+.clientes-table tbody td {
+    border: 1px solid #ccc;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #444;
+}
+
+.clientes-table tbody tr td {
+    border-right: 1px solid #ccc;
+}
+
+.clientes-table tbody tr td:last-child {
+    border-right: none;
+}
+
+/* FOOTER */
+.footer {
+    width: 100%;
+    margin-top: auto;
+}
+
+.footer-image {
+    width: 100%;
+    height: 70px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.7);
+}
+
+.footer-bar {
+    width: 100%;
+    background-color: #1a1a1a;
+    padding: 10px 0;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.footer-logo {
+    color: #c8a857;
+    font-family: 'Brush Script MT', cursive;
+    font-size: 28px;
+    font-weight: 400;
+    user-select: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .clientes-table {
+        min-width: 100%;
+    }
+
+    .main-content {
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        height: 60px;
+    }
+
+    .footer-image {
+        height: 50px;
+    }
+
+    .footer-logo {
+        font-size: 22px;
+    }
+}
+
+/* ESTILOS PARA BOTONES DE ACCIÓN */
+.celda-acciones {
+    text-align: center;
+    min-width: 120px;
+}
+
+.botones-accion {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-editar,
+.btn-eliminar,
+.btn-guardar,
+.btn-cancelar {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.btn-editar:hover,
+.btn-eliminar:hover,
+.btn-guardar:hover,
+.btn-cancelar:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+}
+
+.btn-editar img,
+.btn-eliminar img,
+.btn-guardar img,
+.btn-cancelar img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+/* ESTILOS PARA MODO EDICIÓN */
+.modo-edicion {
+    background-color: #fff9e6 !important;
+}
+
+.input-editar {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid #b18212;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.input-editar:focus {
+    outline: none;
+    border-color: #dbc16a;
+    box-shadow: 0 0 0 2px rgba(219, 193, 106, 0.2);
+}

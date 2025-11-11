@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vista de Clientes Mayoristas - Joyería Chabelita</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="src/assets/image/chabelitanegro.png" type="image/x-icon" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="src/css/clientes.css" />
+</head>
+
+<body>
+  <header class="header">
+        <div class="header-image" style="background-image: url('src/assets/image/header.png');"></div>
+    </header>
+    
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="clientes-container">
+            <h1 class="page-title">VISTA DE CLIENTES MAYORISTAS</h1>
+            <div class="table-wrapper">
+                <table class="clientes-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido Paterno</th>
+                            <th>Apellido Materno</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyClientes">
+                        <!-- Filas agregadas por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-image" style="background-image: url('src/assets/image/header.png');"></div>
+        <div class="footer-bar">
+            <div class="footer-content">
+                <img src="src/assets/image/dorado.png" alt="Logo Joyería Chabelita" class="footer-logo">
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="src/js/dataFormClientesMayoristas.js"></script>
+</body>
+
+</html>
