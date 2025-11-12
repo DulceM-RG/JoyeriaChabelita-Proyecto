@@ -4,8 +4,8 @@ const URL_BASE = "http://localhost/JoyeriaChabelita-Proyecto/src/database/";
 
 // 🎯 MAPEO DE RUTAS POR PUESTO
 const RUTAS_POR_PUESTO = {
-  gerente: "credenciales.html",
-  venta: "./pages/dashboard-venta.html",
+  gerente: "menuAdministracion.html",
+  venta: "menuVentas.html",
   almacen: "./pages/dashboard-almacen.html",
   contador: "./pages/dashboard-contador.html",
 };
@@ -14,9 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   const inputIdControl = document.getElementById("txtIdControl");
   const inputContrasena = document.getElementById("txtContrasena");
-
-  // Verificar si ya hay sesión activa
-  verificarSesionActiva();
 
   if (loginForm) {
     loginForm.addEventListener("submit", async function (e) {
@@ -68,10 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // ✅ LOGIN EXITOSO
             console.log("✅ Login exitoso. Puesto:", resultado.usuario.puesto);
 
-            // Guardar sesión en localStorage
-            guardarSesion(resultado.usuario);
-
-            // Redirigir según el puesto
+            // NO GUARDAR SESIÓN - Solo redirigir
             redirigirSegunPuesto(resultado.usuario.puesto);
           } else {
             // ❌ ERROR DE LOGIN
@@ -98,47 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-
-// 🔐 Guardar sesión en localStorage
-function guardarSesion(usuario) {
-  const sesion = {
-    idControl: usuario.idControl,
-    idEmpleado: usuario.idEmpleado,
-    nombre: usuario.nombre,
-    apellidoPaterno: usuario.apellidoPaterno,
-    apellidoMaterno: usuario.apellidoMaterno,
-    nombreCompleto: usuario.nombreCompleto,
-    puesto: usuario.puesto,
-    idPuesto: usuario.idPuesto,
-    fechaLogin: new Date().toISOString(),
-  };
-
-  localStorage.setItem("sesionUsuario", JSON.stringify(sesion));
-  console.log("💾 Sesión guardada:", sesion);
-}
-
-// 🔍 Verificar si ya hay sesión activa
-function verificarSesionActiva() {
-  const sesion = obtenerSesion();
-
-  if (sesion && sesion.puesto) {
-    console.log("🔍 Sesión activa detectada. Redirigiendo...");
-    redirigirSegunPuesto(sesion.puesto);
-  }
-}
-
-// 📖 Obtener sesión actual
-function obtenerSesion() {
-  const sesionJSON = localStorage.getItem("sesionUsuario");
-  return sesionJSON ? JSON.parse(sesionJSON) : null;
-}
-
-// 🚪 Cerrar sesión
-function cerrarSesion() {
-  localStorage.removeItem("sesionUsuario");
-  console.log("🚪 Sesión cerrada");
-  window.location.href = "./login.html";
-}
 
 // 🎯 Redirigir según el puesto
 function redirigirSegunPuesto(puesto) {
@@ -172,7 +125,3 @@ function mostrarExito(mensaje) {
   alert("✅ " + mensaje);
   console.log("Éxito:", mensaje);
 }
-
-// 🔒 Exportar funciones para uso global
-window.cerrarSesion = cerrarSesion;
-window.obtenerSesion = obtenerSesion;

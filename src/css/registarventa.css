@@ -1,0 +1,1194 @@
+/* ===== ESTRUCTURA BASE (HEADER, BODY, FOOTER) ===== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.container {
+    max-width: 1000px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+/* ===== HEADER GENERAL ===== */
+.header {
+    width: 100%;
+    /* height: 30px; */
+    margin-bottom: 30px;
+}
+
+.header-image {
+    width: 100%;
+    height: 30px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.header-content-bar {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+
+    /* Configuración Flexbox para alinear IZQUIERDA | DERECHA */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left-group {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    /* Espacio entre Nombre del empleado y Fecha/Hora */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+    font-size: 14px;
+}
+
+.fecha-hora {
+    color: #333;
+    font-size: 14px;
+    /* Aseguramos que el texto fluya normalmente */
+    white-space: nowrap;
+}
+
+#fechaHora {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.btn-salir {
+    background-color: #C4A052;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-salir:hover {
+    background-color: #B39048;
+}
+
+/* Título */
+.titulo {
+    text-align: center;
+    color: #B58D43;
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+    width: 100%;
+}
+
+/* TODO ANTES DE AQUÍ ESTA BIEN NO MOVER NI CAMBIAR NADA*/
+.cliente-section {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.section-title {
+    color: #6B5D4F;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    padding-left: 12px;
+    border-left: 4px solid #C4A052;
+    width: 100%;
+}
+
+.tipo-cliente {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 15px;
+    width: 100%;
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-small {
+    width: 16px;
+    height: 16px;
+}
+
+/* Botones de Tipo - SIN PRESELECCIÓN */
+.tipo-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.btn-tipo {
+    background-color: #E8E4DD;
+    color: #6B5D4F;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-tipo:hover {
+    background-color: #DDD9D0;
+}
+
+/* SOLO cuando se hace clic se activa */
+.btn-tipo.active {
+    background-color: #C4A052;
+    color: white;
+}
+
+/* Acordeones */
+.acordeon {
+    display: none;
+    margin-top: 20px;
+    animation: slideDown 0.3s ease-out;
+    width: 100%;
+}
+
+.acordeon.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cliente-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* Buscar Container */
+.buscar-container {
+    background-color: #F5F3EE;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+/* IMPORTANTE: Wrapper para alinear input y botón */
+.buscar-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#inputBuscar {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #D4CFC4;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* BOTÓN BUSCAR - Alineado a la derecha del input */
+.btn-buscar {
+    background-color: #C4A052;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    /* No se encoge */
+}
+
+.btn-buscar:hover {
+    background-color: #B39048;
+}
+
+/* Inputs de la tabla (Teléfono, Nombre Completo, Acciones) */
+.buscar-inputs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.buscar-inputs input {
+    padding: 10px;
+    border: 1px solid #D4CFC4;
+    border-radius: 6px;
+    font-size: 13px;
+    background-color: white;
+}
+
+.btn-seleccionar {
+    background-color: #C4A052;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    transition: background-color 0.3s;
+}
+
+.btn-seleccionar:hover {
+    background-color: #B39048;
+}
+
+.btn-nuevo-cliente {
+    background-color: #C4A052;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.btn-nuevo-cliente:hover {
+    background-color: #B39048;
+}
+
+/* Formulario Nuevo Cliente */
+.acordeon-nuevo {
+    background-color: #FFF8E8;
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 15px;
+    width: 100%;
+}
+
+.nuevo-cliente-form {
+    width: 100%;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: white;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #E8E4DD;
+}
+
+.form-group input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    color: #333;
+}
+
+.form-group input::placeholder {
+    color: #999;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-form {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-guardar {
+    background-color: #C4A052;
+    color: white;
+}
+
+.btn-guardar:hover {
+    background-color: #B39048;
+}
+
+.btn-cancelar {
+    background-color: #E8E4DD;
+    color: #6B5D4F;
+}
+
+.btn-cancelar:hover {
+    background-color: #DDD9D0;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    width: 100%;
+    margin-top: auto;
+}
+
+.footer-image {
+    width: 100%;
+    height: 20px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.footer-bar {
+    width: 100%;
+    background-color: #1a1a1a;
+    padding: 5px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.footer-logo {
+    max-width: 150px;
+    height: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tipo-buttons {
+        flex-direction: column;
+    }
+
+    .btn-tipo {
+        width: 100%;
+    }
+
+    .buscar-inputs {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .titulo {
+        font-size: 28px;
+    }
+
+    .buscar-wrapper {
+        flex-direction: column;
+    }
+
+    .btn-buscar {
+        width: 100%;
+    }
+
+
+}
+
+/* ========================================================
+   SECCIÓN: SELECCIONAR JOYA
+   ======================================================== */
+/* ========================================================
+   SECCIÓN: SELECCIONAR JOYA
+   ======================================================== */
+
+.joya-section {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Buscador de joyas */
+.buscar-joya-container {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.input-codigo-joya {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #D4CFC4;
+    border-radius: 6px;
+    font-size: 14px;
+    background-color: #F5F3EE;
+}
+
+.input-codigo-joya:focus {
+    outline: none;
+    border-color: #C4A052;
+    background-color: #ffffff;
+}
+
+.btn-buscar-joya {
+    background-color: #C4A052;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.btn-buscar-joya:hover {
+    background-color: #B39048;
+}
+
+/* Tabla de resultados de búsqueda */
+.tabla-resultados-container {
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #F5F3EE;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.tabla-resultados-wrapper {
+    overflow-x: auto;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.tabla-resultados {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.tabla-resultados thead {
+    background-color: #E8E4DD;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.tabla-resultados th {
+    padding: 12px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6B5D4F;
+    border-bottom: 2px solid #D4CFC4;
+}
+
+.tabla-resultados td {
+    padding: 12px;
+    font-size: 13px;
+    color: #333;
+    border-bottom: 1px solid #F5F3EE;
+}
+
+.tabla-resultados tbody tr:hover {
+    background-color: #FAFAF8;
+}
+
+.btn-agregar-producto {
+    background-color: #C4A052;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.btn-agregar-producto:hover {
+    background-color: #B39048;
+}
+
+/* ========================================================
+   SECCIÓN: PRODUCTOS EN LA VENTA
+   ======================================================== */
+
+.productos-venta-section {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* Tabla de productos en venta */
+.tabla-productos-venta-wrapper {
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #F5F3EE;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.tabla-productos-venta {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.tabla-productos-venta thead {
+    background-color: #E8E4DD;
+}
+
+.tabla-productos-venta th {
+    padding: 12px;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6B5D4F;
+    border-bottom: 2px solid #D4CFC4;
+}
+
+.tabla-productos-venta td {
+    padding: 12px;
+    font-size: 13px;
+    color: #333;
+    border-bottom: 1px solid #F5F3EE;
+}
+
+.sin-productos {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 30px !important;
+}
+
+/* Contenedor de cantidad (botones + - y número) */
+.cantidad-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-cantidad {
+    background-color: #C4A052;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.btn-cantidad:hover {
+    background-color: #B39048;
+}
+
+.btn-cantidad:disabled {
+    background-color: #D4CFC4;
+    cursor: not-allowed;
+}
+
+.cantidad-numero {
+    min-width: 40px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Botón eliminar producto */
+.btn-eliminar-producto {
+    background-color: #D32F2F;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-eliminar-producto:hover {
+    background-color: #C62828;
+}
+
+/* Total */
+.total-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    padding: 20px;
+    background-color: #F5F3EE;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.total-label {
+    font-size: 20px;
+    font-weight: 600;
+    color: #6B5D4F;
+}
+
+.total-monto {
+    font-size: 24px;
+    font-weight: 700;
+    color: #C4A052;
+}
+
+/* Botón Cobrar Venta */
+.btn-cobrar-venta {
+    background-color: #C4A052;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    width: 100%;
+    transition: background-color 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-cobrar-venta:hover {
+    background-color: #B39048;
+}
+
+.btn-cobrar-venta:disabled {
+    background-color: #D4CFC4;
+    cursor: not-allowed;
+}
+
+/* Scrollbar personalizado para tablas */
+.tabla-resultados-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.tabla-resultados-wrapper::-webkit-scrollbar-track {
+    background: #F5F3EE;
+    border-radius: 4px;
+}
+
+.tabla-resultados-wrapper::-webkit-scrollbar-thumb {
+    background: #C4A052;
+    border-radius: 4px;
+}
+
+.tabla-resultados-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #B39048;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .buscar-joya-container {
+        flex-direction: column;
+    }
+
+    .btn-buscar-joya {
+        width: 100%;
+    }
+
+    .tabla-resultados-wrapper,
+    .tabla-productos-venta-wrapper {
+        overflow-x: auto;
+    }
+
+    .total-container {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+}
+
+/* ========================================================
+   MODAL: COBRAR VENTA
+   ======================================================== */
+
+/* ========================================================
+   MODAL: COBRAR VENTA
+   ======================================================== */
+
+/* Overlay del modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Contenedor del modal */
+.modal-cobrar {
+    background-color: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    /* ← AGREGAR: Altura máxima del 90% de la pantalla */
+    display: flex;
+    /* ← AGREGAR */
+    flex-direction: column;
+    /* ← AGREGAR */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Header del modal */
+.modal-header {
+    background-color: #C4A052;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.modal-close:hover {
+    transform: scale(1.2);
+}
+
+/* Body del modal */
+.modal-body {
+    padding: 25px;
+    overflow-y: auto;
+    /* ← AGREGAR: Scroll vertical cuando sea necesario */
+    flex: 1;
+    /* ← AGREGAR: Ocupa el espacio disponible */
+}
+
+/* Resumen de la venta */
+.resumen-venta {
+    background-color: #F5F3EE;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+}
+
+.resumen-venta h3 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #6B5D4F;
+    font-weight: 600;
+    text-align: center;
+}
+
+.resumen-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #E8E4DD;
+}
+
+.resumen-item:last-child {
+    border-bottom: none;
+}
+
+.resumen-label {
+    font-weight: 500;
+    color: #6B5D4F;
+}
+
+.resumen-valor {
+    font-weight: 600;
+    color: #333;
+}
+
+.total-item {
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px solid #C4A052;
+}
+
+.total-valor {
+    font-size: 20px;
+    color: #C4A052;
+    font-weight: 700;
+}
+
+/* Método de pago */
+.metodo-pago-section {
+    margin-bottom: 25px;
+}
+
+.metodo-pago-section h3 {
+    font-size: 16px;
+    color: #6B5D4F;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.metodos-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.metodo-btn {
+    background-color: #F5F3EE;
+    border: 2px solid #E8E4DD;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.metodo-btn:hover {
+    background-color: #E8E4DD;
+    transform: translateY(-2px);
+}
+
+.metodo-btn.selected {
+    background-color: #C4A052;
+    border-color: #C4A052;
+    color: white;
+}
+
+.metodo-icon {
+    font-size: 40px;
+}
+
+.metodo-btn span {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.metodo-btn.selected span {
+    color: white;
+}
+
+/* Efectivo recibido */
+.efectivo-section {
+    margin-bottom: 20px;
+}
+
+.input-label {
+    display: block;
+    font-weight: 600;
+    color: #6B5D4F;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.input-efectivo {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #E8E4DD;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    transition: border-color 0.3s;
+}
+
+.input-efectivo:focus {
+    outline: none;
+    border-color: #C4A052;
+}
+
+/* Cambio */
+.cambio-section {
+    margin-bottom: 20px;
+}
+
+.cambio-display {
+    background-color: #FFF8E8;
+    border: 2px solid #C4A052;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cambio-label {
+    font-weight: 600;
+    color: #6B5D4F;
+}
+
+.cambio-monto {
+    font-size: 22px;
+    font-weight: 700;
+    color: #C4A052;
+}
+
+/* Footer del modal */
+.modal-footer {
+    background-color: #F5F3EE;
+    padding: 20px;
+    display: flex;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.btn-modal {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-cancelar-modal {
+    background-color: #D32F2F;
+    color: white;
+}
+
+.btn-cancelar-modal:hover {
+    background-color: #C62828;
+}
+
+.btn-confirmar-modal {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-confirmar-modal:hover {
+    background-color: #45A049;
+}
+
+.btn-confirmar-modal:disabled {
+    background-color: #D4CFC4;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modal-cobrar {
+        width: 95%;
+        max-width: none;
+    }
+
+    .metodos-container {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+}
+
+/* ==================== TABLA DE CLIENTES ==================== */
+.tabla-clientes-container {
+    margin-top: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #D4CFC4;
+    border-radius: 8px;
+    background: white;
+}
+
+.tabla-clientes {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-clientes thead {
+    background: #6B5D4F;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.tabla-clientes th {
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.tabla-clientes tbody tr {
+    border-bottom: 1px solid #E8E4DD;
+    transition: background-color 0.2s;
+}
+
+.tabla-clientes tbody tr:hover {
+    background-color: #F5F2ED;
+}
+
+.tabla-clientes td {
+    padding: 12px;
+    font-size: 14px;
+    color: #333;
+}
+
+.btn-seleccionar-cliente {
+    background: #A89075;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-seleccionar-cliente:hover {
+    background: #8B7760;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-seleccionar-cliente:active {
+    transform: translateY(0);
+}
+
+/* Mensaje cuando no hay resultados */
+.sin-resultados {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}

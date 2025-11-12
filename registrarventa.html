@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credenciales de Usuarios - Joyería Chabelita</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="src/assets/image/chabelitanegro.png" type="image/x-icon">
+
+    <!-- CSS - Ruta relativa sin barra inicial -->
+    <link rel="stylesheet" href="src/css/registarventa.css">
+</head>
+
+<body>
+    <!-- ========== HEADER (NO MOVER AQUI)========== -->
+    <header class="header">
+        <div class="header-image" style="background-image: url('src/assets/image/header.png');"></div>
+        <!-- ========== CUERPO NO MOVER AQUI ========== -->
+        <div class="header-content-bar">
+
+            <div class="header-left-group">
+                <div class="user-info">
+                    <img src="src/assets/icon/iconUsuario.png" alt="Ícono de Perfil" class="icon" width="20"
+                        height="20">
+                    <span id="empleadoNombre">Nombre completo del empleado</span>
+                </div>
+
+                <div class="fecha-hora">
+                    <span id="fechaHora">Fecha y hora del sistema: 09/11/2025 14:20:47</span>
+                </div>
+            </div>
+            <button class="btn-salir" onclick="window.location.href='menuVentas.html'">
+                <img src="src/assets/icon/menu-principal.png" alt="Ícono Salir" width="20" height="20">
+                Menu
+            </button>
+
+        </div>
+    </header>
+    <!-- Título -->
+    <h1 class="titulo">REGISTRAR VENTA</h1>
+    <!-- ========== CLIENTES YA SE PUEDE CAMBIAR AQUI ========== -->
+    <div class="container">
+
+        <div class="cliente-section">
+            <h2 class="section-title">Cliente</h2>
+
+            <!-- Tipo Cliente -->
+            <div class="tipo-cliente">
+                <svg class="icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                        d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z"
+                        fill="#6B5D4F" />
+                    <path
+                        d="M10 12.5C5.16667 12.5 1.25 14.6667 1.25 17.5V20H18.75V17.5C18.75 14.6667 14.8333 12.5 10 12.5Z"
+                        fill="#6B5D4F" />
+                </svg>
+                <span>Tipo Cliente</span>
+            </div>
+
+            <div class="tipo-buttons">
+                <button class="btn-tipo" id="btnPublico">Público general</button>
+                <button class="btn-tipo" id="btnMayorista">Mayorista</button>
+            </div>
+
+            <!-- Acordeón Buscar Cliente (Solo visible con Mayorista) -->
+            <div class="acordeon" id="acordeonBuscar">
+                <div class="cliente-label">
+                    <svg class="icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path
+                            d="M10 10C12.7614 10 15 7.76142 15 5C15 2.23858 12.7614 0 10 0C7.23858 0 5 2.23858 5 5C5 7.76142 7.23858 10 10 10Z"
+                            fill="#6B5D4F" />
+                        <path
+                            d="M10 12.5C5.16667 12.5 1.25 14.6667 1.25 17.5V20H18.75V17.5C18.75 14.6667 14.8333 12.5 10 12.5Z"
+                            fill="#6B5D4F" />
+                    </svg>
+                    <span>Cliente</span>
+                </div>
+
+                <div class="buscar-container">
+                    <div class="buscar-wrapper">
+                        <input type="text" placeholder="Buscar cliente por teléfono o nombre" id="inputBuscar">
+                        <button class="btn-buscar">Buscar</button>
+                    </div>
+
+                    <!-- 🔹 NUEVA TABLA DE RESULTADOS -->
+                    <div class="tabla-clientes-container" id="tablaClientesContainer" style="display: none;">
+                        <table class="tabla-clientes">
+                            <thead>
+                                <tr>
+                                    <th>Teléfono</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaClientesBody">
+                                <!-- Se llenará dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+
+                <button class="btn-nuevo-cliente" id="btnNuevoCliente">Nuevo cliente</button>
+            </div>
+
+            <!-- Acordeón Nuevo Cliente -->
+            <div class="acordeon acordeon-nuevo" id="acordeonNuevo">
+                <div class="nuevo-cliente-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <svg class="icon-small" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M8 8C10.2091 8 12 6.20914 12 4C12 1.79086 10.2091 0 8 0C5.79086 0 4 1.79086 4 4C4 6.20914 5.79086 8 8 8Z"
+                                    fill="#6B5D4F" />
+                                <path d="M8 10C3.33333 10 1 11.7333 1 14V16H15V14C15 11.7333 12.6667 10 8 10Z"
+                                    fill="#6B5D4F" />
+                            </svg>
+                            <input type="text" placeholder="Nombre" id="nuevoNombre">
+                        </div>
+                        <div class="form-group">
+                            <svg class="icon-small" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M8 8C10.2091 8 12 6.20914 12 4C12 1.79086 10.2091 0 8 0C5.79086 0 4 1.79086 4 4C4 6.20914 5.79086 8 8 8Z"
+                                    fill="#6B5D4F" />
+                                <path d="M8 10C3.33333 10 1 11.7333 1 14V16H15V14C15 11.7333 12.6667 10 8 10Z"
+                                    fill="#6B5D4F" />
+                            </svg>
+                            <input type="text" placeholder="Apellido Paterno" id="nuevoApellidoP">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <svg class="icon-small" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path
+                                    d="M8 8C10.2091 8 12 6.20914 12 4C12 1.79086 10.2091 0 8 0C5.79086 0 4 1.79086 4 4C4 6.20914 5.79086 8 8 8Z"
+                                    fill="#6B5D4F" />
+                                <path d="M8 10C3.33333 10 1 11.7333 1 14V16H15V14C15 11.7333 12.6667 10 8 10Z"
+                                    fill="#6B5D4F" />
+                            </svg>
+                            <input type="text" placeholder="Apellido Materno" id="nuevoApellidoM">
+                        </div>
+                        <div class="form-group">
+                            <svg class="icon-small" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M2 2H14V14H2V2Z" stroke="#6B5D4F" stroke-width="1.5" fill="none" />
+                                <path d="M4 6H12M4 10H12" stroke="#6B5D4F" stroke-width="1.5" />
+                            </svg>
+
+                            <!--  <input type="text" placeholder="Número de teléfono" id="nuevoTelefono">  -->
+                            <input type="tel" placeholder="Número de teléfono" id="nuevoTelefono" pattern="[0-9]{10}"
+                                maxlength="10" minlength="10" title="Debe ingresar exactamente 10 dígitos numéricos"
+                                inputmode="numeric" autocomplete="tel">
+                        </div>
+                    </div>
+                    <div class="form-buttons">
+                        <button class="btn-form btn-guardar">Guardar cliente</button>
+                        <button class="btn-form btn-cancelar">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== SECCIÓN: SELECCIONAR JOYA ========== -->
+        <div class="joya-section">
+            <h2 class="section-title">Seleccionar Joya</h2>
+
+            <!-- Buscador de joyas -->
+            <div class="buscar-joya-container">
+                <input type="text" placeholder="Ingresar código de la joya" id="inputCodigoJoya"
+                    class="input-codigo-joya">
+                <button class="btn-buscar-joya" id="btnBuscarJoya">Buscar</button>
+            </div>
+
+            <!-- Tabla de resultados de búsqueda -->
+            <div class="tabla-resultados-container" id="tablaResultadosContainer" style="display: none;">
+                <div class="tabla-resultados-wrapper">
+                    <table class="tabla-resultados" id="tablaResultados">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Categoría</th>
+                                <th>Descripción</th>
+                                <th>Stock disponible</th>
+                                <th>Precio Unitario</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaResultadosBody">
+                            <!-- Se llenará dinámicamente con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== PRODUCTOS EN LA VENTA ========== -->
+        <div class="productos-venta-section">
+            <h2 class="section-title">Productos en la venta</h2>
+
+            <!-- Tabla de productos seleccionados -->
+            <div class="tabla-productos-venta-wrapper">
+                <table class="tabla-productos-venta">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Categoría</th>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Subtotal</th>
+                            <th>Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaProductosVentaBody">
+
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Total -->
+            <div class="total-container">
+                <span class="total-label">Total:</span>
+                <span class="total-monto" id="totalMonto">$0.0</span>
+            </div>
+
+            <!-- Botón Cobrar Venta -->
+            <button class="btn-cobrar-venta" id="btnCobrarVenta">
+                COBRAR VENTA
+            </button>
+        </div>
+
+    </div> <!-- Cierre de container -->
+
+
+    <!-- Modal Overlay DE COBRAR-->
+    <div class="modal-overlay" id="modalCobrarVenta">
+        <div class="modal-cobrar">
+            <!-- Header del Modal -->
+            <div class="modal-header">
+                <h2>Cobrar venta</h2>
+                <button class="modal-close" id="btnCerrarModal">&times;</button>
+            </div>
+
+            <!-- Contenido del Modal -->
+            <div class="modal-body">
+                <!-- Resumen de la Venta -->
+                <div class="resumen-venta">
+                    <h3>Resumen de la Venta</h3>
+                    <div class="resumen-item">
+                        <span class="resumen-label">Cliente:</span>
+                        <span class="resumen-valor" id="modalCliente">Público</span>
+                    </div>
+                    <div class="resumen-item">
+                        <span class="resumen-label">Productos:</span>
+                        <span class="resumen-valor" id="modalProductos">0</span>
+                    </div>
+                    <div class="resumen-item total-item">
+                        <span class="resumen-label">Total a cobrar:</span>
+                        <span class="resumen-valor total-valor" id="modalTotal">$0.0</span>
+                    </div>
+                </div>
+
+                <!-- Método de Pago -->
+                <div class="metodo-pago-section">
+                    <h3>Método de pago</h3>
+                    <div class="metodos-container">
+                        <button class="metodo-btn" id="btnEfectivo" onclick="seleccionarMetodo('efectivo')">
+                            <div class="metodo-icon">💵</div>
+                            <span>Efectivo</span>
+                        </button>
+                        <button class="metodo-btn" id="btnTarjeta" onclick="seleccionarMetodo('tarjeta')">
+                            <div class="metodo-icon">💳</div>
+                            <span>Tarjeta</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Efectivo Recibido (Solo visible con efectivo) -->
+                <div class="efectivo-section" id="efectivoSection" style="display: none;">
+                    <label for="inputEfectivoRecibido" class="input-label">Efectivo recibido:</label>
+                    <input type="text" id="inputEfectivoRecibido" class="input-efectivo" placeholder="$0.00"
+                        inputmode="decimal">
+                </div>
+
+                <!-- Cambio (Solo visible con efectivo) -->
+                <div class="cambio-section" id="cambioSection" style="display: none;">
+                    <div class="cambio-display">
+                        <span class="cambio-label">Cambio de devolver:</span>
+                        <span class="cambio-monto" id="cambioMonto">$0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer del Modal -->
+            <div class="modal-footer">
+                <button class="btn-modal btn-cancelar-modal" id="btnCancelarModal">
+                    Cancelar
+                </button>
+                <button class="btn-modal btn-confirmar-modal" id="btnConfirmarVenta">
+                    Confirmar pago y generar ticket
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="footer-image" style="background-image: url('src/assets/image/header.png');"></div>
+        <div class="footer-bar">
+            <div class="footer-content">
+                <img src="src/assets/image/dorado.png" alt="Logo Joyería Chabelita" class="footer-logo">
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========== JAVASCRIPT ========== -->
+    <!-- Script principal con módulos ES6 -->
+    <script type="module" src="src/js/registrarventa.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Corte de Caja - Joyería Chabelita</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="src/assets/image/chabelitanegro.png" type="image/x-icon" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="src/css/corteCaja.css" />
+</head>
+
+<body>
+
+    <!-- Encabezado con imagen -->
+    <header class="header">
+        <div class="header-image" style="background-image: url('src/assets/image/header.png');"></div>
+
+    </header>
+    <div class="salir-container">
+        <button class="btn-salir" onclick="window.location.href='menuAdministracion.html'">
+            <img src="src/assets/icon/menu-principal.png" alt="Ícono Salir" width="20" height="20">
+            Menu
+        </button>
+
+    </div>
+
+    <h1 class="title">CORTE DE CAJA</h1>
+    <!-- Selector de fecha -->
+    <section class="selector-fecha">
+        <label for="fechaCorte">Seleccionar fecha:</label>
+        <input type="date" id="fechaCorte" />
+        <button class="btn btn-buscar" id="btnBuscar">Buscar</button>
+    </section>
+
+    <!-- Resumen rápido: 3 columnas y 2 filas -->
+    <section class="resumen-caja-grid">
+        <div class="resumen-item">
+            <div class="item-title">Total del día</div>
+            <div class="item-value" id="totalDia">$0</div>
+        </div>
+        <div class="resumen-item">
+            <div class="item-title">Efectivo</div>
+            <div class="item-value" id="efectivo">$0</div>
+        </div>
+        <div class="resumen-item">
+            <div class="item-title">Tarjeta</div>
+            <div class="item-value" id="tarjeta">$0</div>
+        </div>
+        <div class="resumen-item">
+            <div class="item-title">Ventas realizadas</div>
+            <div class="item-value" id="ventasRealizadas">0</div>
+        </div>
+        <div class="resumen-item">
+            <div class="item-title">Productos vendidos</div>
+            <div class="item-value" id="productosVendidos">0</div>
+        </div>
+        <div class="resumen-item">
+            <div class="item-title">Empleados activos</div>
+            <div class="item-value" id="empleadosActivos">0</div>
+        </div>
+    </section>
+
+    <!-- Tabla detalle ventas -->
+    <section class="detalle-ventas">
+        <table>
+            <thead>
+                <tr>
+                    <th>IdVenta</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Productos</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="tablaVentasBody">
+                <!-- Filas generadas con JS -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Botones generar y cerrar -->
+    <section class="acciones-caja">
+        <button class="btn btn-primary" id="btnGenerarReporte">Generar reporte</button>
+        <button class="btn btn-primary" id="btnCerrarDia">Cerrar día</button>
+    </section>
+
+    <!-- Vista previa y descarga del documento -->
+    <section class="vista-previa" id="vistaPrevia" style="display:none;">
+        <p>Vista previa del documento</p>
+        <button class="btn" id="btnCerrarVistaPrevia">Cerrar</button>
+        <button class="btn" id="btnDescargarPDF">Descargar PDF</button>
+    </section>
+
+    <!-- Modal cerrar día -->
+    <div id="modalCerrarDia" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon">⚠️</div>
+            <h2 class="modal-title">¿Cerrar el día?</h2>
+            <p class="modal-text">
+                Esta acción cerrará las operaciones del día y generará el reporte final. No podrás realizar más ventas
+                hasta mañana.
+            </p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" id="btnCancelar">Cancelar</button>
+                <button class="btn btn-primary" id="btnConfirmarCierre">Confirmar cierre</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barra inferior -->
+    <footer class="footer-bar">
+        <div class="footer-content">
+            <span class="footer-text">Chabelita</span>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="src/js/corteCaja.js"></script>
+</body>
+
+</html>

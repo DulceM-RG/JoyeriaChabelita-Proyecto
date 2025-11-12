@@ -1,0 +1,335 @@
+/* ===== ESTRUCTURA BASE (HEADER, BODY, FOOTER) ===== */
+/* ===== ESTRUCTURA BASE (HEADER, BODY, FOOTER) ===== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== HEADER GENERAL ===== */
+.header {
+    width: 100%;
+    /* height: 30px; */
+    margin-bottom: 30px;
+}
+
+
+.header-image {
+    width: 100%;
+    height: 30px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.header-content-bar {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+
+    /* Configuración Flexbox para alinear IZQUIERDA | DERECHA */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left-group {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    /* Espacio entre Nombre del empleado y Fecha/Hora */
+}
+
+
+/* ===== BODY/CONTENIDO PRINCIPAL ===== */
+.main-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+
+/* Botón Salir */
+
+
+
+/* ===== FOOTER ===== */
+.footer {
+    width: 100%;
+    margin-top: auto;
+}
+
+.footer-image {
+    width: 100%;
+    height: 20px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.footer-bar {
+    width: 100%;
+    background-color: #1a1a1a;
+    padding: 5px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.footer-logo {
+    max-width: 150px;
+    height: auto;
+}
+
+/* ===== PÁGINA DE CREDENCIALES ===== */
+
+nav {
+    position: relative;
+    display: block;
+    z-index: 0;
+
+}
+
+section {
+    width: 100%;
+    height: 100;
+}
+
+article {
+    float: left;
+    /*FLOTE A LA IZQUIERDA*/
+    padding: 50px;
+    /*COMO UN MARGEN*/
+    width: 100%;
+    /*OCUPE TODO EL TAMAÑO DE LA PANTALLA CON EL COLO*/
+    background-color: white;
+    /*OLOR DEL CUADRO QUE MIDE 100% DE LA PANTALLA*/
+
+    /* height: ; */
+    .custom-btn {
+        width: 250px;
+        /* Ancho fijo */
+        font-size: 1rem;
+        /* Tamaño del texto */
+        padding: 0.5rem;
+        /* Espaciado interno del botón */
+    }
+}
+
+
+
+
+/* ===== RESPONSIVE ===== */
+
+
+@media (max-width: 768px) {
+    .header-image {
+        height: 25px;
+    }
+
+    .header {
+        height: 25px;
+    }
+
+    .footer-image {
+        height: 15px;
+    }
+
+    .page-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .table-wrapper {
+        border-radius: 4px;
+    }
+
+    .credenciales-table {
+        min-width: 900px;
+    }
+
+
+
+
+    .main-content {
+        padding: 30px 15px;
+    }
+}
+
+
+
+@media (max-width: 480px) {
+    .header-image {
+        height: 20px;
+    }
+
+    .header {
+        height: 20px;
+    }
+
+    .footer-image {
+        height: 12px;
+    }
+
+    .footer-logo {
+        max-width: 120px;
+    }
+
+    .credenciales-container {
+        padding: 15px 10px;
+    }
+
+    .page-title {
+        font-size: 18px;
+    }
+
+    .badge {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+
+    .main-content {
+        padding: 20px 10px;
+    }
+}
+
+
+
+
+/* ===== BOTONES DE ADMINISTRACIÓN (Registrar Empleado / Credenciales) ===== */
+.card {
+    border-radius: 12px;
+    border: 1.5px solid #d1d1d1;
+    text-align: center;
+    padding: 20px 0;
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+/* ESTA REGLA .card-title SE APLICA AL h5, PERO TAMBIÉN 
+SE SOBREESCRIBE MÁS ABAJO. LA DEJAMOS POR SI ACASO.
+*/
+.card-title {
+    font-weight: 600;
+    color: #4a4a4a;
+    text-align: center;
+}
+
+/* Imagen dentro del card */
+/* ESTA REGLA .card-title img SE SOBREESCRIBE MÁS ABAJO.
+LA DEJAMOS POR SI ACASO.
+*/
+.card-title img {
+    width: 80px;
+    /* tamaño del icono */
+    height: 80px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 10px;
+    /* centrado y separación del texto */
+}
+
+/* Botón */
+#cuadrito.btn.btn-primary {
+    background-color: #b8903b;
+    border: none;
+    border-radius: 20px;
+    font-weight: 600;
+    color: #fff;
+    padding: 8px 20px;
+    transition: background-color 0.3s ease;
+}
+
+#cuadrito.btn.btn-primary:hover {
+    background-color: #a67d2f;
+}
+
+
+/* ===== BOTÓN SALIR (parte superior derecha) ===== */
+.salir-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 40px 0 0;
+}
+
+.btn-salir {
+    background-color: #b8903b;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-salir:hover {
+    background-color: #a67d2f;
+}
+
+.icono-salir {
+    width: 18px;
+    height: 18px;
+}
+
+/* ===== TÍTULO MENÚ DE ADMINISTRADOR ===== */
+.titulo-admin {
+    text-align: center;
+    color: #B58D43;
+    font-weight: 700;
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+/* ===== IMÁGENES DE LOS BOTONES Y TÍTULO ESTANDARIZADO (CÓDIGO UNIFICADO) ===== */
+
+/* Estilo base para todas las imágenes dentro del card-title */
+/* Esta es la regla que aplica a la imagen */
+.card-title img {
+    width: 85px;
+    /* tamaño estandarizado */
+    height: 85px;
+    display: block;
+    margin: 10px auto 0;
+    /* Margen superior 10px, CERO margen inferior */
+    object-fit: contain;
+}
+
+/* El título (h5) debajo de la imagen */
+/* Esta es la regla que aplica al h5 que contiene la imagen */
+.card-title {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 600;
+    color: #6c5b3b;
+    /* tono café suave */
+    margin-top: 10px;
+    margin-bottom: 0;
+    /* <-- ESTE ES EL CAMBIO QUE ELIMINA EL ESPACIO */
+}

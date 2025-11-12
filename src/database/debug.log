@@ -1,0 +1,13 @@
+Array
+(
+    [GET] => Array
+        (
+        )
+
+    [POST] => Array
+        (
+        )
+
+    [REQUEST_METHOD] => GET
+    [php_input] => 
+)
