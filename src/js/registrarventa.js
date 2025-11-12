@@ -1,12 +1,5 @@
-// 🔹 AGREGAR AL INICIO DEL ARCHIVO (línea 1)
 const URL_BASE = 'http://localhost/JoyeriaChabelita-Proyecto/src/database/';
-// 🔹 AGREGAR AL INICIO DEL ARCHIVO (línea 1)
-
-// 🔹 REEMPLAZAR la sección "// Función para actualizar la fecha y hora de CDMX"
-// AGREGAR ANTES de actualizarFechaHora():
-
-// ==================== CARGAR DATOS DEL EMPLEADO ====================
-/*let empleadoActual = null;
+let empleadoActual = null;
 
 async function cargarDatosEmpleado() {
     try {
@@ -38,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     actualizarFechaHora();
     setInterval(actualizarFechaHora, 1000);
 });
-*/
+
 // Función para actualizar la fecha y hora de CDMX
 function actualizarFechaHora() {
     const ahora = new Date();
@@ -142,15 +135,34 @@ btnPublico.addEventListener('click', function () {
     btnMayorista.classList.remove('active');
     acordeonBuscar.classList.remove('show');
     acordeonNuevo.classList.remove('show');
+
+    // ⚠️ AGREGAR ESTAS LÍNEAS:
+    window.clienteSeleccionado = {
+        idCliente: 1,
+        nombreCompleto: 'Público General',
+        tipoCliente: 'Publico'
+    };
+    console.log('✅ Cliente: Público General');
 });
 
 // Event listener para el botón Mayorista
+/*btnMayorista.addEventListener('click', function () {
+    tipoClienteActual = 'mayorista';
+    btnMayorista.classList.add('active');
+    btnPublico.classList.remove('active');
+    acordeonBuscar.classList.add('show');
+    acordeonNuevo.classList.remove('show');
+});*/
 btnMayorista.addEventListener('click', function () {
     tipoClienteActual = 'mayorista';
     btnMayorista.classList.add('active');
     btnPublico.classList.remove('active');
     acordeonBuscar.classList.add('show');
     acordeonNuevo.classList.remove('show');
+
+    // ⚠️ AGREGAR ESTAS LÍNEAS:
+    window.clienteSeleccionado = null;
+    limpiarResultadosClientes();
 });
 
 // ============================================
@@ -726,7 +738,7 @@ let totalVenta = 0;
 // ============================================
 // FUNCIÓN: ABRIR MODAL DE COBRAR VENTA
 // ============================================
-function abrirModalCobrar() {
+/*function abrirModalCobrar() {
     if (productosEnVenta.length === 0) {
         alert('⚠️ No hay productos en la venta');
         return;
@@ -753,6 +765,38 @@ function abrirModalCobrar() {
     // Mostrar modal
     modalCobrarVenta.classList.add('show');
     document.body.style.overflow = 'hidden'; // Prevenir scroll
+}*/
+function abrirModalCobrar() {
+    if (productosEnVenta.length === 0) {
+        alert('⚠️ No hay productos en la venta');
+        return;
+    }
+
+    // ⚠️ VALIDAR CLIENTE MAYORISTA
+    if (tipoClienteActual === 'mayorista' && !window.clienteSeleccionado) {
+        alert('⚠️ Por favor, seleccione un cliente mayorista');
+        return;
+    }
+
+    totalVenta = productosEnVenta.reduce((sum, p) => sum + p.subtotal, 0);
+
+    // ⚠️ CAMBIAR: Obtener NOMBRE del cliente
+    let nombreCliente = 'Público General';
+    if (window.clienteSeleccionado) {
+        nombreCliente = window.clienteSeleccionado.nombreCompleto;
+    }
+
+    // Llenar datos del modal
+    modalCliente.textContent = nombreCliente;  // ← AHORA USA EL NOMBRE
+    modalProductos.textContent = productosEnVenta.length;
+    modalTotal.textContent = `$${totalVenta.toLocaleString('es-MX', { minimumFractionDigits: 1 })}`;
+
+    // Resetear formulario
+    resetearModalCobrar();
+
+    // Mostrar modal
+    modalCobrarVenta.classList.add('show');
+    document.body.style.overflow = 'hidden';
 }
 
 // ============================================
@@ -832,7 +876,8 @@ inputEfectivoRecibido.addEventListener('input', function (e) {
 // ============================================
 // FUNCIÓN: CONFIRMAR VENTA Y GENERAR TICKET
 // ============================================
-btnConfirmarVenta.addEventListener('click', function () {
+
+btnConfirmarVenta.addEventListener('click', async function () {
     if (!metodoPagoSeleccionado) {
         alert('⚠️ Por favor, selecciona un método de pago');
         return;
@@ -846,85 +891,96 @@ btnConfirmarVenta.addEventListener('click', function () {
         }
     }
 
-    // Generar ticket
-    generarTicket();
+    // Llamar a guardar venta
+    await guardarVentaBD();
+});
 
-    // Guardar venta en BD (aquí conectarás con tu backend)
+// Guardar venta en BD (aquí conectarás con tu backend)
 
-    async function guardarVentaBD() {
-        // Determinar ID del cliente
-        let idCliente = 1; // Por defecto público
+async function guardarVentaBD() {
+    // Determinar ID del cliente
+    let idCliente = 1;
+    let nombreClienteParaTicket = 'Público General';
 
-        if (tipoClienteActual === 'mayorista' && window.clienteSeleccionado) {
-            idCliente = window.clienteSeleccionado.idCliente;
-        }
+    if (window.clienteSeleccionado) {
+        idCliente = window.clienteSeleccionado.idCliente;
+        nombreClienteParaTicket = window.clienteSeleccionado.nombreCompleto;
+    }
 
-        // Preparar productos
-        const productos = productosEnVenta.map(p => ({
-            idProducto: p.codigo,
-            cantidad: p.cantidad
-        }));
+    // Preparar productos
+    const productos = productosEnVenta.map(p => ({
+        idProducto: p.codigo,
+        cantidad: p.cantidad
+    }));
 
-        // Preparar efectivo y cambio
-        let efectivoRecibido = null;
-        let cambio = null;
+    // Preparar efectivo y cambio
+    let efectivoRecibido = null;
+    let cambio = null;
 
-        if (metodoPagoSeleccionado === 'efectivo') {
-            efectivoRecibido = parseFloat(inputEfectivoRecibido.value);
-            cambio = efectivoRecibido - totalVenta;
-        }
+    if (metodoPagoSeleccionado === 'efectivo') {
+        efectivoRecibido = parseFloat(inputEfectivoRecibido.value);
+        cambio = efectivoRecibido - totalVenta;
+    }
 
-        // Preparar datos
-        const datosVenta = {
-            idCliente: idCliente,
-            productos: productos,
-            metodoPago: metodoPagoSeleccionado,
-            efectivoRecibido: efectivoRecibido,
-            cambio: cambio
-        };
+    // Preparar datos
+    const datosVenta = {
+        idCliente: idCliente,
+        productos: productos,
+        metodoPago: metodoPagoSeleccionado,
+        efectivoRecibido: efectivoRecibido,
+        cambio: cambio
+    };
 
-        console.log('💾 Guardando venta:', datosVenta);
+    console.log('💾 Guardando venta:', datosVenta);
 
-        try {
-            const response = await fetch(URL_BASE + 'registrarVenta.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datosVenta)
-            });
+    try {
+        const response = await fetch(URL_BASE + 'registrarVenta.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datosVenta)
+        });
 
-            const resultado = await response.json();
+        console.log('📡 Response status:', response.status);
 
-            if (resultado.success) {
-                alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}`);
+        const resultado = await response.json();
+        console.log('📥 Resultado:', resultado);
 
-                // Limpiar carrito
-                productosEnVenta = [];
-                actualizarTablaVenta();
-                actualizarTotal();
+        if (resultado.success) {
+            alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}\nCliente: ${nombreClienteParaTicket}`);
 
-                // Resetear cliente
-                if (tipoClienteActual === 'mayorista') {
-                    limpiarResultadosClientes();
-                }
-            } else {
-                alert('❌ Error: ' + resultado.error);
+            // Cerrar modal
+            cerrarModalCobrar();
+
+            // Limpiar carrito
+            productosEnVenta = [];
+            actualizarTablaVenta();
+            actualizarTotal();
+
+            // Resetear a público si era mayorista
+            if (tipoClienteActual === 'mayorista') {
+                limpiarResultadosClientes();
+                btnPublico.click(); // Volver a público
             }
-        } catch (error) {
-            console.error('❌ Error:', error);
-            alert('Error al registrar la venta');
+        } else {
+            alert('❌ Error al guardar venta:\n\n' + resultado.error);
+            console.error('Error del servidor:', resultado);
         }
+    } catch (error) {
+        console.error('❌ Error completo:', error);
+        alert('Error al registrar la venta. Revisa la consola (F12)');
     }
+}
 
-    // Función helper para limpiar resultados de clientes
-    function limpiarResultadosClientes() {
-        document.getElementById('inputTelefono').value = '';
-        document.getElementById('inputNombreCompleto').value = '';
-        document.getElementById('inputAcciones').value = '';
-        window.clienteSeleccionado = null;
-    }
+// Función helper para limpiar resultados de clientes
+function limpiarResultadosClientes() {
+    document.getElementById('inputTelefono').value = '';
+    document.getElementById('inputNombreCompleto').value = '';
+    document.getElementById('inputAcciones').value = '';
+    window.clienteSeleccionado = null;
+}
 
-    // Cerrar modal
-    cerrarModalCobrar();
+// Cerrar modal
+cerrarModalCobrar();
 });
 
 // ============================================
@@ -1204,9 +1260,11 @@ function generarTicket() {
 async function guardarVentaBD() {
     // Determinar ID del cliente
     let idCliente = 1; // Por defecto público
+    let nombreClienteParaTicket = 'Público General';
 
     if (tipoClienteActual === 'mayorista' && window.clienteSeleccionado) {
         idCliente = window.clienteSeleccionado.idCliente;
+        nombreClienteParaTicket = window.clienteSeleccionado.nombreCompleto;
     }
 
     // Preparar productos
@@ -1233,7 +1291,7 @@ async function guardarVentaBD() {
         cambio: cambio
     };
 
-    console.log('💾 Guardando venta:', datosVenta);
+    console.log('💾 Intentando guardar venta:', datosVenta);
 
     try {
         const response = await fetch(URL_BASE + 'registrarVenta.php', {
@@ -1242,26 +1300,33 @@ async function guardarVentaBD() {
             body: JSON.stringify(datosVenta)
         });
 
+        console.log('📡 Response status:', response.status);
+
         const resultado = await response.json();
+        console.log('📥 Resultado:', resultado);
 
         if (resultado.success) {
-            alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}`);
+            alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}\nCliente: ${nombreClienteParaTicket}`);
+
+            // Actualizar el modal con el nombre correcto del cliente
+            modalCliente.textContent = nombreClienteParaTicket;
 
             // Limpiar carrito
             productosEnVenta = [];
             actualizarTablaVenta();
             actualizarTotal();
 
-            // Resetear cliente
+            // Resetear cliente si es mayorista
             if (tipoClienteActual === 'mayorista') {
                 limpiarResultadosClientes();
             }
         } else {
-            alert('❌ Error: ' + resultado.error);
+            alert('❌ Error al guardar venta:\n\n' + resultado.error);
+            console.error('Error del servidor:', resultado);
         }
     } catch (error) {
-        console.error('❌ Error:', error);
-        alert('Error al registrar la venta');
+        console.error('❌ Error completo:', error);
+        alert('Error al registrar la venta. Revisa la consola (F12)');
     }
 }
 
@@ -1302,3 +1367,11 @@ document.addEventListener('keydown', function (e) {
 });
 
 console.log('✅ Modal de cobrar venta inicializado');
+// AGREGAR DESPUÉS DE limpiarFormularioNuevoCliente()
+
+function limpiarResultadosClientes() {
+    document.getElementById('inputTelefono').value = '';
+    document.getElementById('inputNombreCompleto').value = '';
+    document.getElementById('inputAcciones').value = '';
+    window.clienteSeleccionado = null;
+}
