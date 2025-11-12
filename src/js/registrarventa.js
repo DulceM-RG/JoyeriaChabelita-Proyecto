@@ -31,11 +31,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     actualizarFechaHora();
     setInterval(actualizarFechaHora, 1000);
 });
-
 // Función para actualizar la fecha y hora de CDMX
 function actualizarFechaHora() {
     const ahora = new Date();
-
     // Configurar para zona horaria de CDMX (America/Mexico_City)
     const opcionesFecha = {
         timeZone: 'America/Mexico_City',
@@ -43,7 +41,6 @@ function actualizarFechaHora() {
         month: '2-digit',
         day: '2-digit'
     };
-
     const opcionesHora = {
         timeZone: 'America/Mexico_City',
         hour: '2-digit',
@@ -51,10 +48,8 @@ function actualizarFechaHora() {
         second: '2-digit',
         hour12: false
     };
-
     const fecha = ahora.toLocaleDateString('es-MX', opcionesFecha);
     const hora = ahora.toLocaleTimeString('es-MX', opcionesHora);
-
     document.getElementById('fechaHora').textContent = `Fecha y hora del sistema: ${fecha} ${hora}`;
 }
 
@@ -160,9 +155,6 @@ btnMayorista.addEventListener('click', function () {
     acordeonBuscar.classList.add('show');
     acordeonNuevo.classList.remove('show');
 
-    // ⚠️ AGREGAR ESTAS LÍNEAS:
-    window.clienteSeleccionado = null;
-    limpiarResultadosClientes();
 });
 
 // ============================================
@@ -979,9 +971,6 @@ function limpiarResultadosClientes() {
     window.clienteSeleccionado = null;
 }
 
-// Cerrar modal
-cerrarModalCobrar();
-});
 
 // ============================================
 // FUNCIÓN: GENERAR TICKET 
