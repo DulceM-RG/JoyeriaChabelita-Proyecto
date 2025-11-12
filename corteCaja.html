@@ -18,9 +18,17 @@
     <!-- Encabezado con imagen -->
     <header class="header">
         <div class="header-image" style="background-image: url('src/assets/image/header.png');"></div>
-   
+
     </header>
-  <h1 class="title">CORTE DE CAJA</h1>
+    <div class="salir-container">
+        <button class="btn-salir" onclick="window.location.href='menuAdministracion.html'">
+            <img src="src/assets/icon/menu-principal.png" alt="Ícono Salir" width="20" height="20">
+            Menu
+        </button>
+
+    </div>
+
+    <h1 class="title">CORTE DE CAJA</h1>
     <!-- Selector de fecha -->
     <section class="selector-fecha">
         <label for="fechaCorte">Seleccionar fecha:</label>
@@ -93,7 +101,8 @@
             <div class="modal-icon">⚠️</div>
             <h2 class="modal-title">¿Cerrar el día?</h2>
             <p class="modal-text">
-                Esta acción cerrará las operaciones del día y generará el reporte final. No podrás realizar más ventas hasta mañana.
+                Esta acción cerrará las operaciones del día y generará el reporte final. No podrás realizar más ventas
+                hasta mañana.
             </p>
             <div class="modal-buttons">
                 <button class="btn btn-secondary" id="btnCancelar">Cancelar</button>

@@ -10,10 +10,8 @@ body {
 
 .header {
     width: 100%;
-    height: 150px;
-    position: relative;
-    overflow: hidden;
-    background: none;
+    /* margin-top: auto;*/
+    height: 30px;
 }
 
 .header-image {
@@ -25,6 +23,16 @@ body {
     filter: brightness(0.9);
 }
 
+.title {
+    color: #B58D43;
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
 .header .title {
     position: absolute;
     bottom: 15px;
@@ -34,6 +42,39 @@ body {
     color: #b58828;
     letter-spacing: 1.2px;
 }
+
+/* ===== BOTÓN SALIR (parte superior derecha) ===== */
+.salir-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 40px 0 0;
+}
+
+.btn-salir {
+    background-color: #b8903b;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-salir:hover {
+    background-color: #a67d2f;
+}
+
+.icono-salir {
+    width: 18px;
+    height: 18px;
+}
+
 
 /* Selector de fecha */
 .selector-fecha {
@@ -227,9 +268,11 @@ body {
     display: none;
     position: fixed;
     z-index: 1000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     align-items: center;
     justify-content: center;
 }
@@ -298,16 +341,17 @@ body {
     color: white;
 }
 
-@media(max-width: 768px){
+@media(max-width: 768px) {
     .selector-fecha {
         flex-direction: column;
         gap: 10px;
     }
-    
+
     .resumen-caja-grid {
         grid-template-columns: 1fr 1fr;
         max-width: 600px;
     }
+
     .acciones-caja {
         flex-direction: column;
         gap: 15px;
@@ -315,11 +359,12 @@ body {
     }
 }
 
-@media(max-width: 480px){
+@media(max-width: 480px) {
     .resumen-caja-grid {
         grid-template-columns: 1fr;
         max-width: 320px;
     }
+
     .detalle-ventas table {
         width: 100%;
     }
