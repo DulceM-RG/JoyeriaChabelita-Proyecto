@@ -1,5 +1,6 @@
 // 🔹 AGREGAR AL INICIO DEL ARCHIVO (línea 1)
 const URL_BASE = 'http://localhost/JoyeriaChabelita-Proyecto/src/database/';
+// 🔹 AGREGAR AL INICIO DEL ARCHIVO (línea 1)
 
 // 🔹 REEMPLAZAR la sección "// Función para actualizar la fecha y hora de CDMX"
 // AGREGAR ANTES de actualizarFechaHora():
@@ -155,13 +156,12 @@ btnMayorista.addEventListener('click', function () {
 // ============================================
 // BOTON BUSCAR CLIENTES
 // ============================================
-
-// 🔹 REEMPLAZAR el Event listener de btnBuscar (línea ~175)
+// 
 btnBuscar.addEventListener('click', async function () {
     const inputBuscar = document.getElementById('inputBuscar').value.trim();
 
     if (!inputBuscar) {
-        alert('Por favor, ingresa un criterio de búsqueda');
+        alert('Por favor, ingresa un criterio de búsqueda (teléfono o nombre)');
         return;
     }
 
@@ -178,28 +178,80 @@ btnBuscar.addEventListener('click', async function () {
         const resultado = await response.json();
 
         if (resultado.success && resultado.clientes.length > 0) {
-            const cliente = resultado.clientes[0];
-            document.getElementById('inputTelefono').value = cliente.telefono;
-            document.getElementById('inputNombreCompleto').value = cliente.nombreCompleto;
-            document.getElementById('inputAcciones').value = 'Seleccionar';
-
-            // Guardar cliente para la venta
-            window.clienteSeleccionado = cliente;
-            console.log('✅ Cliente encontrado:', cliente);
+            mostrarTablaClientes(resultado.clientes); // 🔹 NUEVA FUNCIÓN
         } else {
-            alert('No se encontraron clientes');
+            alert('❌ No se encontraron clientes con ese criterio.');
+            ocultarTablaClientes(); // 🔹 NUEVA FUNCIÓN
         }
     } catch (error) {
         console.error('❌ Error:', error);
-        alert('Error al buscar cliente');
+        alert('Error al buscar cliente. Intente nuevamente.');
     }
 });
 
-// Event listener para el botón Seleccionar cliente
-document.querySelector('.btn-seleccionar').addEventListener('click', function () {
-    // Aquí se implementará la lógica para seleccionar el cliente
-    alert('Funcionalidad de selección - Pendiente de implementación con base de datos');
-});
+// ============================================
+// MOSTRAR TABLA DE CLIENTES
+// ============================================
+function mostrarTablaClientes(clientes) {
+    const container = document.getElementById('tablaClientesContainer');
+    const tbody = document.getElementById('tablaClientesBody');
+
+    // Limpiar tabla
+    tbody.innerHTML = '';
+
+    // Agregar cada cliente como fila
+    clientes.forEach((cliente) => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td>${cliente.telefono}</td>
+            <td>${cliente.nombreCompleto}</td>
+            <td>
+                <button class="btn-seleccionar-cliente" onclick="seleccionarCliente(${cliente.idCliente}, '${cliente.nombreCompleto}', '${cliente.telefono}')">
+                    Seleccionar
+                </button>
+            </td>
+        `;
+        tbody.appendChild(fila);
+    });
+
+    // Mostrar tabla
+    container.style.display = 'block';
+
+    console.log(`✅ ${clientes.length} cliente(s) encontrado(s)`);
+}
+
+// ============================================
+// OCULTAR TABLA DE CLIENTES
+// ============================================
+function ocultarTablaClientes() {
+    const container = document.getElementById('tablaClientesContainer');
+    container.style.display = 'none';
+}
+
+// ============================================
+// SELECCIONAR CLIENTE DE LA TABLA
+// ============================================
+window.seleccionarCliente = function (idCliente, nombreCompleto, telefono) {
+    // Guardar cliente seleccionado
+    window.clienteSeleccionado = {
+        idCliente: idCliente,
+        nombreCompleto: nombreCompleto,
+        telefono: telefono,
+        tipoCliente: 'Mayorista',
+        idTipoCliente: 2
+    };
+
+    console.log('✅ Cliente seleccionado:', window.clienteSeleccionado);
+    alert(`✅ Cliente seleccionado:\n${nombreCompleto}\nTeléfono: ${telefono}`);
+
+    // Opcional: Ocultar tabla después de seleccionar
+    ocultarTablaClientes();
+
+    // Limpiar input de búsqueda
+    document.getElementById('inputBuscar').value = '';
+};
+
+
 
 // Event listener para el botón Nuevo cliente
 btnNuevoCliente.addEventListener('click', function () {
@@ -213,7 +265,7 @@ btnCancelar.addEventListener('click', function () {
 });
 
 // ============================================
-// VALIDACIÓN ROBUSTA AL GUARDAR CLIENTE
+// VALIDACIÓN ROBUSTA AL GUARDAR CLIENTE LISTO PARA GUARDAR LISTO
 // ============================================
 btnGuardar.addEventListener('click', async function () {
     const nombre = document.getElementById('nuevoNombre').value.trim();
@@ -384,36 +436,46 @@ const btnCobrarVenta = document.getElementById('btnCobrarVenta');
 // ============================================
 // FUNCIÓN: BUSCAR JOYA
 // ============================================
-// 🔹 REEMPLAZAR la función buscarJoya() completa (línea ~260)
+
 function buscarJoya() {
     const codigoBusqueda = inputCodigoJoya.value.trim();
 
     if (!codigoBusqueda) {
-        alert("⚠️ Ingresa un código");
+        alert("⚠️ Ingresa un código de producto");
         return;
     }
 
-    // 🔹 CONECTAR CON PHP
+    console.log('🔍 Iniciando búsqueda de producto:', codigoBusqueda);
+    console.log('📡 URL:', URL_BASE + 'buscarProducto.php');
+
     fetch(URL_BASE + 'buscarProducto.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ codigoProducto: codigoBusqueda })
     })
-        .then(res => res.json())
+        .then(res => {
+            console.log('📥 Response status:', res.status);
+            console.log('📥 Response ok:', res.ok);
+            return res.json();
+        })
         .then(data => {
-            if (data.success && data.productos.length > 0) {
+            console.log('📦 Datos recibidos:', data);
+
+            if (data.success && data.productos && data.productos.length > 0) {
+                console.log('✅ Productos encontrados:', data.productos.length);
                 mostrarResultadosBusqueda(data.productos);
             } else {
-                alert("❌ No se encontraron productos");
+                console.warn('⚠️ Sin resultados:', data.error);
+                alert("❌ " + (data.error || "No se encontraron productos"));
                 tablaResultadosContainer.style.display = "none";
             }
         })
         .catch(error => {
-            console.error('❌ Error:', error);
-            alert('Error al buscar producto');
+            console.error('❌ Error completo:', error);
+            console.error('❌ Stack:', error.stack);
+            alert('Error al buscar producto. Revisa la consola (F12)');
         });
 }
-
 // ============================================
 // FUNCIÓN: MOSTRAR RESULTADOS DE BÚSQUEDA
 // ============================================
@@ -444,7 +506,7 @@ function mostrarResultadosBusqueda(resultados) {
 // ============================================
 // FUNCIÓN: AGREGAR PRODUCTO A LA VENTA
 // ============================================
-// 🔹 REEMPLAZAR la función agregarProductoAVenta() (línea ~312)
+
 window.agregarProductoAVenta = function (idProducto, categoria, descripcion, precio, stockDisponible) {
     // Convertir precio a número
     precio = parseFloat(precio);
@@ -788,7 +850,78 @@ btnConfirmarVenta.addEventListener('click', function () {
     generarTicket();
 
     // Guardar venta en BD (aquí conectarás con tu backend)
-    guardarVentaBD();
+
+    async function guardarVentaBD() {
+        // Determinar ID del cliente
+        let idCliente = 1; // Por defecto público
+
+        if (tipoClienteActual === 'mayorista' && window.clienteSeleccionado) {
+            idCliente = window.clienteSeleccionado.idCliente;
+        }
+
+        // Preparar productos
+        const productos = productosEnVenta.map(p => ({
+            idProducto: p.codigo,
+            cantidad: p.cantidad
+        }));
+
+        // Preparar efectivo y cambio
+        let efectivoRecibido = null;
+        let cambio = null;
+
+        if (metodoPagoSeleccionado === 'efectivo') {
+            efectivoRecibido = parseFloat(inputEfectivoRecibido.value);
+            cambio = efectivoRecibido - totalVenta;
+        }
+
+        // Preparar datos
+        const datosVenta = {
+            idCliente: idCliente,
+            productos: productos,
+            metodoPago: metodoPagoSeleccionado,
+            efectivoRecibido: efectivoRecibido,
+            cambio: cambio
+        };
+
+        console.log('💾 Guardando venta:', datosVenta);
+
+        try {
+            const response = await fetch(URL_BASE + 'registrarVenta.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(datosVenta)
+            });
+
+            const resultado = await response.json();
+
+            if (resultado.success) {
+                alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}`);
+
+                // Limpiar carrito
+                productosEnVenta = [];
+                actualizarTablaVenta();
+                actualizarTotal();
+
+                // Resetear cliente
+                if (tipoClienteActual === 'mayorista') {
+                    limpiarResultadosClientes();
+                }
+            } else {
+                alert('❌ Error: ' + resultado.error);
+            }
+        } catch (error) {
+            console.error('❌ Error:', error);
+            alert('Error al registrar la venta');
+        }
+    }
+
+    // Función helper para limpiar resultados de clientes
+    function limpiarResultadosClientes() {
+        document.getElementById('inputTelefono').value = '';
+        document.getElementById('inputNombreCompleto').value = '';
+        document.getElementById('inputAcciones').value = '';
+        window.clienteSeleccionado = null;
+    }
 
     // Cerrar modal
     cerrarModalCobrar();

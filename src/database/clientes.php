@@ -19,7 +19,7 @@ try {
     
     $conn = ConexionDB::setConnection();
     
-    // ==================== BUSCAR CLIENTE ====================
+     // ==================== BUSCAR CLIENTE ====================
     if ($accion === 'buscar') {
         $busqueda = $entrada['busqueda'] ?? '';
         
@@ -32,7 +32,7 @@ try {
             exit;
         }
         
-        // Buscar por teléfono o nombre
+        // 🔹 BÚSQUEDA MEJORADA - Busca por teléfono o nombre (case-insensitive)
         $sqlBuscar = "SELECT 
                         c.idCliente,
                         c.nombre,
@@ -40,35 +40,45 @@ try {
                         c.apellidoMaterno,
                         c.telefono,
                         tc.tipo as tipoCliente,
-                        c.idTipoCliente
+                        c.idTipoCliente,
+                        CONCAT_WS(' ', c.nombre, c.apellidoPaterno, c.apellidoMaterno) as nombreCompleto
                       FROM cliente c
                       INNER JOIN tipocliente tc ON c.idTipoCliente = tc.idTipoCliente
                       WHERE c.idTipoCliente = 2
-                      AND (c.telefono LIKE :busqueda 
-                           OR CONCAT(c.nombre, ' ', c.apellidoPaterno, ' ', c.apellidoMaterno) LIKE :busqueda
-                           OR c.nombre LIKE :busqueda)
-                      LIMIT 10";
+                      AND (
+                          c.telefono LIKE :busqueda 
+                          OR LOWER(CONCAT_WS(' ', c.nombre, c.apellidoPaterno, c.apellidoMaterno)) LIKE LOWER(:busqueda2)
+                          OR LOWER(c.nombre) LIKE LOWER(:busqueda3)
+                      )
+                      ORDER BY c.nombre ASC
+                      LIMIT 20";
+        
+        $terminoBusqueda = '%' . $busqueda . '%';
         
         $stmtBuscar = $conn->prepare($sqlBuscar);
-        $stmtBuscar->execute([':busqueda' => '%' . $busqueda . '%']);
+        $stmtBuscar->execute([
+            ':busqueda' => $terminoBusqueda,
+            ':busqueda2' => $terminoBusqueda,
+            ':busqueda3' => $terminoBusqueda
+        ]);
         $clientes = $stmtBuscar->fetchAll(PDO::FETCH_ASSOC);
         
         if (empty($clientes)) {
+            // 🔹 LOG para debug
+            error_log("Búsqueda de cliente sin resultados. Término: " . $busqueda);
+            
             http_response_code(404);
             echo json_encode([
                 "success" => false,
                 "error" => "No se encontraron clientes con ese criterio.",
-                "clientes" => []
+                "clientes" => [],
+                "busqueda" => $busqueda // Para debug
             ]);
             exit;
         }
         
-        // Formatear resultados
-        foreach ($clientes as &$cliente) {
-            $cliente['nombreCompleto'] = trim($cliente['nombre'] . ' ' . 
-                                              $cliente['apellidoPaterno'] . ' ' . 
-                                              $cliente['apellidoMaterno']);
-        }
+        // 🔹 LOG de éxito
+        error_log("Clientes encontrados: " . count($clientes));
         
         http_response_code(200);
         echo json_encode([
