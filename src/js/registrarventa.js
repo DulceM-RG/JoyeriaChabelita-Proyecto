@@ -1,5 +1,6 @@
 const URL_BASE = 'http://localhost/JoyeriaChabelita-Proyecto/src/database/';
 let empleadoActual = null;
+// ==================== CARGAR DATOS DEL EMPLEADO ====================
 
 async function cargarDatosEmpleado() {
     try {
