@@ -1,16 +1,13 @@
 <? php
 /**
- * GUARDAR VENTA COMPLETA - VERSIÓN CORREGIDA
- * Archivo: api/guardar-venta.php
  * 
  * SOLO USA: venta, productoventa, producto, cliente, empleado, ingreso
- * NO USA: pedido, productopedido, proveedor (esos son para COMPRAS)
  */
 
 session_start();
 header('Content-Type: application/json');
 
-require_once 'config/conexion.php';
+require_once 'connection.php';
 
 // Verificar sesión
 if (!isset($_SESSION['idEmpleado'])) {

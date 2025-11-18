@@ -22,7 +22,7 @@ async function cargarDatosEmpleado() {
         } else {
             console.error('❌ Error al cargar empleado');
             alert('Error al cargar datos del empleado. Redirigiendo al login...');
-            window.location.href = '../login.html';
+            window.location.href = 'login.html';
         }
     } catch (error) {
         console.error('❌ Error de conexión:', error);
@@ -1115,7 +1115,7 @@ function generarTicket() {
             </div>
             <div class="info-row">
                 <span class="info-label">Cliente:</span>
-                <span>${modalCliente.textContent}</span>
+                <span>${window.nombreClienteVenta || modalCliente.textContent}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Atendió:</span>
@@ -1209,20 +1209,30 @@ function generarTicket() {
 // ============================================
 // FUNCIÓN: GUARDAR VENTA EN BASE DE DATOS
 // ============================================
-// 🔹 REEMPLAZAR COMPLETAMENTE la función guardarVentaBD() (línea ~783)
 async function guardarVentaBD() {
     // Determinar ID del cliente
     let idCliente = 1; // Por defecto público
+    let nombreClienteCompleto = 'Público General'; // Para el ticket
 
     if (tipoClienteActual === 'mayorista' && window.clienteSeleccionado) {
         idCliente = window.clienteSeleccionado.idCliente;
+
+        // GUARDAR NOMBRE COMPLETO DEL CLIENTE MAYORISTA PARA EL TICKET
+        const apellidoMaterno = window.clienteSeleccionado.apellidoMaterno || '';
+        nombreClienteCompleto = `${window.clienteSeleccionado.nombre} ${window.clienteSeleccionado.apellidoPaterno} ${apellidoMaterno}`.trim();
     }
 
-    // Preparar productos
+    // PREPARAR PRODUCTOS CON TODA LA INFORMACIÓN NECESARIA
     const productos = productosEnVenta.map(p => ({
-        idProducto: p.codigo,
-        cantidad: p.cantidad
+        codigo: p.codigo,              // idProducto
+        descripcion: p.descripcion,    // Para mensajes de error
+        cantidad: p.cantidad,
+        precio: p.precio,              // costoUnitario
+        subtotal: p.subtotal           // importe
     }));
+
+    // Calcular total
+    const total = productosEnVenta.reduce((sum, p) => sum + p.subtotal, 0);
 
     // Preparar efectivo y cambio
     let efectivoRecibido = null;
@@ -1230,22 +1240,25 @@ async function guardarVentaBD() {
 
     if (metodoPagoSeleccionado === 'efectivo') {
         efectivoRecibido = parseFloat(inputEfectivoRecibido.value);
-        cambio = efectivoRecibido - totalVenta;
+        cambio = efectivoRecibido - total;
     }
 
-    // Preparar datos
+    // PREPARAR DATOS COMPLETOS PARA EL PHP
     const datosVenta = {
         idCliente: idCliente,
+        nombreCliente: nombreClienteCompleto,  // Para el ticket
         productos: productos,
+        total: total,
         metodoPago: metodoPagoSeleccionado,
         efectivoRecibido: efectivoRecibido,
         cambio: cambio
     };
 
-    console.log('💾 Guardando venta:', datosVenta);
+    console.log('Guardando venta:', datosVenta);
 
     try {
-        const response = await fetch(URL_BASE + 'registrarVenta.php', {
+        // ✅ CORREGIR URL DEL ARCHIVO PHP
+        const response = await fetch(URL_BASE + 'guardarVenta.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosVenta)
@@ -1254,7 +1267,10 @@ async function guardarVentaBD() {
         const resultado = await response.json();
 
         if (resultado.success) {
-            alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}`);
+            alert(`✅ Venta registrada exitosamente!\n\n` +
+                `ID Venta: ${resultado.venta.idVenta}\n` +
+                `Total: $${resultado.venta.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}\n` +
+                `Productos: ${resultado.venta.productos}`);
 
             // Limpiar carrito
             productosEnVenta = [];
@@ -1265,12 +1281,16 @@ async function guardarVentaBD() {
             if (tipoClienteActual === 'mayorista') {
                 limpiarResultadosClientes();
             }
+
+            // Guardar nombre del cliente en variable global para el ticket
+            window.nombreClienteVenta = nombreClienteCompleto;
         } else {
-            alert('❌ Error: ' + resultado.error);
+            alert('Error al registrar venta:\n\n' + resultado.error);
+            console.error('Error completo:', resultado);
         }
     } catch (error) {
-        console.error('❌ Error:', error);
-        alert('Error al registrar la venta');
+        console.error('Error de conexión:', error);
+        alert('Error de conexión al registrar la venta.\n\nRevisa la consola para más detalles.');
     }
 }
 
