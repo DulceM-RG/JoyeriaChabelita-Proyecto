@@ -111,6 +111,10 @@ body {
 }
 
 /* TODO ANTES DE AQUÍ ESTA BIEN NO MOVER NI CAMBIAR NADA*/
+/* ============================================
+   SECCIÓN: CLIENTES - ACTUALIZADO
+   ============================================ */
+
 .cliente-section {
     background-color: #ffffff;
     width: 100%;
@@ -174,13 +178,15 @@ body {
     background-color: #DDD9D0;
 }
 
-/* SOLO cuando se hace clic se activa */
 .btn-tipo.active {
     background-color: #C4A052;
     color: white;
 }
 
-/* Acordeones */
+/* ============================================
+   ACORDEONES
+   ============================================ */
+
 .acordeon {
     display: none;
     margin-top: 20px;
@@ -214,7 +220,10 @@ body {
     font-weight: 600;
 }
 
-/* Buscar Container */
+/* ============================================
+   BUSCAR CONTAINER
+   ============================================ */
+
 .buscar-container {
     background-color: #F5F3EE;
     padding: 20px;
@@ -223,7 +232,6 @@ body {
     width: 100%;
 }
 
-/* IMPORTANTE: Wrapper para alinear input y botón */
 .buscar-wrapper {
     display: flex;
     gap: 10px;
@@ -239,7 +247,12 @@ body {
     font-size: 14px;
 }
 
-/* BOTÓN BUSCAR - Alineado a la derecha del input */
+#inputBuscar:focus {
+    outline: none;
+    border-color: #C4A052;
+    background-color: white;
+}
+
 .btn-buscar {
     background-color: #C4A052;
     color: white;
@@ -252,44 +265,123 @@ body {
     transition: background-color 0.3s;
     white-space: nowrap;
     flex-shrink: 0;
-    /* No se encoge */
 }
 
 .btn-buscar:hover {
     background-color: #B39048;
 }
 
-/* Inputs de la tabla (Teléfono, Nombre Completo, Acciones) */
-.buscar-inputs {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
+/* ============================================
+   TABLA DE CLIENTES - RESULTADOS DE BÚSQUEDA
+   ============================================ */
 
-.buscar-inputs input {
-    padding: 10px;
+.tabla-clientes-container {
+    margin-top: 15px;
+    max-height: 350px;
+    overflow-y: auto;
     border: 1px solid #D4CFC4;
-    border-radius: 6px;
-    font-size: 13px;
-    background-color: white;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.btn-seleccionar {
-    background-color: #C4A052;
+.tabla-clientes {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-clientes thead {
+    background: #6B5D4F;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.tabla-clientes th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.tabla-clientes tbody tr {
+    border-bottom: 1px solid #F5F3EE;
+    transition: background-color 0.2s;
+}
+
+.tabla-clientes tbody tr:hover {
+    background-color: #FAFAF8;
+}
+
+.tabla-clientes tbody tr:last-child {
+    border-bottom: none;
+}
+
+.tabla-clientes td {
+    padding: 12px 15px;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Mensaje cuando no hay resultados */
+.tabla-clientes tbody td[colspan] {
+    padding: 30px 20px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    font-size: 14px;
+}
+
+/* Botón Seleccionar Cliente */
+.btn-seleccionar-cliente {
+    background: #C4A052;
     color: white;
     border: none;
-    padding: 10px 25px;
+    padding: 8px 20px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    margin-bottom: 15px;
-    transition: background-color 0.3s;
+    transition: all 0.2s;
+    white-space: nowrap;
 }
 
-.btn-seleccionar:hover {
-    background-color: #B39048;
+.btn-seleccionar-cliente:hover {
+    background: #B39048;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
+
+.btn-seleccionar-cliente:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Scroll personalizado para la tabla */
+.tabla-clientes-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.tabla-clientes-container::-webkit-scrollbar-track {
+    background: #F5F3EE;
+    border-radius: 8px;
+}
+
+.tabla-clientes-container::-webkit-scrollbar-thumb {
+    background: #C4A052;
+    border-radius: 8px;
+    border: 2px solid #F5F3EE;
+}
+
+.tabla-clientes-container::-webkit-scrollbar-thumb:hover {
+    background: #B39048;
+}
+
+/* ============================================
+   BOTÓN NUEVO CLIENTE
+   ============================================ */
 
 .btn-nuevo-cliente {
     background-color: #C4A052;
@@ -309,7 +401,10 @@ body {
     background-color: #B39048;
 }
 
-/* Formulario Nuevo Cliente */
+/* ============================================
+   FORMULARIO NUEVO CLIENTE
+   ============================================ */
+
 .acordeon-nuevo {
     background-color: #FFF8E8;
     padding: 25px;
@@ -384,6 +479,47 @@ body {
 
 .btn-cancelar:hover {
     background-color: #DDD9D0;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .tipo-buttons {
+        flex-direction: column;
+    }
+
+    .btn-tipo {
+        width: 100%;
+    }
+
+    .buscar-wrapper {
+        flex-direction: column;
+    }
+
+    .btn-buscar {
+        width: 100%;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .tabla-clientes-container {
+        max-height: 250px;
+    }
+
+    .tabla-clientes th,
+    .tabla-clientes td {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .btn-seleccionar-cliente {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
 }
 
 /* ===== FOOTER ===== */

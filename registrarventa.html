@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="fecha-hora">
-                    <span id="fechaHora">Fecha y hora del sistema: 09/11/2025 14:20:47</span>
+                    <span id="fechaHora"></span>
                 </div>
             </div>
             <button class="btn-salir" onclick="window.location.href='menuVentas.html'">
@@ -77,22 +77,30 @@
                     </svg>
                     <span>Cliente</span>
                 </div>
-
                 <div class="buscar-container">
                     <div class="buscar-wrapper">
                         <input type="text" placeholder="Buscar cliente por teléfono o nombre" id="inputBuscar">
                         <button class="btn-buscar">Buscar</button>
                     </div>
-                    <div class="buscar-inputs">
-                        <input type="text" placeholder="Teléfono" id="inputTelefono" readonly>
-                        <input type="text" placeholder="Nombre Completo" id="inputNombreCompleto" readonly>
-                        <input type="text" placeholder="Acciones" id="inputAcciones" readonly>
+
+                    <!-- 🔹 NUEVA TABLA DE RESULTADOS -->
+                    <div class="tabla-clientes-container" id="tablaClientesContainer" style="display: none;">
+                        <table class="tabla-clientes" id="tablaClientes">
+                            <thead>
+                                <tr>
+                                    <th>Teléfono</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaClientesBody">
+                                <!-- Se llenará dinámicamente -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-
-                <button class="btn-seleccionar">Seleccionar cliente</button>
-
                 <button class="btn-nuevo-cliente" id="btnNuevoCliente">Nuevo cliente</button>
+
             </div>
 
             <!-- Acordeón Nuevo Cliente -->
