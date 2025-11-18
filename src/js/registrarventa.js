@@ -136,9 +136,6 @@ inputTelefono.addEventListener('keypress', function (e) {
     }
 });
 
-// ============================================
-// Lógica de Botones Tipo Cliente
-// ============================================
 
 // ============================================
 // BOTONES TIPO CLIENTE
@@ -265,6 +262,7 @@ if (btnBuscar) {
                             <button class="btn-seleccionar-cliente" data-cliente='${JSON.stringify(cliente)}'>
                                 Seleccionar
                             </button>
+
                         </td>
                     `;
                     tablaClientesBody.appendChild(fila);
@@ -348,7 +346,7 @@ function limpiarFormularioNuevoCliente() {
 }
 
 // ============================================
-// GUARDAR NUEVO CLIENTE (Ajustado)
+// GUARDAR NUEVO CLIENTE 
 // ============================================
 
 btnGuardar.addEventListener('click', async function () {
@@ -416,17 +414,43 @@ btnGuardar.addEventListener('click', async function () {
 });
 
 
+
+function seleccionarCliente(cliente) {
+    console.log('✅ Cliente seleccionado:', cliente);
+
+    // Guardar cliente con estructura completa
+    window.clienteSeleccionado = {
+        idCliente: cliente.idCliente,
+        nombreCompleto: cliente.nombreCompleto,
+        telefono: cliente.telefono,
+        tipoCliente: cliente.tipoCliente || 'Mayorista',
+        idTipoCliente: cliente.idTipoCliente || 2
+    };
+
+    console.log('✅ Cliente guardado en window.clienteSeleccionado:', window.clienteSeleccionado);
+
+    // Ocultar tabla
+    ocultarTablaClientes();
+
+    // Mostrar el nombre seleccionado en el input
+    if (inputBuscar) {
+        inputBuscar.value = cliente.nombreCompleto;
+    }
+
+    alert(`✅ Cliente seleccionado:\n${cliente.nombreCompleto}\nTeléfono: ${cliente.telefono}`);
+}
+
+// Hacer la función global para que funcione desde el HTML
+window.seleccionarCliente = seleccionarCliente;
+function ocultarTablaClientes() {
+    if (tablaClientesContainer) {
+        tablaClientesContainer.style.display = 'none';
+    }
+}
 // ============================================
 // SECCIÓN: SELECCIONAR JOYA Y CARRITO DE VENTA
 // ============================================
 let productosEnVenta = [];
-
-
-// Array para almacenar los productos en la venta
-
-
-// Datos de ejemplo de joyas (esto se reemplazará con consulta a BD)
-
 
 // Referencias a elementos
 const inputCodigoJoya = document.getElementById('inputCodigoJoya');
@@ -440,7 +464,7 @@ const btnCobrarVenta = document.getElementById('btnCobrarVenta');
 // ============================================
 // FUNCIÓN: BUSCAR JOYA
 // ============================================
-// 🔹 REEMPLAZAR la función buscarJoya() completa (línea ~260)
+
 function buscarJoya() {
     const codigoBusqueda = inputCodigoJoya.value.trim();
 
