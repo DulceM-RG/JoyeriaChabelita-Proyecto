@@ -63,7 +63,7 @@ setInterval(actualizarFechaHora, 1000);
 actualizarFechaHora(); // Llamar inmediatamente
 
 // ============================================
-// Referencias y Estado
+// Referencias y Estado PARTE DE CLIENTES
 // ============================================
 
 const btnPublico = document.getElementById('btnPublico');
@@ -355,17 +355,79 @@ btnGuardar.addEventListener('click', async function () {
     const apellidoM = document.getElementById('nuevoApellidoM').value.trim();
     const telefono = document.getElementById('nuevoTelefono').value.trim();
 
-    // --- VALIDACIONES DE CAMPOS OBLIGATORIOS (Omitidas para brevedad, pero correctas en tu original) ---
-    if (!nombre || !apellidoP || !telefono) {
-        alert('⚠️ Nombre, Apellido Paterno y Teléfono son obligatorios.');
+    // Validar campos obligatorios
+    if (!nombre) {
+        alert('⚠️ El campo Nombre es obligatorio');
+        document.getElementById('nuevoNombre').focus();
         return;
     }
 
-    // --- VALIDACIONES ROBUSTAS DEL TELÉFONO (Omitidas para brevedad, pero correctas en tu original) ---
-    // (Tu bloque de validaciones robustas es excelente y debe mantenerse aquí)
+    if (!apellidoP) {
+        alert('⚠️ El campo Apellido Paterno es obligatorio');
+        document.getElementById('nuevoApellidoP').focus();
+        return;
+    }
 
-    if (telefono.length !== 10 || !/^\d{10}$/.test(telefono) || telefono.charAt(0) === '0' || telefono.charAt(0) === '1') {
-        alert('❌ El teléfono debe tener exactamente 10 dígitos numéricos y no puede empezar con 0 o 1.');
+    if (!telefono) {
+        alert('⚠️ El campo Teléfono es obligatorio');
+        document.getElementById('nuevoTelefono').focus();
+        return;
+    }
+
+    // ============================================
+    // VALIDACIÓN ROBUSTA DEL TELÉFONO
+    // ============================================
+    // 1. Verificar que solo contiene números
+    if (!/^[0-9]+$/.test(telefono)) {
+        alert('❌ El teléfono solo puede contener números\n\nPor favor, elimina letras o caracteres especiales.');
+        document.getElementById('nuevoTelefono').focus();
+        return;
+    }
+
+    // 2. Verificar que tiene exactamente 10 dígitos
+    if (telefono.length !== 10) {
+        if (telefono.length < 10) {
+            alert(`❌ El teléfono está incompleto\n\nActualmente tiene ${telefono.length} dígitos.\nDebe tener exactamente 10 dígitos.`);
+        } else {
+            alert(`❌ El teléfono es muy largo\n\nActualmente tiene ${telefono.length} dígitos.\nDebe tener exactamente 10 dígitos.`);
+        }
+        document.getElementById('nuevoTelefono').focus();
+        return;
+    }
+
+    // 3. Verificar que no empiece con 0 o 1 (reglas de numeración en México)
+    if (telefono.charAt(0) === '0' || telefono.charAt(0) === '1') {
+        alert('❌ El teléfono no puede comenzar con 0 o 1\n\nEn México, los números de teléfono celular comienzan con dígitos del 2 al 9.');
+        document.getElementById('nuevoTelefono').focus();
+        return;
+    }
+
+    // 4. Verificar que no sean todos números iguales
+    if (/^(\d)\1{9}$/.test(telefono)) {
+        alert('❌ El teléfono no es válido\n\nNo puede tener todos los dígitos iguales (ej: 1111111111).');
+        document.getElementById('nuevoTelefono').focus();
+        return;
+    }
+
+    // 5. Verificar patrones sospechosos (opcional)
+    const patronesSospechosos = [
+        '1234567890',
+        '0987654321',
+        '0000000000',
+        '9999999999'
+    ];
+
+    if (patronesSospechosos.includes(telefono)) {
+        const confirmar = confirm('⚠️ El teléfono ingresado parece sospechoso\n\n¿Estás seguro de que es correcto?');
+        if (!confirmar) {
+            document.getElementById('nuevoTelefono').focus();
+            return;
+        }
+    }
+
+    // 6. Validación final con regex (por si acaso)
+    if (!/^\d{10}$/.test(telefono)) {
+        alert('❌ El teléfono debe tener exactamente 10 dígitos numéricos');
         document.getElementById('nuevoTelefono').focus();
         return;
     }
