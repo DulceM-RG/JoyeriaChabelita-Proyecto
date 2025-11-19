@@ -19,66 +19,88 @@ try {
     
     $conn = ConexionDB::setConnection();
     
-     // ==================== BUSCAR CLIENTE ====================
-    if ($accion === 'buscar') {
-        $busqueda = $entrada['busqueda'] ?? '';
-        
-        if (empty($busqueda)) {
-            http_response_code(400);
-            echo json_encode([
-                "success" => false,
-                "error" => "Debe proporcionar un término de búsqueda."
-            ]);
-            exit;
-        }
-        
-        // 🔹 BÚSQUEDA MEJORADA - Busca por teléfono o nombre (case-insensitive)
-        $sqlBuscar = "SELECT 
-                        c.idCliente,
-                        c.nombre,
-                        c.apellidoPaterno,
-                        c.apellidoMaterno,
-                        c.telefono,
-                        tc.tipo as tipoCliente,
-                        c.idTipoCliente,
-                        CONCAT_WS(' ', c.nombre, c.apellidoPaterno, c.apellidoMaterno) as nombreCompleto
-                      FROM cliente c
-                      INNER JOIN tipocliente tc ON c.idTipoCliente = tc.idTipoCliente
-                      WHERE c.idTipoCliente = 2
-                      AND (
-                          c.telefono LIKE :busqueda 
-                          OR LOWER(CONCAT_WS(' ', c.nombre, c.apellidoPaterno, c.apellidoMaterno)) LIKE LOWER(:busqueda2)
-                          OR LOWER(c.nombre) LIKE LOWER(:busqueda3)
-                      )
-                      ORDER BY c.nombre ASC
-                      LIMIT 20";
-        
-        $terminoBusqueda = '%' . $busqueda . '%';
-        
-        $stmtBuscar = $conn->prepare($sqlBuscar);
-        $stmtBuscar->execute([
-            ':busqueda' => $terminoBusqueda,
-            ':busqueda2' => $terminoBusqueda,
-            ':busqueda3' => $terminoBusqueda
+    
+// ==================== BUSCAR CLIENTE ====================
+if ($accion === 'buscar') {
+    $busqueda = $entrada['busqueda'] ?? '';
+    
+    // 🔹 LOG inicial
+    error_log("=== INICIO BÚSQUEDA ===");
+    error_log("Término recibido: " . $busqueda);
+    
+    if (empty($busqueda)) {
+        http_response_code(400);
+        echo json_encode([
+            "success" => false,
+            "error" => "Debe proporcionar un término de búsqueda."
         ]);
+        exit;
+    }
+    
+    // 🔹 Preparar término de búsqueda
+    $terminoBusqueda = '%' . $busqueda . '%';
+    
+    error_log("Término con wildcards: " . $terminoBusqueda);
+    
+    // 🔹 SQL CORREGIDA - Usamos parámetros DIFERENTES para cada condición
+    $sqlBuscar = "SELECT 
+                    c.idCliente,
+                    c.nombre,
+                    c.apellidoPaterno,
+                    c.apellidoMaterno,
+                    c.telefono,
+                    tc.tipo as tipoCliente,
+                    c.idTipoCliente,
+                    CONCAT_WS(' ', c.nombre, c.apellidoPaterno, c.apellidoMaterno) as nombreCompleto
+                  FROM cliente c
+                  INNER JOIN tipocliente tc ON c.idTipoCliente = tc.idTipoCliente
+                  WHERE c.idTipoCliente = 2
+                  AND (
+                      c.telefono LIKE :busqueda1 
+                      OR CONCAT_WS(' ', c.nombre, c.apellidoPaterno, c.apellidoMaterno) LIKE :busqueda2
+                      OR c.nombre LIKE :busqueda3
+                      OR c.apellidoPaterno LIKE :busqueda4
+                      OR c.apellidoMaterno LIKE :busqueda5
+                  )
+                  ORDER BY c.nombre ASC
+                  LIMIT 20";
+    
+    error_log("SQL preparado");
+    
+    try {
+        $stmtBuscar = $conn->prepare($sqlBuscar);
+        
+        // 🔹 CRÍTICO: Vincular CADA parámetro por separado
+        $stmtBuscar->bindValue(':busqueda1', $terminoBusqueda, PDO::PARAM_STR);
+        $stmtBuscar->bindValue(':busqueda2', $terminoBusqueda, PDO::PARAM_STR);
+        $stmtBuscar->bindValue(':busqueda3', $terminoBusqueda, PDO::PARAM_STR);
+        $stmtBuscar->bindValue(':busqueda4', $terminoBusqueda, PDO::PARAM_STR);
+        $stmtBuscar->bindValue(':busqueda5', $terminoBusqueda, PDO::PARAM_STR);
+        
+        error_log("Parámetros vinculados: " . $terminoBusqueda);
+        
+        $stmtBuscar->execute();
+        
+        error_log("Query ejecutada exitosamente");
+        
         $clientes = $stmtBuscar->fetchAll(PDO::FETCH_ASSOC);
         
+        error_log("Clientes encontrados: " . count($clientes));
+        
         if (empty($clientes)) {
-            // 🔹 LOG para debug
-            error_log("Búsqueda de cliente sin resultados. Término: " . $busqueda);
+            error_log("⚠️ Sin resultados para: " . $busqueda);
             
             http_response_code(404);
             echo json_encode([
                 "success" => false,
                 "error" => "No se encontraron clientes con ese criterio.",
                 "clientes" => [],
-                "busqueda" => $busqueda // Para debug
+                "busqueda" => $busqueda
             ]);
             exit;
         }
         
-        // 🔹 LOG de éxito
-        error_log("Clientes encontrados: " . count($clientes));
+        error_log("✅ Éxito: " . count($clientes) . " clientes encontrados");
         
         http_response_code(200);
         echo json_encode([
@@ -87,7 +109,18 @@ try {
             "cantidad" => count($clientes)
         ]);
         
+    } catch (PDOException $e) {
+        error_log("❌ Error SQL: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            "success" => false,
+            "error" => "Error en la base de datos: " . $e->getMessage()
+        ]);
     }
+    
+    
+}
+
     // ==================== CREAR CLIENTE ====================
     elseif ($accion === 'crear') {
         $nombre = trim($entrada['nombre'] ?? '');

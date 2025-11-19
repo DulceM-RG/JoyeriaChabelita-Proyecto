@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="fecha-hora">
-                    <span id="fechaHora">Fecha y hora del sistema: 09/11/2025 14:20:47</span>
+                    <span id="fechaHora"></span>
                 </div>
             </div>
             <button class="btn-salir" onclick="window.location.href='menuVentas.html'">
@@ -77,7 +77,6 @@
                     </svg>
                     <span>Cliente</span>
                 </div>
-
                 <div class="buscar-container">
                     <div class="buscar-wrapper">
                         <input type="text" placeholder="Buscar cliente por teléfono o nombre" id="inputBuscar">
@@ -86,24 +85,26 @@
 
                     <!-- 🔹 NUEVA TABLA DE RESULTADOS -->
                     <div class="tabla-clientes-container" id="tablaClientesContainer" style="display: none;">
-                        <table class="tabla-clientes">
-                            <thead>
-                                <tr>
-                                    <th>Teléfono</th>
-                                    <th>Nombre Completo</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaClientesBody">
-                                <!-- Se llenará dinámicamente -->
-                            </tbody>
-                        </table>
+                        <<<<<<< HEAD <table class="tabla-clientes">
+                            =======
+                            <table class="tabla-clientes" id="tablaClientes">
+                                >>>>>>> dulce
+                                <thead>
+                                    <tr>
+                                        <th>Teléfono</th>
+                                        <th>Nombre Completo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaClientesBody">
+                                    <!-- Se llenará dinámicamente -->
+                                </tbody>
+                            </table>
                     </div>
                 </div>
+                <<<<<<< HEAD=======>>>>>>> dulce
+                    <button class="btn-nuevo-cliente" id="btnNuevoCliente">Nuevo cliente</button>
 
-
-
-                <button class="btn-nuevo-cliente" id="btnNuevoCliente">Nuevo cliente</button>
             </div>
 
             <!-- Acordeón Nuevo Cliente -->
