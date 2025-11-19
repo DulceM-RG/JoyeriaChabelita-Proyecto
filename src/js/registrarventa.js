@@ -890,33 +890,34 @@ inputEfectivoRecibido.addEventListener('input', function (e) {
 });
 
 // ============================================
-// FUNCIÓN: CONFIRMAR VENTA Y GENERAR TICKET - CORREGIDA
+// FUNCIÓN: CONFIRMAR VENTA Y GENERAR TICKET - CORREGIDA (DUPLICADO - CAUSABA DOBLE DECREMENTO DE STOCK)
 // ============================================
-btnConfirmarVenta.addEventListener('click', async function () {
-    if (!metodoPagoSeleccionado) {
-        alert('⚠️ Por favor, selecciona un método de pago');
-        return;
-    }
+// btnConfirmarVenta.addEventListener('click', async function () {
+//     if (!metodoPagoSeleccionado) {
+//         alert('⚠️ Por favor, selecciona un método de pago');
+//         return;
+//     }
 
-    if (metodoPagoSeleccionado === 'efectivo') {
-        const efectivoRecibido = parseFloat(inputEfectivoRecibido.value) || 0;
-        if (efectivoRecibido < totalVenta) {
-            alert('⚠️ El efectivo recibido es insuficiente');
-            return;
-        }
-    }
+//     if (metodoPagoSeleccionado === 'efectivo') {
+//         const efectivoRecibido = parseFloat(inputEfectivoRecibido.value) || 0;
+//         if (efectivoRecibido < totalVenta) {
+//             alert('⚠️ El efectivo recibido es insuficiente');
+//             return;
+//         }
+//     }
 
-    // ✅ CAMBIO 1: Primero guardar en BD (esto define window.nombreClienteVenta)
-    const ventaExitosa = await guardarVentaBD();
+//     // ✅ CAMBIO 1: Primero guardar en BD (esto define window.nombreClienteVenta)
+//     const ventaExitosa = await guardarVentaBD();
 
-    // ✅ CAMBIO 2: Solo generar ticket si la venta fue exitosa
-    if (ventaExitosa) {
-        generarTicket();
-        cerrarModalCobrar();
-    }
-    // Si falló, guardarVentaBD() ya mostró el error
-});
+//     // ✅ CAMBIO 2: Solo generar ticket si la venta fue exitosa
+//     if (ventaExitosa) {
+//         generarTicket();
+//         cerrarModalCobrar();
+//     }
+//     // Si falló, guardarVentaBD() ya mostró el error
+// });
 
+//xdxd hay un listener duplicado en btnConfirmarVenta
 // ============================================
 // FUNCIÓN: GENERAR TICKET 
 // ============================================
@@ -1187,9 +1188,14 @@ function generarTicket() {
     };
 }
 
-//============================================
-// FUNCIÓN: CONFIRMAR VENTA - CON DEBUG
 // ============================================
+
+// FUNCIÓN: CONFIRMAR VENTA - CON DEBUG
+
+// ============================================
+
+//xpxp Esta es la función que ya funciona
+
 btnConfirmarVenta.addEventListener('click', async function () {
     console.log('🔵 Botón Confirmar clickeado');
 

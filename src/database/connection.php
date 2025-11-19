@@ -9,7 +9,7 @@ class ConexionDB {
         $host = "127.0.0.1"; // usa IP en lugar de localhost para evitar problemas
         $dbName = "joyeriachabelitaproy";
         $user = "root";
-        $password = "root";
+        $password = "";
         $characterSet = "utf8mb4";
         $port = 3306;
 
