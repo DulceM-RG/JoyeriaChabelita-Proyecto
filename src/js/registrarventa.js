@@ -731,26 +731,6 @@ function actualizarTotal() {
     totalMonto.textContent = `$${total.toLocaleString('es-MX', { minimumFractionDigits: 1 })}`;
 }
 
-// ============================================
-// FUNCIÓN: COBRAR VENTA (Por implementar)
-// ============================================
-btnCobrarVenta.addEventListener('click', function () {
-    if (productosEnVenta.length === 0) {
-        alert('⚠️ No hay productos en la venta');
-        return;
-    }
-
-    const total = productosEnVenta.reduce((sum, p) => sum + p.subtotal, 0);
-
-    console.log('💰 Procesando venta:', {
-        productos: productosEnVenta,
-        total: total
-    });
-
-    alert(`💰 Venta procesada\n\nTotal: $${total.toLocaleString('es-MX', { minimumFractionDigits: 1 })}\n\n(Funcionalidad de cobro pendiente)`);
-
-    // Aquí se implementará la lógica de cobro
-});
 
 // ============================================
 // EVENT LISTENERS
@@ -910,9 +890,9 @@ inputEfectivoRecibido.addEventListener('input', function (e) {
 });
 
 // ============================================
-// FUNCIÓN: CONFIRMAR VENTA Y GENERAR TICKET
+// FUNCIÓN: CONFIRMAR VENTA Y GENERAR TICKET - CORREGIDA
 // ============================================
-btnConfirmarVenta.addEventListener('click', function () {
+btnConfirmarVenta.addEventListener('click', async function () {
     if (!metodoPagoSeleccionado) {
         alert('⚠️ Por favor, selecciona un método de pago');
         return;
@@ -926,14 +906,15 @@ btnConfirmarVenta.addEventListener('click', function () {
         }
     }
 
-    // Generar ticket
-    generarTicket();
+    // ✅ CAMBIO 1: Primero guardar en BD (esto define window.nombreClienteVenta)
+    const ventaExitosa = await guardarVentaBD();
 
-    // Guardar venta en BD (aquí conectarás con tu backend)
-    guardarVentaBD();
-
-    // Cerrar modal
-    cerrarModalCobrar();
+    // ✅ CAMBIO 2: Solo generar ticket si la venta fue exitosa
+    if (ventaExitosa) {
+        generarTicket();
+        cerrarModalCobrar();
+    }
+    // Si falló, guardarVentaBD() ya mostró el error
 });
 
 // ============================================
@@ -1206,35 +1187,93 @@ function generarTicket() {
     };
 }
 
+//============================================
+// FUNCIÓN: CONFIRMAR VENTA - CON DEBUG
 // ============================================
-// FUNCIÓN: GUARDAR VENTA EN BASE DE DATOS
-// ============================================
-async function guardarVentaBD() {
-    // Determinar ID del cliente
-    let idCliente = 1; // Por defecto público
-    let nombreClienteCompleto = 'Público General'; // Para el ticket
+btnConfirmarVenta.addEventListener('click', async function () {
+    console.log('🔵 Botón Confirmar clickeado');
 
-    if (tipoClienteActual === 'mayorista' && window.clienteSeleccionado) {
-        idCliente = window.clienteSeleccionado.idCliente;
-
-        // GUARDAR NOMBRE COMPLETO DEL CLIENTE MAYORISTA PARA EL TICKET
-        const apellidoMaterno = window.clienteSeleccionado.apellidoMaterno || '';
-        nombreClienteCompleto = `${window.clienteSeleccionado.nombre} ${window.clienteSeleccionado.apellidoPaterno} ${apellidoMaterno}`.trim();
+    if (!metodoPagoSeleccionado) {
+        alert('⚠️ Por favor, selecciona un método de pago');
+        return;
     }
 
-    // PREPARAR PRODUCTOS CON TODA LA INFORMACIÓN NECESARIA
+    if (metodoPagoSeleccionado === 'efectivo') {
+        const efectivoRecibido = parseFloat(inputEfectivoRecibido.value) || 0;
+        if (efectivoRecibido < totalVenta) {
+            alert('⚠️ El efectivo recibido es insuficiente');
+            return;
+        }
+    }
+
+    console.log('🔵 Iniciando guardado de venta...');
+
+    try {
+        // ✅ Guardar nombre del cliente ANTES de todo
+        let nombreClienteCompleto = 'Público General';
+
+        if (tipoClienteActual === 'mayorista') {
+            if (window.clienteSeleccionado && window.clienteSeleccionado.idCliente !== 1) {
+                nombreClienteCompleto = window.clienteSeleccionado.nombreCompleto;
+            }
+        }
+
+        window.nombreClienteVenta = nombreClienteCompleto;
+        console.log('✅ Nombre cliente guardado:', nombreClienteCompleto);
+
+        // Guardar venta en BD
+        const ventaExitosa = await guardarVentaBD();
+        console.log('🔵 Resultado guardarVentaBD():', ventaExitosa);
+
+        if (ventaExitosa) {
+            console.log('✅ Venta exitosa, generando ticket...');
+            generarTicket();
+            cerrarModalCobrar();
+            console.log('✅ Ticket generado y modal cerrado');
+        } else {
+            console.error('❌ La venta NO fue exitosa');
+            alert('❌ No se pudo completar la venta. Revisa la consola (F12).');
+        }
+    } catch (error) {
+        console.error('❌ Error en confirmar venta:', error);
+        alert('❌ Error al procesar la venta: ' + error.message);
+    }
+});
+
+// ============================================
+// FUNCIÓN: GUARDAR VENTA - VERSIÓN CORREGIDA CON RETURN
+// ============================================
+async function guardarVentaBD() {
+    console.log('💾 Entrando a guardarVentaBD()');
+
+    // Determinar ID del cliente
+    let idCliente = 1;
+    let nombreClienteCompleto = 'Público General';
+
+    if (tipoClienteActual === 'mayorista') {
+        if (window.clienteSeleccionado && window.clienteSeleccionado.idCliente !== 1) {
+            idCliente = window.clienteSeleccionado.idCliente;
+            nombreClienteCompleto = window.clienteSeleccionado.nombreCompleto;
+            console.log('✅ Cliente mayorista:', nombreClienteCompleto);
+        } else {
+            alert('⚠️ Por favor, selecciona un cliente mayorista antes de procesar la venta.');
+            return false;
+        }
+    } else {
+        console.log('✅ Cliente público general');
+    }
+
+    // Preparar productos
     const productos = productosEnVenta.map(p => ({
-        codigo: p.codigo,              // idProducto
-        descripcion: p.descripcion,    // Para mensajes de error
+        codigo: p.codigo,
+        descripcion: p.descripcion,
         cantidad: p.cantidad,
-        precio: p.precio,              // costoUnitario
-        subtotal: p.subtotal           // importe
+        precio: p.precio,
+        subtotal: p.subtotal
     }));
 
-    // Calcular total
     const total = productosEnVenta.reduce((sum, p) => sum + p.subtotal, 0);
 
-    // Preparar efectivo y cambio
     let efectivoRecibido = null;
     let cambio = null;
 
@@ -1243,10 +1282,9 @@ async function guardarVentaBD() {
         cambio = efectivoRecibido - total;
     }
 
-    // PREPARAR DATOS COMPLETOS PARA EL PHP
     const datosVenta = {
         idCliente: idCliente,
-        nombreCliente: nombreClienteCompleto,  // Para el ticket
+        nombreCliente: nombreClienteCompleto,
         productos: productos,
         total: total,
         metodoPago: metodoPagoSeleccionado,
@@ -1254,19 +1292,31 @@ async function guardarVentaBD() {
         cambio: cambio
     };
 
-    console.log('Guardando venta:', datosVenta);
+    console.log('📤 Enviando datos al servidor:', datosVenta);
 
     try {
-        // ✅ CORREGIR URL DEL ARCHIVO PHP
         const response = await fetch(URL_BASE + 'guardarVenta.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosVenta)
         });
 
+        console.log('📥 Respuesta recibida, status:', response.status);
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const textoRespuesta = await response.text();
+            console.error('❌ Respuesta no es JSON:', textoRespuesta);
+            alert('❌ Error del servidor: La respuesta no es JSON válida.');
+            return false;
+        }
+
         const resultado = await response.json();
+        console.log('📦 Resultado parseado:', resultado);
 
         if (resultado.success) {
+            console.log('✅ Venta registrada exitosamente');
+
             alert(`✅ Venta registrada exitosamente!\n\n` +
                 `ID Venta: ${resultado.venta.idVenta}\n` +
                 `Total: $${resultado.venta.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}\n` +
@@ -1277,28 +1327,51 @@ async function guardarVentaBD() {
             actualizarTablaVenta();
             actualizarTotal();
 
-            // Resetear cliente
-            if (tipoClienteActual === 'mayorista') {
-                limpiarResultadosClientes();
-            }
+            // Resetear cliente y tipo
+            window.clienteSeleccionado = null;
+            tipoClienteActual = null;
 
-            // Guardar nombre del cliente en variable global para el ticket
-            window.nombreClienteVenta = nombreClienteCompleto;
+            const btnPublico = document.getElementById('btnPublico');
+            const btnMayorista = document.getElementById('btnMayorista');
+            if (btnPublico) btnPublico.classList.remove('active');
+            if (btnMayorista) btnMayorista.classList.remove('active');
+
+            const acordeonBuscar = document.getElementById('acordeonBuscar');
+            const acordeonNuevo = document.getElementById('acordeonNuevo');
+            if (acordeonBuscar) acordeonBuscar.classList.remove('show');
+            if (acordeonNuevo) acordeonNuevo.classList.remove('show');
+
+            limpiarResultadosClientes();
+
+            console.log('✅ Retornando TRUE');
+            return true; // ✅ IMPORTANTE: Retornar true
+
         } else {
-            alert('Error al registrar venta:\n\n' + resultado.error);
-            console.error('Error completo:', resultado);
+            console.error('❌ Error del servidor:', resultado.error);
+            alert('❌ Error al registrar venta:\n\n' + resultado.error);
+            return false;
         }
     } catch (error) {
-        console.error('Error de conexión:', error);
-        alert('Error de conexión al registrar la venta.\n\nRevisa la consola para más detalles.');
+        console.error('❌ Error de conexión:', error);
+        alert('❌ Error de conexión al registrar la venta.');
+        return false;
     }
 }
 
-// Función helper para limpiar resultados de clientes
+// ============================================
+// FUNCIÓN CORREGIDA: LIMPIAR RESULTADOS DE CLIENTES
+// ============================================
 function limpiarResultadosClientes() {
-    document.getElementById('inputTelefono').value = '';
-    document.getElementById('inputNombreCompleto').value = '';
-    document.getElementById('inputAcciones').value = '';
+    // ✅ CORREGIDO: Usar los IDs correctos según tu HTML
+    const inputBuscar = document.getElementById('inputBuscar');
+    if (inputBuscar) {
+        inputBuscar.value = '';
+    }
+
+    // ✅ Ocultar tabla de clientes
+    ocultarTablaClientes();
+
+    // ✅ Limpiar cliente seleccionado
     window.clienteSeleccionado = null;
 }
 
