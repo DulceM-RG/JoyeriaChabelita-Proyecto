@@ -890,34 +890,6 @@ inputEfectivoRecibido.addEventListener('input', function (e) {
 });
 
 // ============================================
-// FUNCIÓN: CONFIRMAR VENTA Y GENERAR TICKET - CORREGIDA
-// ============================================
-btnConfirmarVenta.addEventListener('click', async function () {
-    if (!metodoPagoSeleccionado) {
-        alert('⚠️ Por favor, selecciona un método de pago');
-        return;
-    }
-
-    if (metodoPagoSeleccionado === 'efectivo') {
-        const efectivoRecibido = parseFloat(inputEfectivoRecibido.value) || 0;
-        if (efectivoRecibido < totalVenta) {
-            alert('⚠️ El efectivo recibido es insuficiente');
-            return;
-        }
-    }
-
-    // ✅ CAMBIO 1: Primero guardar en BD (esto define window.nombreClienteVenta)
-    const ventaExitosa = await guardarVentaBD();
-
-    // ✅ CAMBIO 2: Solo generar ticket si la venta fue exitosa
-    if (ventaExitosa) {
-        generarTicket();
-        cerrarModalCobrar();
-    }
-    // Si falló, guardarVentaBD() ya mostró el error
-});
-
-// ============================================
 // FUNCIÓN: GENERAR TICKET 
 // ============================================
 function generarTicket() {
@@ -1186,7 +1158,7 @@ function generarTicket() {
         }, 250);
     };
 }
-
+//
 //============================================
 // FUNCIÓN: CONFIRMAR VENTA - CON DEBUG
 // ============================================
