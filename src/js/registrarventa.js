@@ -1181,7 +1181,7 @@ btnConfirmarVenta.addEventListener('click', async function () {
     console.log('🔵 Iniciando guardado de venta...');
 
     try {
-        // ✅ Guardar nombre del cliente ANTES de todo
+        // ✅ 1. Guardar nombre del cliente ANTES de todo
         let nombreClienteCompleto = 'Público General';
 
         if (tipoClienteActual === 'mayorista') {
@@ -1193,15 +1193,18 @@ btnConfirmarVenta.addEventListener('click', async function () {
         window.nombreClienteVenta = nombreClienteCompleto;
         console.log('✅ Nombre cliente guardado:', nombreClienteCompleto);
 
-        // Guardar venta en BD
+        // ✅ 2. GENERAR TICKET PRIMERO (mientras productosEnVenta[] tiene datos)
+        console.log('🎫 Generando ticket con', productosEnVenta.length, 'productos...');
+        generarTicket();
+
+        // ✅ 3. LUEGO guardar en BD (esto limpia productosEnVenta[])
         const ventaExitosa = await guardarVentaBD();
         console.log('🔵 Resultado guardarVentaBD():', ventaExitosa);
 
         if (ventaExitosa) {
-            console.log('✅ Venta exitosa, generando ticket...');
-            generarTicket();
+            console.log('✅ Venta guardada exitosamente');
             cerrarModalCobrar();
-            console.log('✅ Ticket generado y modal cerrado');
+            console.log('✅ Modal cerrado');
         } else {
             console.error('❌ La venta NO fue exitosa');
             alert('❌ No se pudo completar la venta. Revisa la consola (F12).');
@@ -1211,7 +1214,6 @@ btnConfirmarVenta.addEventListener('click', async function () {
         alert('❌ Error al procesar la venta: ' + error.message);
     }
 });
-
 // ============================================
 // FUNCIÓN: GUARDAR VENTA - VERSIÓN CORREGIDA CON RETURN
 // ============================================
