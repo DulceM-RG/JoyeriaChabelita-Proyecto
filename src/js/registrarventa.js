@@ -531,41 +531,31 @@ function buscarJoya() {
     const codigoBusqueda = inputCodigoJoya.value.trim();
 
     if (!codigoBusqueda) {
-        alert("⚠️ Ingresa un código de producto");
+        alert("⚠️ Ingresa un código");
         return;
     }
 
-    console.log('🔍 Iniciando búsqueda de producto:', codigoBusqueda);
-    console.log('📡 URL:', URL_BASE + 'buscarProducto.php');
-
+    // 🔹 CONECTAR CON PHP
     fetch(URL_BASE + 'buscarProducto.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ codigoProducto: codigoBusqueda })
     })
-        .then(res => {
-            console.log('📥 Response status:', res.status);
-            console.log('📥 Response ok:', res.ok);
-            return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
-            console.log('📦 Datos recibidos:', data);
-
-            if (data.success && data.productos && data.productos.length > 0) {
-                console.log('✅ Productos encontrados:', data.productos.length);
+            if (data.success && data.productos.length > 0) {
                 mostrarResultadosBusqueda(data.productos);
             } else {
-                console.warn('⚠️ Sin resultados:', data.error);
-                alert("❌ " + (data.error || "No se encontraron productos"));
+                alert("❌ No se encontraron productos");
                 tablaResultadosContainer.style.display = "none";
             }
         })
         .catch(error => {
-            console.error('❌ Error completo:', error);
-            console.error('❌ Stack:', error.stack);
-            alert('Error al buscar producto. Revisa la consola (F12)');
+            console.error('❌ Error:', error);
+            alert('Error al buscar producto');
         });
 }
+
 // ============================================
 // FUNCIÓN: MOSTRAR RESULTADOS DE BÚSQUEDA
 // ============================================
@@ -596,7 +586,7 @@ function mostrarResultadosBusqueda(resultados) {
 // ============================================
 // FUNCIÓN: AGREGAR PRODUCTO A LA VENTA
 // ============================================
-
+// 🔹 REEMPLAZAR la función agregarProductoAVenta() (línea ~312)
 window.agregarProductoAVenta = function (idProducto, categoria, descripcion, precio, stockDisponible) {
     // Convertir precio a número
     precio = parseFloat(precio);
@@ -796,7 +786,7 @@ let totalVenta = 0;
 // ============================================
 // FUNCIÓN: ABRIR MODAL DE COBRAR VENTA
 // ============================================
-/*function abrirModalCobrar() {
+function abrirModalCobrar() {
     if (productosEnVenta.length === 0) {
         alert('⚠️ No hay productos en la venta');
         return;
@@ -823,38 +813,6 @@ let totalVenta = 0;
     // Mostrar modal
     modalCobrarVenta.classList.add('show');
     document.body.style.overflow = 'hidden'; // Prevenir scroll
-}*/
-function abrirModalCobrar() {
-    if (productosEnVenta.length === 0) {
-        alert('⚠️ No hay productos en la venta');
-        return;
-    }
-
-    // ⚠️ VALIDAR CLIENTE MAYORISTA
-    if (tipoClienteActual === 'mayorista' && !window.clienteSeleccionado) {
-        alert('⚠️ Por favor, seleccione un cliente mayorista');
-        return;
-    }
-
-    totalVenta = productosEnVenta.reduce((sum, p) => sum + p.subtotal, 0);
-
-    // ⚠️ CAMBIAR: Obtener NOMBRE del cliente
-    let nombreCliente = 'Público General';
-    if (window.clienteSeleccionado) {
-        nombreCliente = window.clienteSeleccionado.nombreCompleto;
-    }
-
-    // Llenar datos del modal
-    modalCliente.textContent = nombreCliente;  // ← AHORA USA EL NOMBRE
-    modalProductos.textContent = productosEnVenta.length;
-    modalTotal.textContent = `$${totalVenta.toLocaleString('es-MX', { minimumFractionDigits: 1 })}`;
-
-    // Resetear formulario
-    resetearModalCobrar();
-
-    // Mostrar modal
-    modalCobrarVenta.classList.add('show');
-    document.body.style.overflow = 'hidden';
 }
 
 // ============================================
@@ -930,119 +888,6 @@ inputEfectivoRecibido.addEventListener('input', function (e) {
         btnConfirmarVenta.disabled = true;
     }
 });
-
-// ============================================
-// FUNCIÓN: CONFIRMAR VENTA Y GENERAR TICKET - CORREGIDA
-// ============================================
-btnConfirmarVenta.addEventListener('click', async function () {
-    if (!metodoPagoSeleccionado) {
-        alert('⚠️ Por favor, selecciona un método de pago');
-        return;
-    }
-
-    if (metodoPagoSeleccionado === 'efectivo') {
-        const efectivoRecibido = parseFloat(inputEfectivoRecibido.value) || 0;
-        if (efectivoRecibido < totalVenta) {
-            alert('⚠️ El efectivo recibido es insuficiente');
-            return;
-        }
-    }
-
-    // ✅ CAMBIO 1: Primero guardar en BD (esto define window.nombreClienteVenta)
-    const ventaExitosa = await guardarVentaBD();
-
-    // ✅ CAMBIO 2: Solo generar ticket si la venta fue exitosa
-    if (ventaExitosa) {
-        generarTicket();
-        cerrarModalCobrar();
-    }
-    // Si falló, guardarVentaBD() ya mostró el error
-});
-
-// Guardar venta en BD (aquí conectarás con tu backend)
-
-async function guardarVentaBD() {
-    // Determinar ID del cliente
-    let idCliente = 1;
-    let nombreClienteParaTicket = 'Público General';
-
-    if (window.clienteSeleccionado) {
-        idCliente = window.clienteSeleccionado.idCliente;
-        nombreClienteParaTicket = window.clienteSeleccionado.nombreCompleto;
-    }
-
-    // Preparar productos
-    const productos = productosEnVenta.map(p => ({
-        idProducto: p.codigo,
-        cantidad: p.cantidad
-    }));
-
-    // Preparar efectivo y cambio
-    let efectivoRecibido = null;
-    let cambio = null;
-
-    if (metodoPagoSeleccionado === 'efectivo') {
-        efectivoRecibido = parseFloat(inputEfectivoRecibido.value);
-        cambio = efectivoRecibido - totalVenta;
-    }
-
-    // Preparar datos
-    const datosVenta = {
-        idCliente: idCliente,
-        productos: productos,
-        metodoPago: metodoPagoSeleccionado,
-        efectivoRecibido: efectivoRecibido,
-        cambio: cambio
-    };
-
-    console.log('💾 Guardando venta:', datosVenta);
-
-    try {
-        const response = await fetch(URL_BASE + 'registrarVenta.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datosVenta)
-        });
-
-        console.log('📡 Response status:', response.status);
-
-        const resultado = await response.json();
-        console.log('📥 Resultado:', resultado);
-
-        if (resultado.success) {
-            alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}\nCliente: ${nombreClienteParaTicket}`);
-
-            // Cerrar modal
-            cerrarModalCobrar();
-
-            // Limpiar carrito
-            productosEnVenta = [];
-            actualizarTablaVenta();
-            actualizarTotal();
-
-            // Resetear a público si era mayorista
-            if (tipoClienteActual === 'mayorista') {
-                limpiarResultadosClientes();
-                btnPublico.click(); // Volver a público
-            }
-        } else {
-            alert('❌ Error al guardar venta:\n\n' + resultado.error);
-            console.error('Error del servidor:', resultado);
-        }
-    } catch (error) {
-        console.error('❌ Error completo:', error);
-        alert('Error al registrar la venta. Revisa la consola (F12)');
-    }
-}
-
-// Función helper para limpiar resultados de clientes
-function limpiarResultadosClientes() {
-    document.getElementById('inputTelefono').value = '';
-    document.getElementById('inputNombreCompleto').value = '';
-    document.getElementById('inputAcciones').value = '';
-    window.clienteSeleccionado = null;
-}
-
 
 // ============================================
 // FUNCIÓN: GENERAR TICKET 
@@ -1313,7 +1158,7 @@ function generarTicket() {
         }, 250);
     };
 }
-
+//
 //============================================
 // FUNCIÓN: CONFIRMAR VENTA - CON DEBUG
 // ============================================
