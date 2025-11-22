@@ -1,0 +1,134 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== HEADER GENERAL ===== */
+.header {
+    width: 100%;
+    /* height: 30px; */
+    margin-bottom: 30px;
+    /*MANGEN DEL BTON Y HEADER*/
+}
+
+
+.header-image {
+    width: 100%;
+    height: 30px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.header-content-bar {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+
+    /* Configuración Flexbox para alinear IZQUIERDA | DERECHA */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left-group {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    /* Espacio entre Nombre del empleado y Fecha/Hora */
+}
+
+
+/* ===== BODY/CONTENIDO PRINCIPAL ===== */
+.main-content {
+    flex: 1;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+
+/* ===== FOOTER ===== */
+.footer {
+    width: 100%;
+    margin-top: auto;
+}
+
+.footer-image {
+    width: 100%;
+    height: 20px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.footer-bar {
+    width: 100%;
+    background-color: #1a1a1a;
+    padding: 5px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.footer-logo {
+    max-width: 150px;
+    height: auto;
+}
+
+/* ===== BOTÓN SALIR (parte superior derecha) ===== */
+.salir-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 40px 0 0;
+}
+
+.btn-salir {
+    background-color: #b8903b;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-salir:hover {
+    background-color: #a67d2f;
+}
+
+.icono-salir {
+    width: 18px;
+    height: 18px;
+}
+
+/* ===== TITULO DE REGISTRAR PRODUCTOS ===== */
+.titulo-principal {
+    text-align: center;
+    color: #B58D43;
+    font-weight: 700;
+    font-size: 36px;
+    margin-bottom: 30px;
+}
