@@ -7,7 +7,7 @@ const RUTAS_POR_PUESTO = {
   gerente: "menuAdministracion.html",
   venta: "menuVentas.html",
   almacen: "menuAlmacen.html",
-  contador: "./pages/dashboard-contador.html",
+
 };
 
 document.addEventListener("DOMContentLoaded", () => {
