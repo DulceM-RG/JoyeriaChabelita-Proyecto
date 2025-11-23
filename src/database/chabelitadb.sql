@@ -200,8 +200,9 @@ CREATE TABLE `producto` (
   `idCategoria` int(11) DEFAULT NULL,
   `rfcProveedor` varchar(13) DEFAULT NULL,
   `stock` int(11) NOT NULL,
-  `kilataje` enum('8k','10K','14K','18k') DEFAULT NULL,
+  `kilataje` enum('8K','10K','14K','18k') DEFAULT NULL,
   `descripcion` varchar(100) DEFAULT NULL,
+  `precioCompra` decimal(8,2) DEFAULT NULL,
   `precioUnitario` decimal(8,2) DEFAULT NULL,
   `gramos` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`idProducto`),
@@ -218,7 +219,7 @@ CREATE TABLE `producto` (
 
 LOCK TABLES `producto` WRITE;
 /*!40000 ALTER TABLE `producto` DISABLE KEYS */;
-INSERT INTO `producto` VALUES ('P001',1,'JY0001240G186',50,'14K','Solitario de compromiso',5250.00,5.25),('P002',2,'JY0001244K228',30,'10K','Tejido cubano diamantado en oro blanco',15750.00,15.75),('P003',3,'JY0001246M244',40,'18k','Tejido torsal',12600.00,6.30),('P004',4,'JY0001247N259',60,'10K','Dormilonas',1000.00,1.00),('P005',5,'JY0001248O264',25,'14K','Forma de flor',9000.00,4.50);
+INSERT INTO `producto` VALUES ('P001',1,'JY0001240G186',50,'14K','Solitario de compromiso',4000.00,5250.00,5.25),('P002',2,'JY0001244K228',30,'10K','Tejido cubano diamantado en oro blanco',12000.00,15750.00,15.75),('P003',3,'JY0001246M244',40,'18k','Tejido torsal',9500.00,12600.00,6.30),('P004',4,'JY0001247N259',60,'10K','Dormilonas',750.00,1000.00,1.00),('P005',5,'JY0001248O264',25,'14K','Forma de flor',7000.00,9000.00,4.50);
 /*!40000 ALTER TABLE `producto` ENABLE KEYS */;
 UNLOCK TABLES;
 
