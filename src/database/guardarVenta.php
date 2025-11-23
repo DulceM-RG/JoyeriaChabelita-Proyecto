@@ -1,6 +1,6 @@
 <?php
 /**
- * GUARDAR VENTA COMPLETA - ERROR HY093 CORREGIDO
+ 
  * Archivo: database/guardarVenta.php
  */
 
@@ -52,6 +52,12 @@ if (empty($data['metodoPago'])) {
     exit();
 }
 
+if (!in_array($data['metodoPago'], ['efectivo', 'tarjeta'])) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Método de pago inválido: ' . $data['metodoPago']]);
+    exit();
+}
+
 try {
     $pdo = ConexionDB::setConnection();
     error_log("✅ Conexión establecida");
@@ -76,18 +82,19 @@ try {
     }
 
     // ==========================================
-    // REGISTRAR INGRESO - VERSIÓN CORREGIDA
+    // REGISTRAR INGRESO 
     // ==========================================
     error_log("💰 Intentando insertar ingreso con monto: " . $data['total']);
     
-    // ✅ CORRECCIÓN: Usar ? en lugar de parámetros nombrados
-    $sqlIngreso = "INSERT INTO ingreso(fecha, importeTotal) VALUES(NOW(), ?)";
+    // Usar ? en lugar de parámetros nombrados
+    $sqlIngreso = "INSERT INTO ingreso(fecha, importeTotal, metodoPago) VALUES(NOW(), ?, ?)";
     error_log("SQL Ingreso: $sqlIngreso");
     
     $stmtIngreso = $pdo->prepare($sqlIngreso);
     
-    // Ejecutar con array indexado
-    $resultIngreso = $stmtIngreso->execute([$data['total']]);
+    // Ejecutar con array indexado (total y metodoPago)
+    $resultIngreso = $stmtIngreso->execute([$data['total'], $data['metodoPago']]);
+
     
     if (!$resultIngreso) {
         $errorInfo = $stmtIngreso->errorInfo();
