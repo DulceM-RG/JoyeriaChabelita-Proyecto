@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mi Resumen del Día - Joyería Chabelita</title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="src/assets/image/chabelitanegro.png" type="image/x-icon" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="src/css/resumenDia.css" />
+</head>
+
+<body>
+
+    <!-- Encabezado con imagen -->
+    <header class="header">
+        <div class="header-image" style="background-image: url('src/assets/image/header.png');"></div>
+    </header>
+
+    <div class="salir-container">
+        <button class="btn-salir" onclick="window.location.href='menuAdministracion.html'">
+            <img src="src/assets/icon/menu-principal.png" alt="Ícono Salir" width="20" height="20">
+            Menu
+        </button>
+    </div>
+
+    <h1 class="title">MI RESUMEN DEL DÍA</h1>
+
+    <!-- Selector de fecha -->
+    <section class="selector-fecha">
+        <label for="fechaResumen">Seleccionar fecha:</label>
+        <input type="date" id="fechaResumen" />
+        <button class="btn btn-buscar" id="btnBuscar">Buscar</button>
+    </section>
+
+    <!-- Resumen rápido: 3 columnas -->
+    <section class="resumen-caja-grid">
+        <div class="resumen-item">
+            <div class="item-title">Total Vendido</div>
+            <div class="item-value" id="totalVendido">$0</div>
+        </div>
+        <div class="resumen-item">
+            <div class="item-title">Ventas realizadas</div>
+            <div class="item-value" id="ventasRealizadas">0</div>
+        </div>
+        <div class="resumen-item">
+            <div class="item-title">Productos vendidos</div>
+            <div class="item-value" id="productosVendidos">0</div>
+        </div>
+    </section>
+
+    <!-- Tabla detalle ventas -->
+    <section class="detalle-ventas">
+        <table>
+            <thead>
+                <tr>
+                    <th>IdVenta</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Productos</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody id="tablaVentasBody">
+                <!-- Filas generadas con JS -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Barra inferior -->
+    <footer class="footer-bar">
+        <div class="footer-content">
+            <span class="footer-text">Chabelita</span>
+        </div>
+    </footer>
+
+    <!-- JS -->
+    <script src="src/js/resumenDia.js"></script>
+</body>
+
+</html>
