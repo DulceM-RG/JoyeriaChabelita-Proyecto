@@ -394,7 +394,7 @@ async function registrarProducto(e) {
             setTimeout(() => {
                 limpiarFormulario();
                 if (btnSubmit) btnSubmit.disabled = false;
-            }, 2000);
+            }, 500);
         } else {
             mostrarError(resultado.message);
             if (btnSubmit) btnSubmit.disabled = false;
