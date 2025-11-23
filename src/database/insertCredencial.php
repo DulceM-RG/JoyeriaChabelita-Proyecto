@@ -50,8 +50,8 @@ try {
     $puestoMap = [
         'gerente'   => 1,
         'venta'     => 2,
-        'almacen'   => 3,
-        'contador'  => 4
+        'almacen'   => 3
+        
     ];
     $idPuesto = $puestoMap[strtolower($datos['puesto'])] ?? null;
 
