@@ -33,16 +33,15 @@
             <h1 class="form-title">REGISTRO DE PROVEEDOR</h1>
 
             <form id="registroForm">
-                <!-- DATOS PERSONALES -->
+                <!-- DATOS PROVEEDOR -->
                 <h2 class="section-title">Datos del Proveedor</h2>
 
-
+                <!-- RFC -->
                 <div class="form-group">
                     <label class="form-label">RFC</label>
                     <div class="icon-input">
                         <img src="./src/assets/icon/iconUsuario.png" alt="Usuario">
-                        <input type="text" name="nombre" id="txtNombre" class="form-input"
-                            placeholder="RFC del proveedor" required>
+                        <input type="text" id="txtRfc" class="form-input" placeholder="RFC del proveedor" required>
                     </div>
                 </div>
 
@@ -50,16 +49,15 @@
                     <label class="form-label">Razón Social</label>
                     <div class="icon-input">
                         <img src="./src/assets/icon/iconUsuario.png" alt="Usuario">
-                        <input type="text" name="nombre" id="txtNombre" class="form-input" placeholder="Razón Social"
-                            required>
+                        <input type="text" id="txtRazonSocial" class="form-input" placeholder="Razón Social" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label">Número de teléfono</label>
                     <div class="icon-input">
                         <img src="./src/assets/icon/iconCelular.png" alt="Teléfono">
-                        <input type="tel" name="telefono" id="txtTelefono" class="form-input"
-                            placeholder="Número de teléfono" pattern="[0-9]{10}" maxlength="10" minlength="10"
+                        <input type="tel" id="txtTelefono" class="form-input" placeholder="Número de teléfono"
+                            pattern="[0-9]{10}" maxlength="10" minlength="10"
                             title="Debe ingresar exactamente 10 dígitos numéricos" required>
                     </div>
 
