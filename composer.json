@@ -1,0 +1,17 @@
+{
+    "name": "ialej/joyeria-chabelita-proyecto",
+    "autoload": {
+        "psr-4": {
+            "Ialej\\JoyeriaChabelitaProyecto\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ialej",
+            "email": "lopezmoralesimanolalejandro@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^12.4"
+    }
+}
