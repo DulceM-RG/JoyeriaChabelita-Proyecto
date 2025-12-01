@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vista de Proveedores</title>
+    <link rel="shortcut icon" href="./src/assets/image/chabelitanegro.png" type="image/x-icon" />
+    <link rel="stylesheet" href="./src/css/proveedorAlmacen.css" />
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-image" style="background-image: url('./src/assets/image/header.png');"></div>
+    </header>
+
+    <div class="salir-container">
+        <button class="btn-salir" onclick="window.location.href='menuAlmacen.html'">
+            <img src="src/assets/icon/menu-principal.png" alt="Ícono Salir" width="20" height="20">
+            Menu
+        </button>
+    </div>
+
+    <main class="main-content">
+        <div class="proveedor-container">
+            <h1 class="page-title">PROVEEDORES</h1>
+
+            <!-- BUSCADOR -->
+            <div class="search-container">
+                <input type="text" id="txtBuscar" class="search-input"
+                    placeholder="Buscar por RFC, Razón Social o Teléfono..." autocomplete="off">
+                <button id="btnBuscar" class="btn-search"> Buscar</button>
+                <button id="btnLimpiar" class="btn-clear"> Limpiar</button>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="proveedor-table">
+                    <thead>
+                        <tr>
+                            <th>RFC</th>
+                            <th>Razón Social</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyProveedor">
+                        <!-- Filas agregadas por JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="noResultados" style="display: none; text-align: center; padding: 30px; color: #999;">
+                No se encontraron proveedores
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL PARA EDITAR PROVEEDOR -->
+    <div id="modalEditar" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Proveedor</h2>
+                <span class="close" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="formEditar">
+                    <input type="hidden" id="editRfcOriginal">
+
+                    <div class="form-group">
+                        <label>RFC</label>
+                        <input type="text" id="editRfc" class="form-input" placeholder="RFC del proveedor"
+                            maxlength="13" required>
+                        <div id="advertenciaRfc"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Razón Social</label>
+                        <input type="text" id="editRazonSocial" class="form-input" placeholder="Razón Social"
+                            maxlength="100" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="text" id="editTelefono" class="form-input" placeholder="10 dígitos" maxlength="10"
+                            inputmode="numeric">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                        <button type="submit" class="btn-save">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-image" style="background-image: url('src/assets/image/header.png');"></div>
+        <div class="footer-bar">
+            <div class="footer-content">
+                <img src="src/assets/image/dorado.png" alt="Logo Joyería Chabelita" class="footer-logo">
+            </div>
+        </div>
+    </footer>
+
+    <script src="./src/js/RUProveedor.js"></script>
+</body>
+
+</html>

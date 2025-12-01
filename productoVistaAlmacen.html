@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vista de Productos</title>
+    <link rel="shortcut icon" href="./src/assets/image/chabelitanegro.png" type="image/x-icon" />
+    <link rel="stylesheet" href="./src/css/productoVista.css" />
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-image" style="background-image: url('./src/assets/image/header.png');"></div>
+    </header>
+
+    <div class="salir-container">
+        <button class="btn-salir" onclick="window.location.href='menuAlmacen.html'">
+            <img src="src/assets/icon/menu-principal.png" alt="Ícono Salir" width="20" height="20">
+            Menu
+        </button>
+    </div>
+
+    <main class="main-content">
+        <div class="producto-container">
+            <h1 class="page-title">PRODUCTOS</h1>
+
+            <!-- BUSCADOR -->
+            <div class="search-container">
+                <input type="text" id="txtBuscar" class="search-input"
+                    placeholder="Buscar por Código, Categoría, Kilataje, Descripción o Proveedor..." autocomplete="off">
+                <button id="btnBuscar" class="btn-search"> Buscar</button>
+                <button id="btnLimpiar" class="btn-clear"> Limpiar</button>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="producto-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Categoría</th>
+                            <th>Kilataje</th>
+                            <th>Stock</th>
+                            <th>Precio</th>
+                            <th>Gramos</th>
+                            <th>Descripción</th>
+                            <th>Costo</th>
+                            <th>Proveedor</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyProducto">
+                        <!-- Filas agregadas por JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="noResultados" style="display: none; text-align: center; padding: 30px; color: #999;">
+                No se encontraron productos
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL PARA EDITAR PRODUCTO -->
+    <div id="modalEditar" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Producto</h2>
+                <span class="close" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="formEditar">
+                    <input type="hidden" id="editProductoOriginal">
+
+                    <div class="form-group">
+                        <label>Código del Producto</label>
+                        <input type="text" id="editCodigo" class="form-input" placeholder="Código" maxlength="20"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select id="editCategoria" class="form-input" required>
+                            <option value="">Seleccione categoría</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Kilataje</label>
+                        <select id="editKilateje" class="form-input" required>
+                            <option value="">Seleccione kilataje</option>
+                            <option value="8k">8k</option>
+                            <option value="10K">10K</option>
+                            <option value="14K">14K</option>
+                            <option value="18k">18k</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="text" id="editStock" class="form-input" placeholder="Stock" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Precio de Compra</label>
+                        <input type="text" id="editCosto" class="form-input" placeholder="0.00" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Precio de Venta</label>
+                        <input type="text" id="editPrecioVenta" class="form-input" placeholder="0.00" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gramos</label>
+                        <input type="text" id="editGramos" class="form-input" placeholder="0.00" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción</label>
+                        <input type="text" id="editDescripcion" class="form-input"
+                            placeholder="Descripción del producto" maxlength="100" required>
+                    </div>
+
+                    <!-- El select de proveedor se crea dinámicamente en JS -->
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                        <button type="submit" class="btn-save">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-image" style="background-image: url('src/assets/image/header.png');"></div>
+        <div class="footer-bar">
+            <div class="footer-content">
+                <img src="src/assets/image/dorado.png" alt="Logo Joyería Chabelita" class="footer-logo">
+            </div>
+        </div>
+    </footer>
+
+    <script src="./src/js/RUProducto.js"></script>
+</body>
+
+</html>
