@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <img src="./src/assets/icon/22.png" alt="Editar">
                     </button>
                     <button class="btn-eliminar" data-id="${cliente.idCliente}" title="Eliminar">
-                        <img src="./src/assets/icon/eliminar.png" alt="Eliminar">
+                        <img src="./src/assets/icon/borrar126.png" alt="Eliminar">
                     </button>
                 </div>
             </td>
