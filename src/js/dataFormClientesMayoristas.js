@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Configuracion de la API
     const API_URL = '/JoyeriaChabelita-Proyecto/src/database/clientesMayoristas.php';
-    
+
     console.log('Iniciando carga de clientes...');
     console.log('API URL:', API_URL);
 
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function cargarClientesDesdeDB() {
         const tbody = document.getElementById('tbodyClientes');
-        
+
         tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px;">Cargando clientes...</td></tr>';
 
         // Realizar peticion AJAX
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => {
                 console.log('Respuesta recibida:', response.status);
                 console.log('URL:', response.url);
-                
+
                 if (!response.ok) {
                     throw new Error('Error HTTP: ' + response.status);
                 }
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 console.log('Datos recibidos:', data);
-                
+
                 if (data.success) {
                     if (data.clientes && data.clientes.length > 0) {
                         cargarClientesEnTabla(data.clientes);
@@ -69,12 +69,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function crearFilaCliente(cliente) {
         const fila = document.createElement('tr');
-        
+
         const nombre = cliente.nombre || '';
         const apellidoPaterno = cliente.apellidoPaterno || '';
         const apellidoMaterno = cliente.apellidoMaterno || '';
         const telefono = cliente.telefono || '';
-        
+
         fila.innerHTML = `
             <td>${nombre}</td>
             <td>${apellidoPaterno}</td>
@@ -91,12 +91,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             </td>
         `;
-        
+
         fila.dataset.idCliente = cliente.idCliente;
         fila.dataset.idTipoCliente = cliente.idTipoCliente;
-        
+
         agregarEventosFila(fila, cliente.idCliente);
-        
+
         return fila;
     }
 
@@ -195,41 +195,41 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify(datosActualizados)
         })
-        .then(response => {
-            console.log('Respuesta:', response.status);
-            if (!response.ok) {
-                throw new Error('Error HTTP: ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Respuesta del servidor:', data);
-            
-            if (data.success) {
-                celdas[0].textContent = datosNuevos.nombre;
-                celdas[1].textContent = datosNuevos.apellidoPaterno;
-                celdas[2].textContent = datosNuevos.apellidoMaterno;
-                celdas[3].textContent = datosNuevos.telefono;
+            .then(response => {
+                console.log('Respuesta:', response.status);
+                if (!response.ok) {
+                    throw new Error('Error HTTP: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
 
-                restaurarBotonesAccion(celdas[4], fila.dataset.idCliente);
-                agregarEventosFila(fila, fila.dataset.idCliente);
+                if (data.success) {
+                    celdas[0].textContent = datosNuevos.nombre;
+                    celdas[1].textContent = datosNuevos.apellidoPaterno;
+                    celdas[2].textContent = datosNuevos.apellidoMaterno;
+                    celdas[3].textContent = datosNuevos.telefono;
 
-                fila.classList.remove('modo-edicion');
-                filaEnEdicion = null;
+                    restaurarBotonesAccion(celdas[4], fila.dataset.idCliente);
+                    agregarEventosFila(fila, fila.dataset.idCliente);
 
-                mostrarMensaje('Cliente actualizado exitosamente', 'exito');
-            } else {
-                mostrarMensaje(data.message || 'Error al guardar', 'error');
+                    fila.classList.remove('modo-edicion');
+                    filaEnEdicion = null;
+
+                    mostrarMensaje('Cliente actualizado exitosamente', 'exito');
+                } else {
+                    mostrarMensaje(data.message || 'Error al guardar', 'error');
+                    btnGuardar.disabled = false;
+                    btnGuardar.style.opacity = '1';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarMensaje('Error de conexion: ' + error.message, 'error');
                 btnGuardar.disabled = false;
                 btnGuardar.style.opacity = '1';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            mostrarMensaje('Error de conexion: ' + error.message, 'error');
-            btnGuardar.disabled = false;
-            btnGuardar.style.opacity = '1';
-        });
+            });
     }
 
     function validarDatosCliente(datos) {
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <img src="./src/assets/icon/22.png" alt="Editar">
                 </button>
                 <button class="btn-eliminar" data-id="${idCliente}" title="Eliminar">
-                    <img src="./src/assets/icon/eliminar.png" alt="Eliminar">
+                    <img src="./src/assets/icon/borrar126.png" alt="Eliminar">
                 </button>
             </div>
         `;
@@ -305,37 +305,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 idCliente: idCliente
             })
         })
-        .then(response => {
-            console.log('Respuesta:', response.status);
-            if (!response.ok) {
-                throw new Error('Error HTTP: ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Respuesta del servidor:', data);
-            
-            if (data.success) {
-                fila.style.transition = 'all 0.3s ease';
-                fila.style.opacity = '0';
-                fila.style.transform = 'translateX(-100%)';
-                
-                setTimeout(() => {
-                    fila.remove();
-                    mostrarMensaje('Cliente ' + nombreCompleto + ' eliminado', 'exito');
-                }, 300);
-            } else {
-                mostrarMensaje(data.message || 'Error al eliminar', 'error');
+            .then(response => {
+                console.log('Respuesta:', response.status);
+                if (!response.ok) {
+                    throw new Error('Error HTTP: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+
+                if (data.success) {
+                    fila.style.transition = 'all 0.3s ease';
+                    fila.style.opacity = '0';
+                    fila.style.transform = 'translateX(-100%)';
+
+                    setTimeout(() => {
+                        fila.remove();
+                        mostrarMensaje('Cliente ' + nombreCompleto + ' eliminado', 'exito');
+                    }, 300);
+                } else {
+                    mostrarMensaje(data.message || 'Error al eliminar', 'error');
+                    btnEliminar.disabled = false;
+                    btnEliminar.style.opacity = '1';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarMensaje('Error de conexion: ' + error.message, 'error');
                 btnEliminar.disabled = false;
                 btnEliminar.style.opacity = '1';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            mostrarMensaje('Error de conexion: ' + error.message, 'error');
-            btnEliminar.disabled = false;
-            btnEliminar.style.opacity = '1';
-        });
+            });
     }
 
     // ==================== FUNCIONES DE UI ====================
