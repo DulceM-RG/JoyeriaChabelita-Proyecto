@@ -7,7 +7,7 @@ class ConexionDB {
         /*variables para la conexión a la base de datos */
 
         $host = "127.0.0.1"; // usa IP en lugar de localhost para evitar problemas
-        $dbName = "joyeriachabelitaproy";
+        $dbName = "chabelita";
         $user = "root";
         $password = "root";
         $characterSet = "utf8mb4";

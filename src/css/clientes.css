@@ -16,17 +16,16 @@ body {
 /* HEADER */
 .header {
     width: 100%;
-    height: 80px;
-    overflow: hidden;
+    /* margin-top: auto;*/
+    margin-bottom: 30px;
 }
 
 .header-image {
     width: 100%;
-    height: 100%;
+    height: 30px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: brightness(0.9);
 }
 
 /* ===== BOTÓN SALIR (parte superior derecha) ===== */
@@ -141,17 +140,16 @@ body {
 
 .footer-image {
     width: 100%;
-    height: 70px;
+    height: 20px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: brightness(0.7);
 }
 
 .footer-bar {
     width: 100%;
     background-color: #1a1a1a;
-    padding: 10px 0;
+    padding: 5px;
 }
 
 .footer-content {
@@ -163,43 +161,10 @@ body {
 }
 
 .footer-logo {
-    color: #c8a857;
-    font-family: 'Brush Script MT', cursive;
-    font-size: 28px;
-    font-weight: 400;
-    user-select: none;
+    max-width: 150px;
+    height: auto;
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .page-title {
-        font-size: 24px;
-        text-align: center;
-    }
-
-    .clientes-table {
-        min-width: 100%;
-    }
-
-    .main-content {
-        margin: 20px auto;
-        padding: 0 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .header {
-        height: 60px;
-    }
-
-    .footer-image {
-        height: 50px;
-    }
-
-    .footer-logo {
-        font-size: 22px;
-    }
-}
 
 /* ESTILOS PARA BOTONES DE ACCIÓN */
 .celda-acciones {

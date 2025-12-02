@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credenciales de Usuarios - Joyería Chabelita</title>
+    <title>Registrar Venta</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="src/assets/image/chabelitanegro.png" type="image/x-icon">
@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="fecha-hora">
-                    <span id="fechaHora">Fecha y hora del sistema: 09/11/2025 14:20:47</span>
+                    <span id="fechaHora"></span>
                 </div>
             </div>
             <button class="btn-salir" onclick="window.location.href='menuVentas.html'">
@@ -64,7 +64,7 @@
                 <button class="btn-tipo" id="btnMayorista">Mayorista</button>
             </div>
 
-            <!-- Acordeón Buscar Cliente (Solo visible con Mayorista) -->
+            <!-- Acordeón Buscar Cliente (Solo visible con Mayorista))-->
             <div class="acordeon" id="acordeonBuscar">
                 <div class="cliente-label">
                     <svg class="icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -77,7 +77,6 @@
                     </svg>
                     <span>Cliente</span>
                 </div>
-
                 <div class="buscar-container">
                     <div class="buscar-wrapper">
                         <input type="text" placeholder="Buscar cliente por teléfono o nombre" id="inputBuscar">
@@ -86,7 +85,7 @@
 
                     <!-- 🔹 NUEVA TABLA DE RESULTADOS -->
                     <div class="tabla-clientes-container" id="tablaClientesContainer" style="display: none;">
-                        <table class="tabla-clientes">
+                        <table class="tabla-clientes" id="tablaClientes">
                             <thead>
                                 <tr>
                                     <th>Teléfono</th>
@@ -100,10 +99,8 @@
                         </table>
                     </div>
                 </div>
-
-
-
                 <button class="btn-nuevo-cliente" id="btnNuevoCliente">Nuevo cliente</button>
+
             </div>
 
             <!-- Acordeón Nuevo Cliente -->

@@ -1,5 +1,3 @@
-/* ===== RESET Y CONFIGURACIÓN GENERAL ===== */
-/* ===== RESET Y CONFIGURACIÓN GENERAL ===== */
 * {
     margin: 0;
     padding: 0;
@@ -14,12 +12,10 @@ body {
     flex-direction: column;
 }
 
-
-
 .header {
     width: 100%;
     /* margin-top: auto;*/
-    height: 30px;
+    margin-bottom: 30px;
 }
 
 .header-image {
@@ -28,6 +24,18 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+}
+
+.header-content-bar {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+
+    /* Configuración Flexbox para alinear IZQUIERDA | DERECHA */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* ===== BOTÓN SALIR (parte superior derecha) ===== */
@@ -42,7 +50,7 @@ body {
     background-color: #b8903b;
     color: white;
     border: none;
-    padding: 10px 25px;
+    padding: 15px 25px;
     border-radius: 12px;
     cursor: pointer;
     display: flex;
@@ -62,17 +70,13 @@ body {
     height: 18px;
 }
 
-
-
-/* ===== BODY/CONTENIDO PRINCIPAL ===== */
-
 /* ===== BODY/CONTENIDO PRINCIPAL ===== */
 .main-content {
     flex: 1;
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 0px 20px;
 }
 
 /* ===== FOOTER ===== */
@@ -88,12 +92,6 @@ body {
     background-position: center;
     background-repeat: no-repeat;
 }
-
-/* Dimensiones recomendadas para imagen de footer:
-   - Desktop: 1920px x 150px
-   - Tablet: 1024px x 150px
-   - Mobile: 768px x 150px
-*/
 
 .footer-bar {
     width: 100%;
@@ -126,16 +124,13 @@ body {
 
 /*TITULO DE REGISTRO*/
 .form-title {
-    color: #B58D43;
-    font-size: 36px;
-    font-weight: 700;
     text-align: center;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    color: #B58D43;
+    font-weight: 700;
+    font-size: 36px;
+    margin-bottom: 30px;
 }
 
-/*ITULOS SECUNDARIOS DEL FORMULARIO : DATOS PERS, DIRECCIÓN , CREDENCIALES*/
 .section-title {
     color: black;
     /*Define el tamaño de la fuente del texto a 18 píxeles.*/
@@ -148,12 +143,7 @@ body {
     border-left: 8px solid #c9a661;
 }
 
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 15px;
-}
+
 
 .form-group {
     margin-bottom: 15px;
@@ -192,23 +182,8 @@ body {
     color: #999;
 }
 
-.form-select {
-    width: 100%;
-    padding: 12px 15px;
-    border: none;
-    background-color: #e8e4f3;
-    border-radius: 8px;
-    font-size: 14px;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
 
-.form-select:focus {
-    outline: none;
-    background-color: #ddd6f0;
-    box-shadow: 0 0 0 3px rgba(201, 166, 97, 0.2);
-}
+
 
 .icon-input {
     position: relative;
@@ -228,7 +203,7 @@ body {
     padding-left: 40px;
 }
 
-/**BOTÓN CREAR CUENTA*/
+/**BOTÓN CREAR PROVEEDOR*/
 .btn-submit {
     width: 100%;
     padding: 15px;
@@ -253,53 +228,4 @@ body {
 
 .btn-submit:active {
     transform: translateY(0);
-}
-
-/* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 768px) {
-    .header {
-        height: 150px;
-    }
-
-    .form-container {
-        padding: 30px 20px;
-    }
-
-    .form-title {
-        font-size: 26px;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-
-    .main-content {
-        padding: 30px 15px;
-    }
-
-    .footer {
-        padding: 25px 15px;
-    }
-
-    .footer-logo {
-        max-width: 150px;
-    }
-}
-
-@media (max-width: 480px) {
-    .header {
-        height: 120px;
-    }
-
-    .form-container {
-        padding: 25px 15px;
-    }
-
-    .form-title {
-        font-size: 22px;
-    }
-
-    .section-title {
-        font-size: 14px;
-    }
 }

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="src/assets/image/chabelitanegro.png" type="image/x-icon">
+    <title>Registro de Producto</title>
+    <link rel="stylesheet" href="src/css/registrarProducto.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <!-- Imagen decorativa del footer -->
+        <div class="header-image" style="background-image: url('./src/assets/image/header.png');"></div>
+
+
+    </header>
+    <div class="salir-container">
+        <button class="btn-salir" onclick="window.location.href='menuAlmacen.html'">
+            <img src="src/assets/icon/menu-principal.png" class="icono-salir">
+            Menu
+        </button>
+
+    </div>
+
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="titulo-principal">REGISTRO DE PRODUCTO</h1>
+
+            <form id="registroForm">
+                <h2 class="section-title">Datos del producto</h2>
+                <!-- LINEA 1 -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Código de la Joya</label>
+                        <div class="icon-input">
+                            <input type="text" id="txtCodigo" class="form-input" placeholder="Código de la Joya"
+                                required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Categoria</label>
+                        <select id="selCategoria" class="form-select" required>
+                            <option value="">Selecciona Categoria</option>
+                            <!-- que sea dinamico de acuerdo a la base de datos -->
+                            <option value="gerente">Anillo</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- LINEA 2 -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Kilataje</label>
+                        <select id="selKilataje" class="form-select" required>
+                            <option value="">Selecciona Kilataje</option>
+                            <!-- que sea dinamico de acuerdo a la base de datos -->
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Stock</label>
+                        <div class="icon-input">
+                            <input type="text" id="txtStock" class="form-input" placeholder="Stock" required>
+                        </div>
+                    </div>
+                </div>
+                <!-- LINEA 3 -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Precio Venta</label>
+                        <div class="icon-input">
+                            <input type="text" id="txtPrecio" class="form-input" placeholder="Precio Venta" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gramos</label>
+                        <div class="icon-input">
+                            <input type="text" id="txtGramos" class="form-input" placeholder="Stock" required>
+                        </div>
+                    </div>
+                </div>
+                <!-- LINEA 4 -->
+                <div class="form-group">
+                    <label class="form-label">Descripción de la Joya</label>
+                    <div class="icon-input">
+                        <input type="text" id="txtDescripcion" class="form-input" placeholder="Descripción de la Joya"
+                            required>
+                    </div>
+                </div>
+                <!-- LINEA 5 -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Costo de la pieza</label>
+                        <div class="icon-input">
+                            <input type="text" id="txtPrecioCompra" class="form-input" placeholder="Costo de la pieza"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Proveedor</label>
+                        <div class="icon-input">
+                            <img src="./src/assets/icon/iconUsuario.png">
+                            <input type="text" id="txtProveedor" class="form-input"
+                                placeholder="Buscar por RFC o Razón Social..." autocomplete="off" required>
+
+                            <!-- Lista de sugerencias personalizada -->
+                            <div id="sugerenciasProveedor" class="sugerencias-dropdown"></div>
+                        </div>
+
+                        <!-- Proveedor seleccionado -->
+                        <div id="proveedorSeleccionado"
+                            style="display: none; margin-top: 10px; padding: 15px; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 4px;">
+                            <p style="margin: 0 0 5px 0;"><strong>RFC:</strong> <span id="rfcSeleccionado"></span></p>
+                            <p style="margin: 0 0 5px 0;"><strong>Razón Social:</strong> <span
+                                    id="razonSocialSeleccionada"></span></p>
+                            <p style="margin: 0 0 10px 0;"><strong>Teléfono:</strong> <span
+                                    id="telefonoSeleccionado"></span></p>
+                            <button type="button" id="btnCambiarProveedor"
+                                style="padding: 5px 10px; background: #fff; border: 1px solid #ccc; border-radius: 3px; cursor: pointer;">✕
+                                Cambiar</button>
+                        </div>
+
+                        <!-- Campo oculto para guardar el RFC -->
+                        <input type="hidden" id="rfcProveedorHidden" name="rfcProveedor">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Guardar Producto</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <!-- Imagen decorativa del footer -->
+        <div class="footer-image" style="background-image: url('./src/assets/image/header.png');"></div>
+
+        <!-- Barra negra con logo -->
+        <div class="footer-bar">
+            <div class="footer-content">
+                <img src="./src/assets/image/dorado.png" alt="50px" class="footer-logo">
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="module" src="./src/js/registrarProducto.js"></script>
+</body>
+
+</html>

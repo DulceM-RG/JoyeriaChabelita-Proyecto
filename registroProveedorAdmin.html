@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="src/assets/image/chabelitanegro.png" type="image/x-icon">
+    <title>Registro</title>
+    <link rel="stylesheet" href="src/css/registrarProvedor.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <!-- Imagen decorativa del footer -->
+        <div class="header-image" style="background-image: url('./src/assets/image/header.png');"></div>
+
+
+    </header>
+
+    <div class="salir-container">
+        <button class="btn-salir" onclick="window.location.href='menuAdministracion.html'">
+            <img src="src/assets/icon/menu-principal.png" class="icono-salir">
+            Menu
+        </button>
+
+    </div>
+
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div class="form-container">
+            <h1 class="form-title">REGISTRO DE PROVEEDOR</h1>
+
+            <form id="registroForm">
+                <!-- DATOS PROVEEDOR -->
+                <h2 class="section-title">Datos del Proveedor</h2>
+
+                <!-- RFC -->
+                <div class="form-group">
+                    <label class="form-label">RFC</label>
+                    <div class="icon-input">
+                        <img src="./src/assets/icon/iconUsuario.png" alt="Usuario">
+                        <input type="text" id="txtRfc" class="form-input" placeholder="RFC del proveedor" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Razón Social</label>
+                    <div class="icon-input">
+                        <img src="./src/assets/icon/iconUsuario.png" alt="Usuario">
+                        <input type="text" id="txtRazonSocial" class="form-input" placeholder="Razón Social" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Número de teléfono</label>
+                    <div class="icon-input">
+                        <img src="./src/assets/icon/iconCelular.png" alt="Teléfono">
+                        <input type="tel" id="txtTelefono" class="form-input" placeholder="Número de teléfono"
+                            pattern="[0-9]{10}" maxlength="10" minlength="10"
+                            title="Debe ingresar exactamente 10 dígitos numéricos" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Guardar Proveedor</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+        <!-- Imagen decorativa del footer -->
+        <div class="footer-image" style="background-image: url('./src/assets/image/header.png');"></div>
+
+        <!-- Barra negra con logo -->
+        <div class="footer-bar">
+            <div class="footer-content">
+                <img src="./src/assets/image/dorado.png" alt="50px" class="footer-logo">
+            </div>
+        </div>
+    </footer>
+
+
+    <script type="module" src="./src/js/registrarProveedor.js"></script>
+</body>
+
+</html>

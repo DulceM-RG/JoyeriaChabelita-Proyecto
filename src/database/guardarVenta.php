@@ -1,229 +1,206 @@
-<? php
+<?php
 /**
- * GUARDAR VENTA COMPLETA - VERSIÓN CORREGIDA
- * Archivo: api/guardar-venta.php
- * 
- * SOLO USA: venta, productoventa, producto, cliente, empleado, ingreso
- * NO USA: pedido, productopedido, proveedor (esos son para COMPRAS)
+ 
+ * Archivo: database/guardarVenta.php
  */
 
 session_start();
 header('Content-Type: application/json');
 
-require_once 'config/conexion.php';
+require_once 'connection.php';
 
-// Verificar sesión
-if (!isset($_SESSION['idEmpleado'])) {
+error_log("=== INICIO guardarVenta.php ===");
+
+// Validar sesión
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario']['idEmpleado'])) {
+    error_log("❌ Error: No hay sesión de empleado");
+    error_log("Contenido de SESSION: " . print_r($_SESSION, true));
     http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'No autorizado']);
+    echo json_encode(['success' => false, 'error' => 'No autorizado - Inicie sesión']);
     exit();
 }
 
 // Obtener datos JSON
-$data = json_decode(file_get_contents('php://input'), true);
+$raw_input = file_get_contents('php://input');
+error_log("📥 Datos recibidos: " . substr($raw_input, 0, 500)); // Solo primeros 500 chars
 
-// Validar datos requeridos
-if (empty($data['productos']) || empty($data['total']) || empty($data['metodoPago'])) {
+$data = json_decode($raw_input, true);
+
+if (json_last_error() !== JSON_ERROR_NONE) {
+    error_log("❌ Error JSON: " . json_last_error_msg());
     http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Faltan datos obligatorios'
-    ]);
+    echo json_encode(['success' => false, 'error' => 'Error JSON: ' . json_last_error_msg()]);
+    exit();
+}
+
+// Validar datos
+if (empty($data['productos'])) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'No hay productos en la venta']);
+    exit();
+}
+
+if (!isset($data['total']) || $data['total'] <= 0) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Total inválido']);
+    exit();
+}
+
+if (empty($data['metodoPago'])) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Falta método de pago']);
+    exit();
+}
+
+if (!in_array($data['metodoPago'], ['efectivo', 'tarjeta'])) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => 'Método de pago inválido: ' . $data['metodoPago']]);
     exit();
 }
 
 try {
-    $pdo = getConexion();
+    $pdo = ConexionDB::setConnection();
+    error_log("✅ Conexión establecida");
+
+    $pdo->beginTransaction();
+    error_log("🔄 Transacción iniciada");
+
+    $idEmpleado = $_SESSION['usuario']['idEmpleado'];
+    $idCliente = $data['idCliente'] ?? 1;
+    
+    error_log("👤 Empleado ID: $idEmpleado");
+    error_log("🧑 Cliente ID: $idCliente");
 
     // ==========================================
-    // INICIAR TRANSACCIÓN
+    // VALIDAR CLIENTE
     // ==========================================
-    $pdo -> beginTransaction();
-
-    // ==========================================
-    // 1. DETERMINAR EL CLIENTE
-    // ==========================================
-    $idCliente = null;
-
-    if ($data['tipoCliente'] === 'mayorista' && !empty($data['idClienteSeleccionado'])) {
-        // Cliente mayorista seleccionado
-        $idCliente = $data['idClienteSeleccionado'];
-    } else {
-        // Cliente público general - Buscar o crear
-        $stmtPublico = $pdo -> prepare("
-            SELECT c.idCliente 
-            FROM cliente c
-            INNER JOIN tipocliente tc ON c.idTipoCliente = tc.idTipoCliente
-            WHERE tc.tipo = 'Público'
-            LIMIT 1
-        ");
-        $stmtPublico -> execute();
-        $clientePublico = $stmtPublico -> fetch();
-
-        if (!$clientePublico) {
-            // Obtener o crear tipo 'Público'
-            $stmtTipo = $pdo -> prepare("
-                SELECT idTipoCliente FROM tipocliente WHERE tipo = 'Público'
-            ");
-            $stmtTipo -> execute();
-            $tipoPublico = $stmtTipo -> fetch();
-
-            if (!$tipoPublico) {
-                // Crear tipo 'Público'
-                $stmtCrearTipo = $pdo -> prepare("
-                    INSERT INTO tipocliente(tipo) VALUES('Público')
-                ");
-                $stmtCrearTipo -> execute();
-                $idTipoPublico = $pdo -> lastInsertId();
-            } else {
-                $idTipoPublico = $tipoPublico['idTipoCliente'];
-            }
-
-            // Crear cliente 'Público General'
-            $stmtCrearPublico = $pdo -> prepare("
-                INSERT INTO cliente(idTipoCliente, nombre, apellidoPaterno, telefono)
-                VALUES(: idTipoCliente, 'Público', 'General', '0000000000')
-            ");
-            $stmtCrearPublico -> execute([':idTipoCliente' => $idTipoPublico]);
-            $idCliente = $pdo -> lastInsertId();
-        } else {
-            $idCliente = $clientePublico['idCliente'];
-        }
+    $stmtCliente = $pdo->prepare("SELECT idCliente FROM cliente WHERE idCliente = ?");
+    $stmtCliente->execute([$idCliente]);
+    
+    if (!$stmtCliente->fetch()) {
+        throw new Exception("Cliente ID $idCliente no existe");
     }
 
     // ==========================================
-    // 2. OBTENER idEmpleado de la sesión
+    // REGISTRAR INGRESO 
     // ==========================================
-    $idEmpleado = $_SESSION['idEmpleado'];
+    error_log("💰 Intentando insertar ingreso con monto: " . $data['total']);
+    
+    // Usar ? en lugar de parámetros nombrados
+    $sqlIngreso = "INSERT INTO ingreso(fecha, importeTotal, metodoPago) VALUES(NOW(), ?, ?)";
+    error_log("SQL Ingreso: $sqlIngreso");
+    
+    $stmtIngreso = $pdo->prepare($sqlIngreso);
+    
+    // Ejecutar con array indexado (total y metodoPago)
+    $resultIngreso = $stmtIngreso->execute([$data['total'], $data['metodoPago']]);
 
-    // ==========================================
-    // 3. REGISTRAR INGRESO (dinero que entra)
-    // ==========================================
-    $idIngreso = null;
-
-    // Solo si quieres llevar control de ingresos
-    if ($data['metodoPago'] === 'efectivo' || $data['metodoPago'] === 'tarjeta') {
-        $stmtIngreso = $pdo -> prepare("
-            INSERT INTO ingreso(
-            fecha,
-            importeTotal
-        ) VALUES(
-            NOW(),
-                : importeTotal
-        )
-        ");
-        
-        $stmtIngreso -> execute([
-            ':importeTotal' => $data['total']
-        ]);
-
-        $idIngreso = $pdo -> lastInsertId();
+    
+    if (!$resultIngreso) {
+        $errorInfo = $stmtIngreso->errorInfo();
+        error_log("❌ Error al insertar ingreso: " . print_r($errorInfo, true));
+        throw new Exception("Error al registrar ingreso: " . $errorInfo[2]);
     }
-
-    // ==========================================
-    // 4. INSERTAR EN LA TABLA 'venta'
-    // ==========================================
-    $stmtVenta = $pdo -> prepare("
-        INSERT INTO venta(
-        fechaVenta,
-        idEmpleado,
-        idCliente,
-        ldIngreso
-    ) VALUES(
-        NOW(),
-            : idEmpleado,
-            : idCliente,
-            : ldIngreso
-    )
-    ");
     
-    $stmtVenta -> execute([
-        ':idEmpleado' => $idEmpleado,
-        ':idCliente' => $idCliente,
-        ':ldIngreso' => $idIngreso ?? 0
-    ]);
-
-    $idVenta = $pdo -> lastInsertId();
-
-    // ==========================================
-    // 5. INSERTAR CADA PRODUCTO EN 'productoventa'
-    // ==========================================
-    $stmtProductoVenta = $pdo -> prepare("
-        INSERT INTO productoventa(
-        idVenta,
-        idProducto,
-        folio,
-        cantidad,
-        costoUnitario,
-        importe
-    ) VALUES(
-            : idVenta,
-            : idProducto,
-            : folio,
-            : cantidad,
-            : costoUnitario,
-            : importe
-    )
-    ");
-
-    // Preparar statement para actualizar stock
-    $stmtActualizarStock = $pdo -> prepare("
-        UPDATE producto 
-        SET stock = stock - : cantidad 
-        WHERE idProducto = : idProducto
-        AND stock >= : cantidad
-    ");
-
-    // Preparar statement para verificar stock antes
-    $stmtVerificarStock = $pdo -> prepare("
-        SELECT stock FROM producto WHERE idProducto = : idProducto
-    ");
+    $idIngreso = $pdo->lastInsertId();
     
-    $folioActual = 1;
+    if (!$idIngreso || $idIngreso == 0) {
+        throw new Exception("No se obtuvo ID de ingreso");
+    }
+    
+    error_log("✅ Ingreso registrado. ID: $idIngreso");
+
+    // ==========================================
+    // INSERTAR VENTA
+    // ==========================================
+    $sqlVenta = "INSERT INTO venta(fechaVenta, idEmpleado, idCliente, idIngreso) VALUES(NOW(), ?, ?, ?)";
+    error_log("SQL Venta: $sqlVenta");
+    
+    $stmtVenta = $pdo->prepare($sqlVenta);
+    $resultVenta = $stmtVenta->execute([$idEmpleado, $idCliente, $idIngreso]);
+    
+    if (!$resultVenta) {
+        $errorInfo = $stmtVenta->errorInfo();
+        error_log("❌ Error al insertar venta: " . print_r($errorInfo, true));
+        throw new Exception("Error al registrar venta: " . $errorInfo[2]);
+    }
+    
+    $idVenta = $pdo->lastInsertId();
+    
+    if (!$idVenta || $idVenta == 0) {
+        throw new Exception("No se obtuvo ID de venta");
+    }
+    
+    error_log("✅ Venta registrada. ID: $idVenta");
+
+    // ==========================================
+    // INSERTAR PRODUCTOS
+    // ==========================================
+    $sqlProductoVenta = "INSERT INTO productoventa(idVenta, idProducto, cantidad, costo, importe) VALUES(?, ?, ?, ?, ?)";
+    $stmtProductoVenta = $pdo->prepare($sqlProductoVenta);
+
+    $sqlActualizarStock = "UPDATE producto SET stock = stock - ? WHERE idProducto = ? AND stock >= ?";
+    $stmtActualizarStock = $pdo->prepare($sqlActualizarStock);
+
+    $sqlVerificarStock = "SELECT stock, descripcion FROM producto WHERE idProducto = ?";
+    $stmtVerificarStock = $pdo->prepare($sqlVerificarStock);
+
+    $productosInsertados = 0;
 
     foreach($data['productos'] as $producto) {
-        // Verificar stock disponible
-        $stmtVerificarStock -> execute([':idProducto' => $producto['codigo']]);
-        $productoActual = $stmtVerificarStock -> fetch();
+        $idProducto = $producto['codigo'];
+        $cantidad = $producto['cantidad'];
+        $precio = $producto['precio'];
+        $subtotal = $producto['subtotal'];
+        
+        error_log("📦 Procesando: ID=$idProducto, Cant=$cantidad, Precio=$precio");
+
+        // Verificar stock
+        $stmtVerificarStock->execute([$idProducto]);
+        $productoActual = $stmtVerificarStock->fetch(PDO::FETCH_ASSOC);
 
         if (!$productoActual) {
-            throw new Exception("El producto {$producto['codigo']} no existe");
+            throw new Exception("Producto $idProducto no existe");
         }
 
-        if ($productoActual['stock'] < $producto['cantidad']) {
-            throw new Exception("Stock insuficiente para {$producto['descripcion']}. Disponible: {$productoActual['stock']}, Solicitado: {$producto['cantidad']}");
+        if ($productoActual['stock'] < $cantidad) {
+            throw new Exception(
+                "Stock insuficiente para {$productoActual['descripcion']}. " .
+                "Disponible: {$productoActual['stock']}, Solicitado: $cantidad"
+            );
         }
 
         // Insertar en productoventa
-        $stmtProductoVenta -> execute([
-            ':idVenta' => $idVenta,
-            ':idProducto' => $producto['codigo'],
-            ':folio' => $folioActual++,
-            ':cantidad' => $producto['cantidad'],
-            ':costoUnitario' => $producto['precio'],
-            ':importe' => $producto['subtotal']
+        $resultProducto = $stmtProductoVenta->execute([
+            $idVenta,
+            $idProducto,
+            $cantidad,
+            $precio,
+            $subtotal
         ]);
-
-        // Actualizar stock del producto
-        $stmtActualizarStock -> execute([
-            ':cantidad' => $producto['cantidad'],
-            ':idProducto' => $producto['codigo']
-        ]);
-
-        // Verificar si se actualizó el stock
-        if ($stmtActualizarStock -> rowCount() === 0) {
-            throw new Exception("No se pudo actualizar el stock del producto: ".$producto['codigo']);
+        
+        if (!$resultProducto) {
+            $errorInfo = $stmtProductoVenta->errorInfo();
+            throw new Exception("Error al insertar producto: " . $errorInfo[2]);
         }
+
+        // Actualizar stock
+        $resultStock = $stmtActualizarStock->execute([$cantidad, $idProducto, $cantidad]);
+        
+        if (!$resultStock || $stmtActualizarStock->rowCount() === 0) {
+            throw new Exception("No se pudo actualizar stock de producto $idProducto");
+        }
+
+        $productosInsertados++;
+        error_log("  ✅ Producto insertado y stock actualizado");
     }
 
     // ==========================================
-    // CONFIRMAR TRANSACCIÓN
+    // CONFIRMAR
     // ==========================================
-    $pdo -> commit();
+    $pdo->commit();
+    error_log("✅ COMMIT exitoso. Productos: $productosInsertados");
 
-    // ==========================================
-    // Respuesta exitosa
-    // ==========================================
     echo json_encode([
         'success' => true,
         'message' => 'Venta registrada exitosamente',
@@ -233,25 +210,25 @@ try {
             'fecha' => date('Y-m-d H:i:s'),
             'total' => $data['total'],
             'metodoPago' => $data['metodoPago'],
-            'productos' => count($data['productos'])
+            'productos' => $productosInsertados
         ]
     ]);
 
-    cerrarConexion($pdo);
-
 } catch (Exception $e) {
-    // ==========================================
-    // REVERTIR TRANSACCIÓN en caso de error
-    // ==========================================
-    if (isset($pdo) && $pdo -> inTransaction()) {
-        $pdo -> rollBack();
+    if (isset($pdo) && $pdo->inTransaction()) {
+        $pdo->rollBack();
+        error_log("🔙 ROLLBACK ejecutado");
     }
 
-    error_log("Error en guardar-venta: ".$e -> getMessage());
+    error_log("❌ ERROR: " . $e->getMessage());
+    error_log("❌ Trace: " . $e->getTraceAsString());
+    
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'error' => $e -> getMessage()
+        'error' => $e->getMessage()
     ]);
 }
+
+error_log("=== FIN guardarVenta.php ===");
 ?>

@@ -1,5 +1,10 @@
 const URL_BASE = 'http://localhost/JoyeriaChabelita-Proyecto/src/database/';
 let empleadoActual = null;
+window.clienteSeleccionado = null; // Inicializar variable global para el cliente
+
+// ============================================
+// Carga Inicial y Empleado
+// ============================================
 
 async function cargarDatosEmpleado() {
     try {
@@ -17,7 +22,7 @@ async function cargarDatosEmpleado() {
         } else {
             console.error('❌ Error al cargar empleado');
             alert('Error al cargar datos del empleado. Redirigiendo al login...');
-            window.location.href = '../login.html';
+            window.location.href = 'login.html';
         }
     } catch (error) {
         console.error('❌ Error de conexión:', error);
@@ -25,12 +30,6 @@ async function cargarDatosEmpleado() {
     }
 }
 
-// Cargar empleado al iniciar
-document.addEventListener('DOMContentLoaded', async () => {
-    await cargarDatosEmpleado();
-    actualizarFechaHora();
-    setInterval(actualizarFechaHora, 1000);
-});
 // Función para actualizar la fecha y hora de CDMX
 function actualizarFechaHora() {
     const ahora = new Date();
@@ -53,11 +52,20 @@ function actualizarFechaHora() {
     document.getElementById('fechaHora').textContent = `Fecha y hora del sistema: ${fecha} ${hora}`;
 }
 
-// Actualizar cada segundo
+// Cargar empleado y configurar fecha/hora al iniciar
+document.addEventListener('DOMContentLoaded', async () => {
+    await cargarDatosEmpleado();
+    actualizarFechaHora();
+    setInterval(actualizarFechaHora, 1000);
+});
+// Actualizar cada segundo (redundante con el de arriba, pero lo mantengo de tu código)
 setInterval(actualizarFechaHora, 1000);
 actualizarFechaHora(); // Llamar inmediatamente
 
-// Referencias a elementos
+// ============================================
+// Referencias y Estado PARTE DE CLIENTES
+// ============================================
+
 const btnPublico = document.getElementById('btnPublico');
 const btnMayorista = document.getElementById('btnMayorista');
 const acordeonBuscar = document.getElementById('acordeonBuscar');
@@ -66,6 +74,9 @@ const btnNuevoCliente = document.getElementById('btnNuevoCliente');
 const btnCancelar = document.querySelector('.btn-cancelar');
 const btnGuardar = document.querySelector('.btn-guardar');
 const btnBuscar = document.querySelector('.btn-buscar');
+const inputBuscar = document.getElementById('inputBuscar');
+const tablaClientesContainer = document.getElementById('tablaClientesContainer');
+const tablaClientesBody = document.getElementById('tablaClientesBody');
 
 // Estado actual
 let tipoClienteActual = null;
@@ -73,6 +84,7 @@ let tipoClienteActual = null;
 // ============================================
 // VALIDACIÓN EN TIEMPO REAL DEL TELÉFONO
 // ============================================
+
 const inputTelefono = document.getElementById('nuevoTelefono');
 
 // Evitar que se escriban letras o caracteres especiales
@@ -95,7 +107,7 @@ inputTelefono.addEventListener('input', function (e) {
     }
 });
 
-// Prevenir pegar texto que no sea numérico
+// Prevenir pegar texto que no sea numérico y limitar
 inputTelefono.addEventListener('paste', function (e) {
     e.preventDefault();
     const pasteData = e.clipboardData.getData('text');
@@ -113,153 +125,207 @@ inputTelefono.addEventListener('drop', function (e) {
 
 // Prevenir teclas que no sean números
 inputTelefono.addEventListener('keypress', function (e) {
-    // Permitir: backspace, delete, tab, escape, enter
-    if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1) {
+    // Permitir: backspace(8), delete(46), tab(9), escape(27), enter(13)
+    // También permitir las teclas del teclado numérico (96-105)
+    if ([8, 9, 27, 13, 46].includes(e.keyCode) || (e.keyCode >= 96 && e.keyCode <= 105)) {
         return;
     }
-    // Verificar que sea un número (0-9)
-    if ((e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105)) {
+    // Verificar que sea un número (0-9) en el teclado principal
+    if (e.keyCode < 48 || e.keyCode > 57) {
         e.preventDefault();
     }
 });
 
-// Event listener para el botón Público general
-btnPublico.addEventListener('click', function () {
-    tipoClienteActual = 'publico';
-    btnPublico.classList.add('active');
-    btnMayorista.classList.remove('active');
-    acordeonBuscar.classList.remove('show');
-    acordeonNuevo.classList.remove('show');
-
-    // ⚠️ AGREGAR ESTAS LÍNEAS:
-    window.clienteSeleccionado = {
-        idCliente: 1,
-        nombreCompleto: 'Público General',
-        tipoCliente: 'Publico'
-    };
-    console.log('✅ Cliente: Público General');
-});
-
-// Event listener para el botón Mayorista
-/*btnMayorista.addEventListener('click', function () {
-    tipoClienteActual = 'mayorista';
-    btnMayorista.classList.add('active');
-    btnPublico.classList.remove('active');
-    acordeonBuscar.classList.add('show');
-    acordeonNuevo.classList.remove('show');
-});*/
-btnMayorista.addEventListener('click', function () {
-    tipoClienteActual = 'mayorista';
-    btnMayorista.classList.add('active');
-    btnPublico.classList.remove('active');
-    acordeonBuscar.classList.add('show');
-    acordeonNuevo.classList.remove('show');
-
-});
 
 // ============================================
-// BOTON BUSCAR CLIENTES
+// BOTONES TIPO CLIENTE
 // ============================================
-// 
-btnBuscar.addEventListener('click', async function () {
-    const inputBuscar = document.getElementById('inputBuscar').value.trim();
 
-    if (!inputBuscar) {
-        alert('Por favor, ingresa un criterio de búsqueda (teléfono o nombre)');
-        return;
-    }
+if (btnPublico) {
+    btnPublico.addEventListener('click', function () {
+        console.log('🔘 Botón Público clickeado');
 
-    try {
-        const response = await fetch(URL_BASE + 'clientes.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                accion: 'buscar',
-                busqueda: inputBuscar
-            })
-        });
+        tipoClienteActual = 'publico';
+        btnPublico.classList.add('active');
+        btnMayorista.classList.remove('active');
 
-        const resultado = await response.json();
+        // Ocultar acordeones
+        acordeonBuscar.classList.remove('show');
+        acordeonNuevo.classList.remove('show');
 
-        if (resultado.success && resultado.clientes.length > 0) {
-            mostrarTablaClientes(resultado.clientes); // 🔹 NUEVA FUNCIÓN
-        } else {
-            alert('❌ No se encontraron clientes con ese criterio.');
-            ocultarTablaClientes(); // 🔹 NUEVA FUNCIÓN
-        }
-    } catch (error) {
-        console.error('❌ Error:', error);
-        alert('Error al buscar cliente. Intente nuevamente.');
-    }
-});
+        // Ocultar tabla
+        ocultarTablaClientes();
 
-// ============================================
-// MOSTRAR TABLA DE CLIENTES
-// ============================================
-function mostrarTablaClientes(clientes) {
-    const container = document.getElementById('tablaClientesContainer');
-    const tbody = document.getElementById('tablaClientesBody');
+        // Seleccionar cliente Público General
+        window.clienteSeleccionado = {
+            idCliente: 1,
+            nombreCompleto: 'Público General',
+            telefono: 'N/A',
+            tipoCliente: 'Publico',
+            idTipoCliente: 1
+        };
 
-    // Limpiar tabla
-    tbody.innerHTML = '';
-
-    // Agregar cada cliente como fila
-    clientes.forEach((cliente) => {
-        const fila = document.createElement('tr');
-        fila.innerHTML = `
-            <td>${cliente.telefono}</td>
-            <td>${cliente.nombreCompleto}</td>
-            <td>
-                <button class="btn-seleccionar-cliente" onclick="seleccionarCliente(${cliente.idCliente}, '${cliente.nombreCompleto}', '${cliente.telefono}')">
-                    Seleccionar
-                </button>
-            </td>
-        `;
-        tbody.appendChild(fila);
+        console.log('✅ Cliente: Público General seleccionado', window.clienteSeleccionado);
     });
+}
 
-    // Mostrar tabla
-    container.style.display = 'block';
 
-    console.log(`✅ ${clientes.length} cliente(s) encontrado(s)`);
+if (btnMayorista) {
+    btnMayorista.addEventListener('click', function () {
+        console.log('🔘 Botón Mayorista clickeado');
+
+        tipoClienteActual = 'mayorista';
+        btnMayorista.classList.add('active');
+        btnPublico.classList.remove('active');
+
+        // Mostrar acordeón de búsqueda
+        acordeonBuscar.classList.add('show');
+        acordeonNuevo.classList.remove('show');
+
+        // Limpiar búsqueda anterior
+        limpiarResultadosClientes();
+
+        // Deseleccionar cliente
+        window.clienteSeleccionado = null;
+
+        console.log('✅ Acordeón de búsqueda mostrado. Cliente deseleccionado.');
+    });
+}
+
+if (btnBuscar) {
+    btnBuscar.addEventListener('click', async function () {
+        console.log('🔍 Botón Buscar clickeado');
+
+        if (!inputBuscar) {
+            console.error('❌ No se encontró el elemento: inputBuscar');
+            alert('Error: Campo de búsqueda no encontrado');
+            return;
+        }
+
+        if (!tablaClientesBody) {
+            console.error('❌ No se encontró el elemento: tablaClientesBody');
+            alert('Error: Tabla de resultados no encontrada');
+            return;
+        }
+
+        const valorBusqueda = inputBuscar.value.trim();
+
+        if (!valorBusqueda) {
+            alert('Por favor, ingresa un criterio de búsqueda (teléfono o nombre)');
+            return;
+        }
+
+        console.log('🔍 Buscando cliente:', valorBusqueda);
+
+        // Mostrar indicador de carga
+        tablaClientesBody.innerHTML = '<tr><td colspan="3" style="text-align:center;">🔍 Buscando...</td></tr>';
+        tablaClientesContainer.style.display = 'block';
+
+        try {
+            const response = await fetch(URL_BASE + 'clientes.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    accion: 'buscar',
+                    busqueda: valorBusqueda
+                })
+            });
+
+            console.log('📡 Response status:', response.status);
+            console.log('📡 Response OK:', response.ok);
+
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                const textoRespuesta = await response.text();
+                console.error('❌ La respuesta no es JSON:', textoRespuesta);
+                alert('Error del servidor: La respuesta no es JSON válida');
+                limpiarResultadosClientes();
+                return;
+            }
+
+            const resultado = await response.json();
+            console.log('📥 Resultado completo:', resultado);
+
+            if (resultado.success && resultado.clientes && resultado.clientes.length > 0) {
+                console.log(`✅ Se encontraron ${resultado.clientes.length} cliente(s)`);
+
+                // Limpiar tabla
+                tablaClientesBody.innerHTML = '';
+
+                // Llenar tabla con TODOS los resultados
+                resultado.clientes.forEach(cliente => {
+                    const fila = document.createElement('tr');
+                    fila.innerHTML = `
+                        <td>${cliente.telefono || 'N/A'}</td>
+                        <td>${cliente.nombreCompleto || 'N/A'}</td>
+                        <td>
+                            <button class="btn-seleccionar-cliente" data-cliente='${JSON.stringify(cliente)}'>
+                                Seleccionar
+                            </button>
+
+                        </td>
+                    `;
+                    tablaClientesBody.appendChild(fila);
+                });
+
+                // Mostrar tabla
+                tablaClientesContainer.style.display = 'block';
+
+                // Agregar event listeners a los botones de seleccionar
+                const botonesSeleccionar = document.querySelectorAll('.btn-seleccionar-cliente');
+                botonesSeleccionar.forEach(boton => {
+                    boton.addEventListener('click', function () {
+                        const clienteData = JSON.parse(this.getAttribute('data-cliente'));
+                        seleccionarCliente(clienteData);
+                    });
+                });
+
+            } else {
+                console.warn('⚠️ No se encontraron clientes');
+                console.log('Mensaje del servidor:', resultado.error || 'Sin mensaje');
+
+                tablaClientesBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color: #999;">❌ No se encontraron clientes</td></tr>';
+
+                alert('❌ No se encontraron clientes con ese criterio.');
+            }
+
+        } catch (error) {
+            console.error('❌ Error completo:', error);
+            console.error('Tipo de error:', error.name);
+            console.error('Mensaje:', error.message);
+            console.error('Stack:', error.stack);
+
+            tablaClientesBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color: #D32F2F;">❌ Error al buscar</td></tr>';
+
+            alert('Error al buscar cliente. Verifica:\n1. Que el servidor esté corriendo\n2. La consola (F12) para más detalles');
+        }
+    });
 }
 
 // ============================================
-// OCULTAR TABLA DE CLIENTES
+// LIMPIAR AL ESCRIBIR EN EL INPUT
 // ============================================
-function ocultarTablaClientes() {
-    const container = document.getElementById('tablaClientesContainer');
-    container.style.display = 'none';
+
+if (inputBuscar) {
+    inputBuscar.addEventListener('input', function () {
+        // Si el usuario empieza a escribir de nuevo, limpiar selección
+        if (window.clienteSeleccionado && window.clienteSeleccionado.idCliente !== 1) {
+            console.log('✏️ Usuario escribiendo, limpiando selección...');
+            ocultarTablaClientes();
+            // NO borrar el clienteSeleccionado hasta que haga una nueva búsqueda
+        }
+    });
 }
 
+
 // ============================================
-// SELECCIONAR CLIENTE DE LA TABLA
+// Lógica de Formulario Nuevo Cliente
 // ============================================
-window.seleccionarCliente = function (idCliente, nombreCompleto, telefono) {
-    // Guardar cliente seleccionado
-    window.clienteSeleccionado = {
-        idCliente: idCliente,
-        nombreCompleto: nombreCompleto,
-        telefono: telefono,
-        tipoCliente: 'Mayorista',
-        idTipoCliente: 2
-    };
-
-    console.log('✅ Cliente seleccionado:', window.clienteSeleccionado);
-    alert(`✅ Cliente seleccionado:\n${nombreCompleto}\nTeléfono: ${telefono}`);
-
-    // Opcional: Ocultar tabla después de seleccionar
-    ocultarTablaClientes();
-
-    // Limpiar input de búsqueda
-    document.getElementById('inputBuscar').value = '';
-};
-
-
 
 // Event listener para el botón Nuevo cliente
 btnNuevoCliente.addEventListener('click', function () {
     acordeonNuevo.classList.add('show');
+    ocultarTablaClientes(); // Oculta la tabla si estaba visible
 });
 
 // Event listener para el botón Cancelar
@@ -268,9 +334,21 @@ btnCancelar.addEventListener('click', function () {
     limpiarFormularioNuevoCliente();
 });
 
+// Función para limpiar el formulario de nuevo cliente
+function limpiarFormularioNuevoCliente() {
+    document.getElementById('nuevoNombre').value = '';
+    document.getElementById('nuevoApellidoP').value = '';
+    document.getElementById('nuevoApellidoM').value = '';
+    document.getElementById('nuevoTelefono').value = '';
+
+    // Restablecer el color del borde del teléfono
+    document.getElementById('nuevoTelefono').style.borderColor = '#D4CFC4';
+}
+
 // ============================================
-// VALIDACIÓN ROBUSTA AL GUARDAR CLIENTE LISTO PARA GUARDAR LISTO
+// GUARDAR NUEVO CLIENTE 
 // ============================================
+
 btnGuardar.addEventListener('click', async function () {
     const nombre = document.getElementById('nuevoNombre').value.trim();
     const apellidoP = document.getElementById('nuevoApellidoP').value.trim();
@@ -299,7 +377,6 @@ btnGuardar.addEventListener('click', async function () {
     // ============================================
     // VALIDACIÓN ROBUSTA DEL TELÉFONO
     // ============================================
-
     // 1. Verificar que solo contiene números
     if (!/^[0-9]+$/.test(telefono)) {
         alert('❌ El teléfono solo puede contener números\n\nPor favor, elimina letras o caracteres especiales.');
@@ -356,7 +433,7 @@ btnGuardar.addEventListener('click', async function () {
     }
 
     // ============================================
-    // SI PASA TODAS LAS VALIDACIONES
+    // SI PASA TODAS LAS VALIDACIONES -> Petición AJAX
     // ============================================
     try {
         const response = await fetch(URL_BASE + 'clientes.php', {
@@ -373,60 +450,69 @@ btnGuardar.addEventListener('click', async function () {
 
         const resultado = await response.json();
 
-        if (resultado.success) {
+        if (resultado.success && resultado.cliente) {
             alert(`✅ Cliente creado exitosamente!\n\n${resultado.cliente.nombreCompleto}`);
 
-            // Mostrar en campos de búsqueda
-            document.getElementById('inputTelefono').value = resultado.cliente.telefono;
-            document.getElementById('inputNombreCompleto').value = resultado.cliente.nombreCompleto;
+            // 🌟 AJUSTE CLAVE: Seleccionar el cliente recién creado para la venta
+            window.clienteSeleccionado = {
+                idCliente: resultado.cliente.idCliente, // Asumiendo que el servidor devuelve el ID
+                nombreCompleto: resultado.cliente.nombreCompleto,
+                telefono: resultado.cliente.telefono,
+                tipoCliente: 'Mayorista',
+                idTipoCliente: 2 // Asumiendo que un cliente nuevo es siempre Mayorista (ID: 2)
+            };
+            console.log('✅ Cliente recién creado y seleccionado:', window.clienteSeleccionado);
 
-            // Guardar para la venta
-            window.clienteSeleccionado = resultado.cliente;
-
+            // Cerrar acordeón y limpiar formulario
             acordeonNuevo.classList.remove('show');
             limpiarFormularioNuevoCliente();
         } else {
-            alert('❌ Error: ' + resultado.error);
+            alert('❌ Error al crear cliente: ' + (resultado.error || 'Respuesta inesperada del servidor'));
         }
     } catch (error) {
-        console.error('❌ Error:', error);
-        alert('Error al crear cliente');
+        console.error('❌ Error de conexión:', error);
+        alert('Error al crear cliente. Intente nuevamente.');
     }
-
-
 });
 
-// Función para limpiar el formulario de nuevo cliente
-function limpiarFormularioNuevoCliente() {
-    document.getElementById('nuevoNombre').value = '';
-    document.getElementById('nuevoApellidoP').value = '';
-    document.getElementById('nuevoApellidoM').value = '';
-    document.getElementById('nuevoTelefono').value = '';
 
-    // Restablecer el color del borde del teléfono
-    document.getElementById('nuevoTelefono').style.borderColor = '#D4CFC4';
+
+function seleccionarCliente(cliente) {
+    console.log('✅ Cliente seleccionado:', cliente);
+
+    // Guardar cliente con estructura completa
+    window.clienteSeleccionado = {
+        idCliente: cliente.idCliente,
+        nombreCompleto: cliente.nombreCompleto,
+        telefono: cliente.telefono,
+        tipoCliente: cliente.tipoCliente || 'Mayorista',
+        idTipoCliente: cliente.idTipoCliente || 2
+    };
+
+    console.log('✅ Cliente guardado en window.clienteSeleccionado:', window.clienteSeleccionado);
+
+    // Ocultar tabla
+    ocultarTablaClientes();
+
+    // Mostrar el nombre seleccionado en el input
+    if (inputBuscar) {
+        inputBuscar.value = cliente.nombreCompleto;
+    }
+
+    alert(`✅ Cliente seleccionado:\n${cliente.nombreCompleto}\nTeléfono: ${cliente.telefono}`);
 }
 
-// SECCIÓN: SALIR SALIR SALIR SALIR
-// Event listener para el botón Salir
-/*document.querySelector('.btn-salir').addEventListener('click', function () {
-    if (confirm('¿Estás seguro de que deseas salir?')) {
-        // Aquí puedes agregar la lógica para cerrar sesión
-        window.location.href = 'login.html'; // O la ruta que corresponda futuro index.html
+// Hacer la función global para que funcione desde el HTML
+window.seleccionarCliente = seleccionarCliente;
+function ocultarTablaClientes() {
+    if (tablaClientesContainer) {
+        tablaClientesContainer.style.display = 'none';
     }
-});*/
-
+}
 // ============================================
 // SECCIÓN: SELECCIONAR JOYA Y CARRITO DE VENTA
 // ============================================
 let productosEnVenta = [];
-
-
-// Array para almacenar los productos en la venta
-
-
-// Datos de ejemplo de joyas (esto se reemplazará con consulta a BD)
-
 
 // Referencias a elementos
 const inputCodigoJoya = document.getElementById('inputCodigoJoya');
@@ -445,41 +531,31 @@ function buscarJoya() {
     const codigoBusqueda = inputCodigoJoya.value.trim();
 
     if (!codigoBusqueda) {
-        alert("⚠️ Ingresa un código de producto");
+        alert("⚠️ Ingresa un código");
         return;
     }
 
-    console.log('🔍 Iniciando búsqueda de producto:', codigoBusqueda);
-    console.log('📡 URL:', URL_BASE + 'buscarProducto.php');
-
+    // 🔹 CONECTAR CON PHP
     fetch(URL_BASE + 'buscarProducto.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ codigoProducto: codigoBusqueda })
     })
-        .then(res => {
-            console.log('📥 Response status:', res.status);
-            console.log('📥 Response ok:', res.ok);
-            return res.json();
-        })
+        .then(res => res.json())
         .then(data => {
-            console.log('📦 Datos recibidos:', data);
-
-            if (data.success && data.productos && data.productos.length > 0) {
-                console.log('✅ Productos encontrados:', data.productos.length);
+            if (data.success && data.productos.length > 0) {
                 mostrarResultadosBusqueda(data.productos);
             } else {
-                console.warn('⚠️ Sin resultados:', data.error);
-                alert("❌ " + (data.error || "No se encontraron productos"));
+                alert("❌ No se encontraron productos");
                 tablaResultadosContainer.style.display = "none";
             }
         })
         .catch(error => {
-            console.error('❌ Error completo:', error);
-            console.error('❌ Stack:', error.stack);
-            alert('Error al buscar producto. Revisa la consola (F12)');
+            console.error('❌ Error:', error);
+            alert('Error al buscar producto');
         });
 }
+
 // ============================================
 // FUNCIÓN: MOSTRAR RESULTADOS DE BÚSQUEDA
 // ============================================
@@ -510,7 +586,7 @@ function mostrarResultadosBusqueda(resultados) {
 // ============================================
 // FUNCIÓN: AGREGAR PRODUCTO A LA VENTA
 // ============================================
-
+// 🔹 REEMPLAZAR la función agregarProductoAVenta() (línea ~312)
 window.agregarProductoAVenta = function (idProducto, categoria, descripcion, precio, stockDisponible) {
     // Convertir precio a número
     precio = parseFloat(precio);
@@ -655,26 +731,6 @@ function actualizarTotal() {
     totalMonto.textContent = `$${total.toLocaleString('es-MX', { minimumFractionDigits: 1 })}`;
 }
 
-// ============================================
-// FUNCIÓN: COBRAR VENTA (Por implementar)
-// ============================================
-btnCobrarVenta.addEventListener('click', function () {
-    if (productosEnVenta.length === 0) {
-        alert('⚠️ No hay productos en la venta');
-        return;
-    }
-
-    const total = productosEnVenta.reduce((sum, p) => sum + p.subtotal, 0);
-
-    console.log('💰 Procesando venta:', {
-        productos: productosEnVenta,
-        total: total
-    });
-
-    alert(`💰 Venta procesada\n\nTotal: $${total.toLocaleString('es-MX', { minimumFractionDigits: 1 })}\n\n(Funcionalidad de cobro pendiente)`);
-
-    // Aquí se implementará la lógica de cobro
-});
 
 // ============================================
 // EVENT LISTENERS
@@ -730,7 +786,7 @@ let totalVenta = 0;
 // ============================================
 // FUNCIÓN: ABRIR MODAL DE COBRAR VENTA
 // ============================================
-/*function abrirModalCobrar() {
+function abrirModalCobrar() {
     if (productosEnVenta.length === 0) {
         alert('⚠️ No hay productos en la venta');
         return;
@@ -757,38 +813,6 @@ let totalVenta = 0;
     // Mostrar modal
     modalCobrarVenta.classList.add('show');
     document.body.style.overflow = 'hidden'; // Prevenir scroll
-}*/
-function abrirModalCobrar() {
-    if (productosEnVenta.length === 0) {
-        alert('⚠️ No hay productos en la venta');
-        return;
-    }
-
-    // ⚠️ VALIDAR CLIENTE MAYORISTA
-    if (tipoClienteActual === 'mayorista' && !window.clienteSeleccionado) {
-        alert('⚠️ Por favor, seleccione un cliente mayorista');
-        return;
-    }
-
-    totalVenta = productosEnVenta.reduce((sum, p) => sum + p.subtotal, 0);
-
-    // ⚠️ CAMBIAR: Obtener NOMBRE del cliente
-    let nombreCliente = 'Público General';
-    if (window.clienteSeleccionado) {
-        nombreCliente = window.clienteSeleccionado.nombreCompleto;
-    }
-
-    // Llenar datos del modal
-    modalCliente.textContent = nombreCliente;  // ← AHORA USA EL NOMBRE
-    modalProductos.textContent = productosEnVenta.length;
-    modalTotal.textContent = `$${totalVenta.toLocaleString('es-MX', { minimumFractionDigits: 1 })}`;
-
-    // Resetear formulario
-    resetearModalCobrar();
-
-    // Mostrar modal
-    modalCobrarVenta.classList.add('show');
-    document.body.style.overflow = 'hidden';
 }
 
 // ============================================
@@ -864,113 +888,6 @@ inputEfectivoRecibido.addEventListener('input', function (e) {
         btnConfirmarVenta.disabled = true;
     }
 });
-
-// ============================================
-// FUNCIÓN: CONFIRMAR VENTA Y GENERAR TICKET
-// ============================================
-
-btnConfirmarVenta.addEventListener('click', async function () {
-    if (!metodoPagoSeleccionado) {
-        alert('⚠️ Por favor, selecciona un método de pago');
-        return;
-    }
-
-    if (metodoPagoSeleccionado === 'efectivo') {
-        const efectivoRecibido = parseFloat(inputEfectivoRecibido.value) || 0;
-        if (efectivoRecibido < totalVenta) {
-            alert('⚠️ El efectivo recibido es insuficiente');
-            return;
-        }
-    }
-
-    // Llamar a guardar venta
-    await guardarVentaBD();
-});
-
-// Guardar venta en BD (aquí conectarás con tu backend)
-
-async function guardarVentaBD() {
-    // Determinar ID del cliente
-    let idCliente = 1;
-    let nombreClienteParaTicket = 'Público General';
-
-    if (window.clienteSeleccionado) {
-        idCliente = window.clienteSeleccionado.idCliente;
-        nombreClienteParaTicket = window.clienteSeleccionado.nombreCompleto;
-    }
-
-    // Preparar productos
-    const productos = productosEnVenta.map(p => ({
-        idProducto: p.codigo,
-        cantidad: p.cantidad
-    }));
-
-    // Preparar efectivo y cambio
-    let efectivoRecibido = null;
-    let cambio = null;
-
-    if (metodoPagoSeleccionado === 'efectivo') {
-        efectivoRecibido = parseFloat(inputEfectivoRecibido.value);
-        cambio = efectivoRecibido - totalVenta;
-    }
-
-    // Preparar datos
-    const datosVenta = {
-        idCliente: idCliente,
-        productos: productos,
-        metodoPago: metodoPagoSeleccionado,
-        efectivoRecibido: efectivoRecibido,
-        cambio: cambio
-    };
-
-    console.log('💾 Guardando venta:', datosVenta);
-
-    try {
-        const response = await fetch(URL_BASE + 'registrarVenta.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datosVenta)
-        });
-
-        console.log('📡 Response status:', response.status);
-
-        const resultado = await response.json();
-        console.log('📥 Resultado:', resultado);
-
-        if (resultado.success) {
-            alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}\nCliente: ${nombreClienteParaTicket}`);
-
-            // Cerrar modal
-            cerrarModalCobrar();
-
-            // Limpiar carrito
-            productosEnVenta = [];
-            actualizarTablaVenta();
-            actualizarTotal();
-
-            // Resetear a público si era mayorista
-            if (tipoClienteActual === 'mayorista') {
-                limpiarResultadosClientes();
-                btnPublico.click(); // Volver a público
-            }
-        } else {
-            alert('❌ Error al guardar venta:\n\n' + resultado.error);
-            console.error('Error del servidor:', resultado);
-        }
-    } catch (error) {
-        console.error('❌ Error completo:', error);
-        alert('Error al registrar la venta. Revisa la consola (F12)');
-    }
-}
-
-// Función helper para limpiar resultados de clientes
-function limpiarResultadosClientes() {
-    document.getElementById('inputTelefono').value = '';
-    document.getElementById('inputNombreCompleto').value = '';
-    document.getElementById('inputAcciones').value = '';
-    window.clienteSeleccionado = null;
-}
-
 
 // ============================================
 // FUNCIÓN: GENERAR TICKET 
@@ -1151,7 +1068,7 @@ function generarTicket() {
             </div>
             <div class="info-row">
                 <span class="info-label">Cliente:</span>
-                <span>${modalCliente.textContent}</span>
+                <span>${window.nombreClienteVenta || modalCliente.textContent}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Atendió:</span>
@@ -1241,89 +1158,194 @@ function generarTicket() {
         }, 250);
     };
 }
+//
+//============================================
+// FUNCIÓN: CONFIRMAR VENTA - CON DEBUG
+// ============================================
+btnConfirmarVenta.addEventListener('click', async function () {
+    console.log('🔵 Botón Confirmar clickeado');
 
+    if (!metodoPagoSeleccionado) {
+        alert('⚠️ Por favor, selecciona un método de pago');
+        return;
+    }
+
+    if (metodoPagoSeleccionado === 'efectivo') {
+        const efectivoRecibido = parseFloat(inputEfectivoRecibido.value) || 0;
+        if (efectivoRecibido < totalVenta) {
+            alert('⚠️ El efectivo recibido es insuficiente');
+            return;
+        }
+    }
+
+    console.log('🔵 Iniciando guardado de venta...');
+
+    try {
+        // ✅ 1. Guardar nombre del cliente ANTES de todo
+        let nombreClienteCompleto = 'Público General';
+
+        if (tipoClienteActual === 'mayorista') {
+            if (window.clienteSeleccionado && window.clienteSeleccionado.idCliente !== 1) {
+                nombreClienteCompleto = window.clienteSeleccionado.nombreCompleto;
+            }
+        }
+
+        window.nombreClienteVenta = nombreClienteCompleto;
+        console.log('✅ Nombre cliente guardado:', nombreClienteCompleto);
+
+        // ✅ 2. GENERAR TICKET PRIMERO (mientras productosEnVenta[] tiene datos)
+        console.log('🎫 Generando ticket con', productosEnVenta.length, 'productos...');
+        generarTicket();
+
+        // ✅ 3. LUEGO guardar en BD (esto limpia productosEnVenta[])
+        const ventaExitosa = await guardarVentaBD();
+        console.log('🔵 Resultado guardarVentaBD():', ventaExitosa);
+
+        if (ventaExitosa) {
+            console.log('✅ Venta guardada exitosamente');
+            cerrarModalCobrar();
+            console.log('✅ Modal cerrado');
+        } else {
+            console.error('❌ La venta NO fue exitosa');
+            alert('❌ No se pudo completar la venta. Revisa la consola (F12).');
+        }
+    } catch (error) {
+        console.error('❌ Error en confirmar venta:', error);
+        alert('❌ Error al procesar la venta: ' + error.message);
+    }
+});
 // ============================================
-// FUNCIÓN: GUARDAR VENTA EN BASE DE DATOS
+// FUNCIÓN: GUARDAR VENTA - VERSIÓN CORREGIDA CON RETURN
 // ============================================
-// 🔹 REEMPLAZAR COMPLETAMENTE la función guardarVentaBD() (línea ~783)
 async function guardarVentaBD() {
-    // Determinar ID del cliente
-    let idCliente = 1; // Por defecto público
-    let nombreClienteParaTicket = 'Público General';
+    console.log('💾 Entrando a guardarVentaBD()');
 
-    if (tipoClienteActual === 'mayorista' && window.clienteSeleccionado) {
-        idCliente = window.clienteSeleccionado.idCliente;
-        nombreClienteParaTicket = window.clienteSeleccionado.nombreCompleto;
+    // Determinar ID del cliente
+    let idCliente = 1;
+    let nombreClienteCompleto = 'Público General';
+
+    if (tipoClienteActual === 'mayorista') {
+        if (window.clienteSeleccionado && window.clienteSeleccionado.idCliente !== 1) {
+            idCliente = window.clienteSeleccionado.idCliente;
+            nombreClienteCompleto = window.clienteSeleccionado.nombreCompleto;
+            console.log('✅ Cliente mayorista:', nombreClienteCompleto);
+        } else {
+            alert('⚠️ Por favor, selecciona un cliente mayorista antes de procesar la venta.');
+            return false;
+        }
+    } else {
+        console.log('✅ Cliente público general');
     }
 
     // Preparar productos
     const productos = productosEnVenta.map(p => ({
-        idProducto: p.codigo,
-        cantidad: p.cantidad
+        codigo: p.codigo,
+        descripcion: p.descripcion,
+        cantidad: p.cantidad,
+        precio: p.precio,
+        subtotal: p.subtotal
     }));
 
-    // Preparar efectivo y cambio
+    const total = productosEnVenta.reduce((sum, p) => sum + p.subtotal, 0);
+
     let efectivoRecibido = null;
     let cambio = null;
 
     if (metodoPagoSeleccionado === 'efectivo') {
         efectivoRecibido = parseFloat(inputEfectivoRecibido.value);
-        cambio = efectivoRecibido - totalVenta;
+        cambio = efectivoRecibido - total;
     }
 
-    // Preparar datos
     const datosVenta = {
         idCliente: idCliente,
+        nombreCliente: nombreClienteCompleto,
         productos: productos,
+        total: total,
         metodoPago: metodoPagoSeleccionado,
         efectivoRecibido: efectivoRecibido,
         cambio: cambio
     };
 
-    console.log('💾 Intentando guardar venta:', datosVenta);
+    console.log('📤 Enviando datos al servidor:', datosVenta);
 
     try {
-        const response = await fetch(URL_BASE + 'registrarVenta.php', {
+        const response = await fetch(URL_BASE + 'guardarVenta.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datosVenta)
         });
 
-        console.log('📡 Response status:', response.status);
+        console.log('📥 Respuesta recibida, status:', response.status);
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const textoRespuesta = await response.text();
+            console.error('❌ Respuesta no es JSON:', textoRespuesta);
+            alert('❌ Error del servidor: La respuesta no es JSON válida.');
+            return false;
+        }
 
         const resultado = await response.json();
-        console.log('📥 Resultado:', resultado);
+        console.log('📦 Resultado parseado:', resultado);
 
         if (resultado.success) {
-            alert(`✅ Venta registrada exitosamente!\n\nID Venta: ${resultado.venta.idVenta}\nTotal: $${resultado.venta.montoTotal}\nCliente: ${nombreClienteParaTicket}`);
+            console.log('✅ Venta registrada exitosamente');
 
-            // Actualizar el modal con el nombre correcto del cliente
-            modalCliente.textContent = nombreClienteParaTicket;
+            alert(`✅ Venta registrada exitosamente!\n\n` +
+                `ID Venta: ${resultado.venta.idVenta}\n` +
+                `Total: $${resultado.venta.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}\n` +
+                `Productos: ${resultado.venta.productos}`);
 
             // Limpiar carrito
             productosEnVenta = [];
             actualizarTablaVenta();
             actualizarTotal();
 
-            // Resetear cliente si es mayorista
-            if (tipoClienteActual === 'mayorista') {
-                limpiarResultadosClientes();
-            }
+            // Resetear cliente y tipo
+            window.clienteSeleccionado = null;
+            tipoClienteActual = null;
+
+            const btnPublico = document.getElementById('btnPublico');
+            const btnMayorista = document.getElementById('btnMayorista');
+            if (btnPublico) btnPublico.classList.remove('active');
+            if (btnMayorista) btnMayorista.classList.remove('active');
+
+            const acordeonBuscar = document.getElementById('acordeonBuscar');
+            const acordeonNuevo = document.getElementById('acordeonNuevo');
+            if (acordeonBuscar) acordeonBuscar.classList.remove('show');
+            if (acordeonNuevo) acordeonNuevo.classList.remove('show');
+
+            limpiarResultadosClientes();
+
+            console.log('✅ Retornando TRUE');
+            return true; // ✅ IMPORTANTE: Retornar true
+
         } else {
-            alert('❌ Error al guardar venta:\n\n' + resultado.error);
-            console.error('Error del servidor:', resultado);
+            console.error('❌ Error del servidor:', resultado.error);
+            alert('❌ Error al registrar venta:\n\n' + resultado.error);
+            return false;
         }
     } catch (error) {
-        console.error('❌ Error completo:', error);
-        alert('Error al registrar la venta. Revisa la consola (F12)');
+        console.error('❌ Error de conexión:', error);
+        alert('❌ Error de conexión al registrar la venta.');
+        return false;
     }
 }
 
-// Función helper para limpiar resultados de clientes
+// ============================================
+// FUNCIÓN CORREGIDA: LIMPIAR RESULTADOS DE CLIENTES
+// ============================================
 function limpiarResultadosClientes() {
-    document.getElementById('inputTelefono').value = '';
-    document.getElementById('inputNombreCompleto').value = '';
-    document.getElementById('inputAcciones').value = '';
+    // ✅ CORREGIDO: Usar los IDs correctos según tu HTML
+    const inputBuscar = document.getElementById('inputBuscar');
+    if (inputBuscar) {
+        inputBuscar.value = '';
+    }
+
+    // ✅ Ocultar tabla de clientes
+    ocultarTablaClientes();
+
+    // ✅ Limpiar cliente seleccionado
     window.clienteSeleccionado = null;
 }
 
@@ -1356,11 +1378,3 @@ document.addEventListener('keydown', function (e) {
 });
 
 console.log('✅ Modal de cobrar venta inicializado');
-// AGREGAR DESPUÉS DE limpiarFormularioNuevoCliente()
-
-function limpiarResultadosClientes() {
-    document.getElementById('inputTelefono').value = '';
-    document.getElementById('inputNombreCompleto').value = '';
-    document.getElementById('inputAcciones').value = '';
-    window.clienteSeleccionado = null;
-}
