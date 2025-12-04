@@ -2,12 +2,11 @@
 
 const URL_BASE = "http://localhost/JoyeriaChabelita-Proyecto/src/database/";
 
-// 🎯 MAPEO DE RUTAS POR PUESTO
+// 🎯 MAPEO DE RUTAS POR PUESTO (SIN COMA EXTRA)
 const RUTAS_POR_PUESTO = {
   gerente: "menuAdministracion.html",
   venta: "menuVentas.html",
-  almacen: "menuAlmacen.html",
-
+  almacén: "menuAlmacen.html",
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -63,10 +62,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (resultado.success && resultado.usuario) {
             // ✅ LOGIN EXITOSO
-            console.log("✅ Login exitoso. Puesto:", resultado.usuario.puesto);
+            const puestoOriginal = resultado.usuario.puesto;
+            console.log("✅ Login exitoso. Puesto recibido:", puestoOriginal);
+            console.log("📊 Tipo de puesto:", typeof puestoOriginal);
 
-            // NO GUARDAR SESIÓN - Solo redirigir
-            redirigirSegunPuesto(resultado.usuario.puesto);
+            // Normalizar el puesto y verificar que existe en el mapeo
+            const puestoNormalizado = puestoOriginal.toLowerCase().trim();
+            console.log("🔄 Puesto normalizado:", puestoNormalizado);
+            console.log("🗺️ Rutas disponibles:", Object.keys(RUTAS_POR_PUESTO));
+
+            // Verificar si existe la ruta para este puesto
+            if (RUTAS_POR_PUESTO[puestoNormalizado]) {
+              redirigirSegunPuesto(puestoNormalizado);
+            } else {
+              console.error(
+                "❌ Puesto no encontrado en RUTAS_POR_PUESTO:",
+                puestoNormalizado
+              );
+              mostrarError(
+                `Error: Puesto "${puestoOriginal}" no tiene ruta configurada. Contacte al administrador.`
+              );
+              btnLogin.disabled = false;
+              btnLogin.textContent = textoOriginal;
+            }
           } else {
             // ❌ ERROR DE LOGIN
             mostrarError(resultado.errorLogin || "Error al iniciar sesión");
@@ -95,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 🎯 Redirigir según el puesto
 function redirigirSegunPuesto(puesto) {
-  const puestoNormalizado = puesto.toLowerCase();
+  const puestoNormalizado = puesto.toLowerCase().trim();
   const ruta = RUTAS_POR_PUESTO[puestoNormalizado];
 
   if (ruta) {
@@ -106,11 +124,15 @@ function redirigirSegunPuesto(puesto) {
 
     // Redirigir después de 1 segundo
     setTimeout(() => {
+      console.log("🚀 Ejecutando redirección...");
       window.location.href = ruta;
     }, 1000);
   } else {
     console.error("❌ Puesto no reconocido:", puesto);
-    mostrarError("Error: Puesto no válido. Contacte al administrador.");
+    console.error("🗺️ Rutas disponibles:", Object.keys(RUTAS_POR_PUESTO));
+    mostrarError(
+      `Error: Puesto "${puesto}" no válido. Contacte al administrador.`
+    );
   }
 }
 
