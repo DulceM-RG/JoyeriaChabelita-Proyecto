@@ -47,7 +47,7 @@ const agregarFilaTabla = (dataDB, tbody) => {
     // Crear celdas de datos
     createCell(newRow, data.nombreCompleto || "N/A");
     createCell(newRow, data.usuario);
-    createCell(newRow, "••••••••"); // Contraseña oculta
+    createCell(newRow, "••••"); // Contraseña oculta
     createCell(newRow, data.fechaCreacion);
     createCell(newRow, data.ultimoCambio);
 
@@ -152,29 +152,23 @@ document.addEventListener("DOMContentLoaded", async function () {
           input.className = "select-editar";
           const isActivo = badgeTexto === "Activo";
           input.innerHTML = `
-                        <option value="Activo" ${
-                          isActivo ? "selected" : ""
-                        }>Activo</option>
-                        <option value="Baja" ${
-                          !isActivo ? "selected" : ""
-                        }>Baja</option>
+                        <option value="Activo" ${isActivo ? "selected" : ""
+            }>Activo</option>
+                        <option value="Baja" ${!isActivo ? "selected" : ""
+            }>Baja</option>
                     `;
         } else if (index === 6) {
           input = document.createElement("select");
           input.className = "select-editar";
           input.innerHTML = `
-                        <option value="0" ${
-                          valorActual === "0" ? "selected" : ""
-                        }>0</option>
-                        <option value="1" ${
-                          valorActual === "1" ? "selected" : ""
-                        }>1</option>
-                        <option value="2" ${
-                          valorActual === "2" ? "selected" : ""
-                        }>2</option>
-                        <option value="3" ${
-                          valorActual === "3" ? "selected" : ""
-                        }>3</option>
+                        <option value="0" ${valorActual === "0" ? "selected" : ""
+            }>0</option>
+                        <option value="1" ${valorActual === "1" ? "selected" : ""
+            }>1</option>
+                        <option value="2" ${valorActual === "2" ? "selected" : ""
+            }>2</option>
+                        <option value="3" ${valorActual === "3" ? "selected" : ""
+            }>3</option>
                     `;
         } else if (index === 0 || index === 1 || index === 3 || index === 4) {
           cell.textContent = valorActual;
