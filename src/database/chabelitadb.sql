@@ -87,7 +87,9 @@ CREATE TABLE `credenciales` (
   `activo` enum('Activo','Baja') DEFAULT 'Activo',
   PRIMARY KEY (`idControl`),
   KEY `idEmpleado` (`idEmpleado`),
-  CONSTRAINT `credenciales_ibfk_1` FOREIGN KEY (`idEmpleado`) REFERENCES `empleado` (`idEmpleado`)
+  CONSTRAINT `credenciales_ibfk_1` FOREIGN KEY (`idEmpleado`) REFERENCES `empleado` (`idEmpleado`) 
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
