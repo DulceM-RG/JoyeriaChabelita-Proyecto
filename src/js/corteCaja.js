@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Elementos DOM
     const fechaCorteEl = document.getElementById('fechaCorte');
     const btnBuscar = document.getElementById('btnBuscar');
-    
+
     const totalDiaEl = document.getElementById('totalDia');
     const efectivoEl = document.getElementById('efectivo');
     const tarjetaEl = document.getElementById('tarjeta');
@@ -83,52 +83,52 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funciones
     function cargarResumenCaja(fecha) {
         fetch(`${API_RESUMEN_URL}?action=obtenerResumen&fecha=${fecha}&t=${Date.now()}`)
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                totalDiaEl.textContent = `$${formatNumero(data.totalDia)}`;
-                efectivoEl.textContent = `$${formatNumero(data.efectivo)}`;
-                tarjetaEl.textContent = `$${formatNumero(data.tarjeta)}`;
-                ventasRealizadasEl.textContent = data.ventasRealizadas;
-                productosVendidosEl.textContent = data.productosVendidos;
-                empleadosActivosEl.textContent = data.empleadosActivos;
-            } else {
-                mostrarMensaje('Error al cargar resumen: ' + (data.message || ''), 'error');
-            }
-        })
-        .catch(err => {
-            mostrarMensaje('Error de conexión: ' + err.message, 'error');
-        });
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    totalDiaEl.textContent = `$${formatNumero(data.totalDia)}`;
+                    efectivoEl.textContent = `$${formatNumero(data.efectivo)}`;
+                    tarjetaEl.textContent = `$${formatNumero(data.tarjeta)}`;
+                    ventasRealizadasEl.textContent = data.ventasRealizadas;
+                    productosVendidosEl.textContent = data.productosVendidos;
+                    empleadosActivosEl.textContent = data.empleadosActivos;
+                } else {
+                    mostrarMensaje('Error al cargar resumen: ' + (data.message || ''), 'error');
+                }
+            })
+            .catch(err => {
+                mostrarMensaje('Error de conexión: ' + err.message, 'error');
+            });
     }
 
     function cargarVentas(fecha) {
         tablaVentasBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">Cargando ventas...</td></tr>';
         fetch(`${API_VENTAS_URL}?action=obtenerVentasDelDia&fecha=${fecha}&t=${Date.now()}`)
-        .then(res => {
-            if(!res.ok) throw new Error(res.statusText);
-            return res.json();
-        })
-        .then(data => {
-            if(data.success && data.ventas.length > 0) {
-                tablaVentasBody.innerHTML = '';
-                data.ventas.forEach(venta => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
+            .then(res => {
+                if (!res.ok) throw new Error(res.statusText);
+                return res.json();
+            })
+            .then(data => {
+                if (data.success && data.ventas.length > 0) {
+                    tablaVentasBody.innerHTML = '';
+                    data.ventas.forEach(venta => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
                         <td>${venta.idVenta}</td>
                         <td>${venta.fecha}</td>
                         <td>${venta.cliente}</td>
                         <td>${venta.productos}</td>
                         <td>$${formatNumero(venta.total)}</td>
                     `;
-                    tablaVentasBody.appendChild(tr);
-                });
-            } else {
-                tablaVentasBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay ventas para esta fecha</td></tr>';
-            }
-        })
-        .catch(err => {
-            tablaVentasBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error: ${err.message}</td></tr>`;
-        });
+                        tablaVentasBody.appendChild(tr);
+                    });
+                } else {
+                    tablaVentasBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay ventas para esta fecha</td></tr>';
+                }
+            })
+            .catch(err => {
+                tablaVentasBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error: ${err.message}</td></tr>`;
+            });
     }
 
     function cerrarDia() {
@@ -136,33 +136,46 @@ document.addEventListener('DOMContentLoaded', () => {
         btnConfirmarCierre.disabled = true;
         fetch(API_CERRAR_DIA_URL, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({action: 'cerrarDia', fecha: fechaSeleccionada})
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'cerrarDia', fecha: fechaSeleccionada })
         })
-        .then(res => {
-            if(!res.ok) throw new Error(res.statusText);
-            return res.json();
-        })
-        .then(data => {
-            btnConfirmarCierre.disabled = false;
-            if(data.success) {
-                mostrarMensaje('El día se cerró correctamente', 'exito');
-                modalCerrarDia.classList.remove('active');
-                cargarResumenCaja(fechaSeleccionada);
-                cargarVentas(fechaSeleccionada);
-            } else {
-                mostrarMensaje(data.message || 'Error al cerrar el día', 'error');
-            }
-        })
-        .catch(err => {
-            btnConfirmarCierre.disabled = false;
-            mostrarMensaje('Error: ' + err.message, 'error');
-        });
+            .then(res => {
+                if (!res.ok) throw new Error(res.statusText);
+                return res.json();
+            })
+            .then(data => {
+                btnConfirmarCierre.disabled = false;
+                if (data.success) {
+                    mostrarMensaje('El día se cerró correctamente', 'exito');
+                    modalCerrarDia.classList.remove('active');
+                    cargarResumenCaja(fechaSeleccionada);
+                    cargarVentas(fechaSeleccionada);
+                } else {
+                    mostrarMensaje(data.message || 'Error al cerrar el día', 'error');
+                }
+            })
+            .catch(err => {
+                btnConfirmarCierre.disabled = false;
+                mostrarMensaje('Error: ' + err.message, 'error');
+            });
     }
 
     function generarReporte() {
-        vistaPrevia.style.display = 'block';
-        mostrarMensaje('Vista previa lista.', 'exito');
+        const fecha = fechaCorteEl.value;
+
+        if (!fecha) {
+            mostrarMensaje('Por favor selecciona una fecha', 'error');
+            return;
+        }
+
+        // Abre reporteCaja_DETALLADO.php en ventana nueva
+        window.open(
+            '/JoyeriaChabelita-Proyecto/src/database/reporteCaja.php?fecha=' + fecha,
+            '_blank',
+            'width=1200,height=800'
+        );
+
+        mostrarMensaje('✅ Reporte detallado abierto. Usa Ctrl+P para guardar como PDF.', 'exito');
     }
 
     function mostrarMensaje(texto, tipo) {

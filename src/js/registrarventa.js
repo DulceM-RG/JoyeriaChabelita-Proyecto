@@ -1049,7 +1049,7 @@ function generarTicket() {
 <body>
     <div class="ticket-container">
         <div class="header">
-            <!-- LOGO - Cambia la ruta por la tuya -->
+            
             <img src="src/assets/image/chabelitanegro.png" alt="Logo Joyería Chabelita" class="logo">
             <h1>JOYERÍA CHABELITA</h1>
             <div class="subtitle">Ticket de Venta</div>
