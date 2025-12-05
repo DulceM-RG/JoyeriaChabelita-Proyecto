@@ -1,69 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Joyería Chabelita</title>
     <link rel="stylesheet" href="src/css/login.css">
 </head>
+
 <body>
     <div class="login-container">
         <div class="login-box">
             <!-- Contenido del formulario -->
             <div class="login-content">
                 <p class="login-subtitle">Joyería Chabelita</p>
-                
+
                 <form id="loginForm" class="login-form">
                     <!-- ID de Control -->
                     <div class="form-group">
                         <label for="txtIdControl" class="form-label">ID de Control</label>
                         <div class="input-wrapper">
                             <img src="./src/assets/icon/iconUsuario.png" alt="Usuario" class="input-icon">
-                            <input 
-                                type="text" 
-                                id="txtIdControl" 
-                                name="idControl" 
-                                class="form-input"
-                                placeholder="Ej: G25102001"
-                                pattern="[A-Z]\d{8,9}"
-                                title="Formato: Letra mayúscula seguida de 8-9 dígitos"
-                                maxlength="10"
-                                required
-                                autocomplete="username"
-                            >
+                            <input type="text" id="txtIdControl" name="idControl" class="form-input"
+                                placeholder="Ej: G25102001" pattern="[A-Z]\d{8,9}"
+                                title="Formato: Letra mayúscula seguida de 8-9 dígitos" maxlength="10" required
+                                autocomplete="username">
                         </div>
                         <small class="form-hint">Formato: Letra + 8-9 dígitos (Ej: G25102001)</small>
                     </div>
-                    
+
                     <!-- Contraseña -->
                     <div class="form-group">
                         <label for="txtContrasena" class="form-label">Contraseña</label>
                         <div class="input-wrapper">
                             <img src="./src/assets/icon/iconCandado.png" alt="Contraseña" class="input-icon">
-                            <input 
-                                type="password" 
-                                id="txtContrasena" 
-                                name="contrasena" 
-                                class="form-input"
-                                placeholder="Ingrese su contraseña"
-                                required
-                                autocomplete="current-password"
-                            >
+                            <input type="password" id="txtContrasena" name="contrasena" class="form-input"
+                                placeholder="Ingrese su contraseña" required autocomplete="current-password">
                             <button type="button" class="toggle-password" onclick="togglePassword()">
                                 👁
                             </button>
                         </div>
                     </div>
-                    
+
                     <!-- Botón -->
                     <button type="submit" class="btn-login">Iniciar Sesión</button>
 
-                    <!-- Enlace de registro -->
-                    <div class="register-text">
-                        <p>¿Necesitas registrar un empleado? 
-                            <a href="./registro.html">Haz clic aquí</a>
-                        </p>
-                    </div>
+
                 </form>
             </div>
 
@@ -89,11 +71,12 @@
             }
         }
 
-        document.getElementById('txtIdControl').addEventListener('input', function() {
+        document.getElementById('txtIdControl').addEventListener('input', function () {
             this.value = this.value.toUpperCase();
         });
     </script>
 
     <script type="module" src="./src/js/login.js"></script>
 </body>
+
 </html>
