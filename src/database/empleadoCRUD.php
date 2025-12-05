@@ -261,20 +261,56 @@ try {
             exit;
         }
         
-        // Eliminar empleado (CASCADE eliminará credenciales y dirección)
-        $sql = "DELETE FROM empleado WHERE idEmpleado = ?";
-        $stmt = $conn->prepare($sql);
-        $resultado = $stmt->execute([$idEmpleado]);
+        // ============================================
+        // ELIMINACIÓN EN CASCADA COMPLETA
+        // ============================================
+        $conn->beginTransaction();
         
-        if ($resultado) {
+        try {
+            // 1. Obtener IDs de ingresos relacionados a las ventas del empleado
+            $sqlIngresos = "SELECT DISTINCT v.idIngreso 
+                            FROM venta v 
+                            WHERE v.idEmpleado = ? AND v.idIngreso IS NOT NULL";
+            $stmtIngresos = $conn->prepare($sqlIngresos);
+            $stmtIngresos->execute([$idEmpleado]);
+            $ingresos = $stmtIngresos->fetchAll(PDO::FETCH_COLUMN);
+            
+            // 2. Eliminar empleado
+            // El CASCADE automáticamente eliminará:
+            // - credenciales (CASCADE)
+            // - direccion (CASCADE)
+            // - venta (CASCADE)
+            // - productoventa (CASCADE desde venta)
+            $sqlEmpleado = "DELETE FROM empleado WHERE idEmpleado = ?";
+            $stmtEmpleado = $conn->prepare($sqlEmpleado);
+            $stmtEmpleado->execute([$idEmpleado]);
+            
+            // 3. Eliminar ingresos (esto NO se hace automáticamente)
+            if (!empty($ingresos)) {
+                $placeholders = str_repeat('?,', count($ingresos) - 1) . '?';
+                $sqlDeleteIngresos = "DELETE FROM ingreso WHERE idIngreso IN ($placeholders)";
+                $stmtDeleteIngresos = $conn->prepare($sqlDeleteIngresos);
+                $stmtDeleteIngresos->execute($ingresos);
+            }
+            
+            $conn->commit();
+            
+            $cantidadIngresos = count($ingresos);
+            $mensaje = 'Empleado eliminado exitosamente';
+            if ($cantidadIngresos > 0) {
+                $mensaje .= " (Se eliminaron {$cantidadIngresos} ingreso(s) relacionado(s))";
+            }
+            
             echo json_encode([
                 'success' => true,
-                'message' => 'Empleado eliminado exitosamente'
+                'message' => $mensaje
             ], JSON_UNESCAPED_UNICODE);
-        } else {
+            
+        } catch (Exception $e) {
+            $conn->rollBack();
             echo json_encode([
                 'success' => false,
-                'message' => 'Error al eliminar el empleado'
+                'message' => 'Error al eliminar el empleado: ' . $e->getMessage()
             ], JSON_UNESCAPED_UNICODE);
         }
         exit;
