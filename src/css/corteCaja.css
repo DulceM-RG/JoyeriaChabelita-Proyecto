@@ -251,7 +251,9 @@ body {
     background-color: #d1b34f;
 }
 
-* FOOTER */ .footer {
+
+/* FOOTER */
+.footer {
     width: 100%;
     margin-top: auto;
 }
@@ -267,7 +269,7 @@ body {
 .footer-bar {
     width: 100%;
     background-color: #1a1a1a;
-    padding: 5px;
+    padding: 0px;
 }
 
 .footer-content {
@@ -282,6 +284,7 @@ body {
     max-width: 150px;
     height: auto;
 }
+
 
 .modal {
     display: none;
