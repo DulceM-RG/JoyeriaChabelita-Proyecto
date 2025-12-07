@@ -24,7 +24,7 @@ try {
                     e.telefono,
                     e.idPuesto,
                     p.puesto as nombrePuesto,
-                    p.sueldo,
+                    
                     e.idDireccion,
                     d.nombreCalle,
                     d.numeroCalle,

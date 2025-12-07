@@ -293,7 +293,7 @@ DROP TABLE IF EXISTS `puestoempleado`;
 CREATE TABLE `puestoempleado` (
   `idPuesto` int(11) NOT NULL AUTO_INCREMENT,
   `puesto` varchar(50) NOT NULL,
-  `sueldo` decimal(7,2) NOT NULL,
+  
   PRIMARY KEY (`idPuesto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -304,7 +304,7 @@ CREATE TABLE `puestoempleado` (
 
 LOCK TABLES `puestoempleado` WRITE;
 /*!40000 ALTER TABLE `puestoempleado` DISABLE KEYS */;
-INSERT INTO `puestoempleado` VALUES (1,'Gerente',5000.00),(2,'Venta',4000.00),(3,'Almacén',8000.00);
+INSERT INTO `puestoempleado` VALUES (1,'Gerente'),(2,'Venta'),(3,'Almacén');
 /*!40000 ALTER TABLE `puestoempleado` ENABLE KEYS */;
 UNLOCK TABLES;
 
