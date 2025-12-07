@@ -388,3 +388,435 @@ body {
         width: 100%;
     }
 }
+
+
+
+/* ===== BOTÓN CANCELAR EN TABLA ===== */
+.btn-cancelar-venta {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+}
+
+.btn-cancelar-venta:hover {
+    background-color: #c82333;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+}
+
+.btn-cancelar-venta:active {
+    transform: scale(0.95);
+}
+
+/* ===== MODAL CANCELACIÓN ===== */
+.modal-cancelacion {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-cancelacion.activo {
+    display: flex;
+}
+
+.modal-contenido-cancelacion {
+    background-color: #fff;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    border: 2px solid #b58828;
+    overflow: hidden;
+}
+
+/* ===== ENCABEZADO MODAL ===== */
+.modal-header-cancelacion {
+    background: linear-gradient(135deg, #b58828 0%, #a37720 100%);
+    color: white;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #a37720;
+}
+
+.modal-header-cancelacion h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.btn-cerrar-modal-cancelacion {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.btn-cerrar-modal-cancelacion:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== CUERPO MODAL ===== */
+.modal-body-cancelacion {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px 25px;
+    background-color: #fafafa;
+}
+
+.modal-body-cancelacion::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body-cancelacion::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.modal-body-cancelacion::-webkit-scrollbar-thumb {
+    background: #b58828;
+    border-radius: 4px;
+}
+
+.modal-body-cancelacion::-webkit-scrollbar-thumb:hover {
+    background: #a37720;
+}
+
+/* ===== ADVERTENCIA ===== */
+.advertencia-cancelacion {
+    background-color: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+.icono-advertencia {
+    font-size: 2rem;
+    flex-shrink: 0;
+}
+
+.texto-advertencia {
+    margin: 0;
+    color: #856404;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.texto-advertencia strong {
+    color: #721c24;
+    font-weight: 700;
+}
+
+/* ===== SECCIONES INFORMACIÓN ===== */
+.seccion-info-cancelacion,
+.seccion-productos-cancelacion {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(181, 136, 40, 0.1);
+    border-left: 4px solid #b58828;
+}
+
+.seccion-info-cancelacion h3,
+.seccion-productos-cancelacion h3 {
+    margin: 0 0 15px 0;
+    color: #b58828;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* ===== GRID INFORMACIÓN ===== */
+.info-grid-cancelacion {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.info-item-cancelacion {
+    background-color: #f9f9f9;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e0d5c7;
+}
+
+.info-item-cancelacion label {
+    display: block;
+    font-weight: 600;
+    color: #6c5523;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-item-cancelacion .valor {
+    display: block;
+    color: #333;
+    font-size: 1.05rem;
+    word-break: break-word;
+}
+
+.info-item-cancelacion .valor-monto {
+    color: #b58828;
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+/* ===== TABLA PRODUCTOS ===== */
+.tabla-productos-cancelacion {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tabla-productos-detalles {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.tabla-productos-detalles thead {
+    background-color: #b58828;
+    color: white;
+}
+
+.tabla-productos-detalles thead th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-right: 1px solid #a37720;
+}
+
+.tabla-productos-detalles thead th:last-child {
+    border-right: none;
+}
+
+.tabla-productos-detalles tbody tr {
+    border-bottom: 1px solid #d2b84b;
+    background-color: #fff;
+    transition: background-color 0.2s;
+}
+
+.tabla-productos-detalles tbody tr:hover {
+    background-color: #fff6cc;
+}
+
+.tabla-productos-detalles tbody td {
+    padding: 12px;
+    color: #6c5523;
+    font-size: 0.95rem;
+    border-right: 1px solid #e0c76b;
+}
+
+.tabla-productos-detalles tbody td:last-child {
+    border-right: none;
+}
+
+.tabla-productos-detalles tbody td.cantidad {
+    font-weight: 600;
+    color: #b58828;
+}
+
+.sin-productos {
+    padding: 30px;
+    text-align: center;
+    color: #999;
+    font-size: 1rem;
+}
+
+/* ===== MENSAJES ===== */
+.mensaje-cancelacion {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-weight: 500;
+    border-left: 4px solid;
+    display: none;
+}
+
+.mensaje-cancelacion.mensaje-exito {
+    background-color: #d4edda;
+    color: #155724;
+    border-left-color: #28a745;
+}
+
+.mensaje-cancelacion.mensaje-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left-color: #f44336;
+}
+
+/* ===== PIE MODAL ===== */
+.modal-footer-cancelacion {
+    background-color: #f5f5f5;
+    border-top: 2px solid #e0d5c7;
+    padding: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+/* ===== BOTONES MODAL ===== */
+.btn-cancelacion {
+    padding: 12px 28px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 180px;
+    justify-content: center;
+}
+
+.btn-cancelacion:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-cancelacion:disabled:hover {
+    background-color: inherit;
+}
+
+.btn-secundario {
+    background-color: #e0d5c7;
+    color: #6c5523;
+    border: 2px solid #b58828;
+}
+
+.btn-secundario:hover:not(:disabled) {
+    background-color: #d1c4b5;
+    color: #b58828;
+    box-shadow: 0 4px 12px rgba(181, 136, 40, 0.2);
+}
+
+.btn-peligro {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    border: none;
+}
+
+.btn-peligro:hover:not(:disabled) {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    transform: translateY(-1px);
+}
+
+.btn-peligro:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 768px) {
+    .modal-contenido-cancelacion {
+        max-width: 95%;
+        max-height: 95vh;
+    }
+
+    .modal-body-cancelacion {
+        padding: 20px;
+    }
+
+    .info-grid-cancelacion {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-footer-cancelacion {
+        flex-direction: column-reverse;
+    }
+
+    .btn-cancelacion {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .tabla-productos-detalles {
+        font-size: 0.85rem;
+    }
+
+    .tabla-productos-detalles thead th,
+    .tabla-productos-detalles tbody td {
+        padding: 8px;
+    }
+
+    .advertencia-cancelacion {
+        flex-direction: column;
+        padding: 15px;
+    }
+
+    .icono-advertencia {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-header-cancelacion h2 {
+        font-size: 1.4rem;
+    }
+
+    .modal-header-cancelacion {
+        padding: 15px;
+    }
+
+    .info-item-cancelacion {
+        padding: 10px;
+    }
+
+    .btn-cancelacion {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .tabla-productos-detalles {
+        font-size: 0.75rem;
+    }
+
+    .tabla-productos-detalles thead th {
+        padding: 6px;
+    }
+
+    .tabla-productos-detalles tbody td {
+        padding: 6px;
+    }
+}

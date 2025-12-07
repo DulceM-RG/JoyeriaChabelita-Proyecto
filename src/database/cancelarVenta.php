@@ -14,18 +14,19 @@ try {
     $data = json_decode($input, true);
     
     // ============================================
-    // ACTION: OBTENER DETALLES VENTA
+    // ACTION: OBTENER DETALLES DE LA VENTA
     // ============================================
     if (isset($data['action']) && $data['action'] === 'obtenerDetallesVenta') {
         $idVenta = intval($data['idVenta']);
         
+        // Obtener información de la venta
         $stmtVenta = $pdo->prepare("
             SELECT 
                 v.idVenta,
                 v.fechaVenta,
                 DATEDIFF(CURDATE(), v.fechaVenta) as diasTranscurridos,
-                CONCAT(COALESCE(c.nombre, 'N/A'), ' ', COALESCE(c.apellidoPaterno, ''), ' ', COALESCE(c.apellidoMaterno, '')) as cliente,
-                CONCAT(COALESCE(e.nombre, 'N/A'), ' ', COALESCE(e.apellidoPaterno, '')) as empleado,
+                CONCAT(c.nombre, ' ', COALESCE(c.apellidoPaterno, ''), ' ', COALESCE(c.apellidoMaterno, '')) as cliente,
+                CONCAT(e.nombre, ' ', e.apellidoPaterno) as empleado,
                 i.importeTotal,
                 i.metodoPago,
                 COUNT(pv.idProductoVenta) as totalProductos,
@@ -50,6 +51,7 @@ try {
             exit;
         }
         
+        // Validar si la venta puede cancelarse (máximo 3 días)
         $diasTranscurridos = $venta['diasTranscurridos'];
         if ($diasTranscurridos > 3) {
             echo json_encode([
@@ -60,6 +62,7 @@ try {
             exit;
         }
         
+        // Obtener detalles de productos vendidos
         $stmtProductos = $pdo->prepare("
             SELECT 
                 pv.idProductoVenta,
@@ -85,18 +88,19 @@ try {
             'venta' => $venta,
             'productos' => $productos
         ], JSON_UNESCAPED_UNICODE);
-    }
-    
+        
+    } 
     // ============================================
-    // ACTION: CANCELAR VENTA
+    // ACTION: CANCELAR VENTA (ELIMINAR Y DEVOLVER)
     // ============================================
     else if (isset($data['action']) && $data['action'] === 'cancelarVenta') {
         $idVenta = intval($data['idVenta']);
         
+        // Comenzar transacción
         $pdo->beginTransaction();
         
         try {
-            // 1. Obtener información de la venta
+            // PASO 1: Obtener información de la venta
             $stmtVentaInfo = $pdo->prepare("
                 SELECT idIngreso, fechaVenta
                 FROM venta
@@ -109,13 +113,13 @@ try {
                 throw new Exception('Venta no encontrada');
             }
             
-            // 2. Validar que sean ≤ 3 días
+            // Validar que tenga máximo 3 días
             $diasTranscurridos = (new DateTime($ventaInfo['fechaVenta']))->diff(new DateTime())->days;
             if ($diasTranscurridos > 3) {
                 throw new Exception('Esta venta no puede cancelarse. Solo se permiten cancelaciones dentro de 3 días.');
             }
             
-            // 3. Obtener productos para devolver al inventario
+            // PASO 2: Obtener todos los productos de la venta para devolverlos al inventario
             $stmtProductos = $pdo->prepare("
                 SELECT idProducto, cantidad
                 FROM productoventa
@@ -124,7 +128,7 @@ try {
             $stmtProductos->execute(['idVenta' => $idVenta]);
             $productosVenta = $stmtProductos->fetchAll(PDO::FETCH_ASSOC);
             
-            // 4. Devolver stock a cada producto
+            // PASO 3: Devolver inventario
             foreach ($productosVenta as $prod) {
                 $stmtDevolver = $pdo->prepare("
                     UPDATE producto
@@ -137,21 +141,21 @@ try {
                 ]);
             }
             
-            // 5. Eliminar PRODUCTOVENTA
+            // PASO 4: Eliminar productoventa
             $stmtDeleteProductoVenta = $pdo->prepare("
                 DELETE FROM productoventa
                 WHERE idVenta = :idVenta
             ");
             $stmtDeleteProductoVenta->execute(['idVenta' => $idVenta]);
             
-            // 6. Eliminar VENTA
+            // PASO 5: Eliminar venta
             $stmtDeleteVenta = $pdo->prepare("
                 DELETE FROM venta
                 WHERE idVenta = :idVenta
             ");
             $stmtDeleteVenta->execute(['idVenta' => $idVenta]);
             
-            // 7. Eliminar INGRESO (si existe)
+            // PASO 6: Eliminar ingreso
             if ($ventaInfo['idIngreso']) {
                 $stmtDeleteIngreso = $pdo->prepare("
                     DELETE FROM ingreso
@@ -160,28 +164,100 @@ try {
                 $stmtDeleteIngreso->execute(['idIngreso' => $ventaInfo['idIngreso']]);
             }
             
-            // 8. Commit de la transacción
+            // PASO 7: Recalcular corte_caja
+            $fechaVenta = $ventaInfo['fechaVenta'];
+            
+            // Obtener nuevos totales del día
+            $stmtNuevoTotal = $pdo->prepare("
+                SELECT COALESCE(SUM(importeTotal), 0) as totalDia
+                FROM ingreso
+                WHERE fecha = :fecha
+            ");
+            $stmtNuevoTotal->execute(['fecha' => $fechaVenta]);
+            $nuevoTotalDia = $stmtNuevoTotal->fetch()['totalDia'];
+            
+            $stmtNuevoEfectivo = $pdo->prepare("
+                SELECT COALESCE(SUM(importeTotal), 0) as efectivo
+                FROM ingreso
+                WHERE fecha = :fecha AND metodoPago = 'efectivo'
+            ");
+            $stmtNuevoEfectivo->execute(['fecha' => $fechaVenta]);
+            $nuevoEfectivo = $stmtNuevoEfectivo->fetch()['efectivo'];
+            
+            $stmtNuevasTarjeta = $pdo->prepare("
+                SELECT COALESCE(SUM(importeTotal), 0) as tarjeta
+                FROM ingreso
+                WHERE fecha = :fecha AND metodoPago = 'tarjeta'
+            ");
+            $stmtNuevasTarjeta->execute(['fecha' => $fechaVenta]);
+            $nuevoTarjeta = $stmtNuevasTarjeta->fetch()['tarjeta'];
+            
+            $stmtNuevosVentas = $pdo->prepare("
+                SELECT COUNT(*) as ventasRealizadas
+                FROM venta
+                WHERE fechaVenta = :fecha
+            ");
+            $stmtNuevosVentas->execute(['fecha' => $fechaVenta]);
+            $nuevoVentasRealizadas = $stmtNuevosVentas->fetch()['ventasRealizadas'];
+            
+            $stmtNuevoProductos = $pdo->prepare("
+                SELECT COALESCE(SUM(pv.cantidad), 0) as productosVendidos
+                FROM productoventa pv
+                INNER JOIN venta v ON pv.idVenta = v.idVenta
+                WHERE v.fechaVenta = :fecha
+            ");
+            $stmtNuevoProductos->execute(['fecha' => $fechaVenta]);
+            $nuevoProductosVendidos = $stmtNuevoProductos->fetch()['productosVendidos'];
+            
+            $stmtNuevoEmpleados = $pdo->prepare("
+                SELECT COUNT(DISTINCT idEmpleado) as empleadosActivos
+                FROM venta
+                WHERE fechaVenta = :fecha
+            ");
+            $stmtNuevoEmpleados->execute(['fecha' => $fechaVenta]);
+            $nuevoEmpleadosActivos = $stmtNuevoEmpleados->fetch()['empleadosActivos'];
+            
+            // Actualizar corte_caja si existe
+            $stmtUpdateCorte = $pdo->prepare("
+                UPDATE corte_caja
+                SET 
+                    totalDia = :totalDia,
+                    efectivo = :efectivo,
+                    tarjeta = :tarjeta,
+                    ventasRealizadas = :ventasRealizadas,
+                    productosVendidos = :productosVendidos,
+                    empleadosActivos = :empleadosActivos,
+                    fechaCierre = NOW()
+                WHERE fecha = :fecha
+            ");
+            
+            $stmtUpdateCorte->execute([
+                'totalDia' => $nuevoTotalDia,
+                'efectivo' => $nuevoEfectivo,
+                'tarjeta' => $nuevoTarjeta,
+                'ventasRealizadas' => $nuevoVentasRealizadas,
+                'productosVendidos' => $nuevoProductosVendidos,
+                'empleadosActivos' => $nuevoEmpleadosActivos,
+                'fecha' => $fechaVenta
+            ]);
+            
+            // Confirmar transacción
             $pdo->commit();
             
-            // Respuesta exitosa
             echo json_encode([
                 'success' => true,
-                'message' => 'Venta cancelada correctamente. Inventario devuelto y registros eliminados.'
+                'message' => 'Venta cancelada correctamente. Inventario devuelto y corte de caja actualizado.',
+                'idVenta' => $idVenta
             ], JSON_UNESCAPED_UNICODE);
             
         } catch (Exception $e) {
-            // Rollback si algo falla
             $pdo->rollBack();
             echo json_encode([
                 'success' => false,
                 'message' => 'Error al cancelar: ' . $e->getMessage()
             ], JSON_UNESCAPED_UNICODE);
         }
-    }
-    
-    // ============================================
-    // ACCIÓN NO VÁLIDA
-    // ============================================
+    } 
     else {
         echo json_encode([
             'success' => false,

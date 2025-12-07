@@ -69,11 +69,12 @@
         <table>
             <thead>
                 <tr>
-                    <th>Folio de Venta</th>
+                    <th>IdVenta</th>
                     <th>Fecha</th>
                     <th>Cliente</th>
                     <th>Productos</th>
                     <th>Total</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="tablaVentasBody">
@@ -82,7 +83,7 @@
         </table>
     </section>
 
-    <!-- Botones generar y cerrar -->
+    <!-- Botones generar REPORTE -->
     <section class="acciones-caja">
         <button class="btn btn-primary" id="btnGenerarReporte">Generar reporte</button>
 
@@ -95,18 +96,88 @@
         <button class="btn" id="btnDescargarPDF">Descargar PDF</button>
     </section>
 
-    <!-- Modal cerrar día -->
-    <div id="modalCerrarDia" class="modal">
-        <div class="modal-content">
-            <div class="modal-icon">⚠️</div>
-            <h2 class="modal-title">¿Cerrar el día?</h2>
-            <p class="modal-text">
-                Esta acción cerrará las operaciones del día y generará el reporte final. No podrás realizar más ventas
-                hasta mañana.
-            </p>
-            <div class="modal-buttons">
-                <button class="btn btn-secondary" id="btnCancelar">Cancelar</button>
-                <button class="btn btn-primary" id="btnConfirmarCierre">Confirmar cierre</button>
+
+
+
+    <!-- ===== NUEVO: MODAL CANCELACIÓN ===== -->
+    <div id="modalCancelacion" class="modal-cancelacion">
+        <div class="modal-contenido-cancelacion">
+            <!-- Encabezado -->
+            <div class="modal-header-cancelacion">
+                <h2>⚠️ Cancelar Venta</h2>
+                <button class="btn-cerrar-modal-cancelacion" onclick="cerrarModalCancelacion()">&times;</button>
+            </div>
+
+            <!-- Cuerpo del Modal -->
+            <div class="modal-body-cancelacion">
+
+                <!-- Advertencia -->
+                <div class="advertencia-cancelacion">
+                    <span class="icono-advertencia">⚠️</span>
+                    <p class="texto-advertencia"><strong>ADVERTENCIA:</strong> Esta acción eliminará completamente la
+                        venta y no se puede deshacer.</p>
+                </div>
+
+                <!-- Información de la venta -->
+                <div class="seccion-info-cancelacion">
+                    <h3>Detalles de la Venta</h3>
+                    <div class="info-grid-cancelacion">
+                        <div class="info-item-cancelacion">
+                            <label>ID Venta:</label>
+                            <span id="cancelacion-idVenta" class="valor">-</span>
+                        </div>
+                        <div class="info-item-cancelacion">
+                            <label>Fecha de Venta:</label>
+                            <span id="cancelacion-fecha" class="valor">-</span>
+                        </div>
+                        <div class="info-item-cancelacion">
+                            <label>Días Transcurridos:</label>
+                            <span id="cancelacion-dias" class="valor">-</span>
+                        </div>
+                        <div class="info-item-cancelacion">
+                            <label>Cliente:</label>
+                            <span id="cancelacion-cliente" class="valor">-</span>
+                        </div>
+                        <div class="info-item-cancelacion">
+                            <label>Empleado:</label>
+                            <span id="cancelacion-empleado" class="valor">-</span>
+                        </div>
+                        <div class="info-item-cancelacion">
+                            <label>Método de Pago:</label>
+                            <span id="cancelacion-metodo" class="valor">-</span>
+                        </div>
+                        <div class="info-item-cancelacion">
+                            <label>Monto Total:</label>
+                            <span id="cancelacion-monto" class="valor valor-monto">-</span>
+                        </div>
+                        <div class="info-item-cancelacion">
+                            <label>Total Productos:</label>
+                            <span id="cancelacion-totalProductos" class="valor">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalles de productos -->
+                <div class="seccion-productos-cancelacion">
+                    <h3>Productos a Devolver al Inventario</h3>
+                    <div class="tabla-productos-cancelacion" id="tablaProductosCancelacion">
+                        <div class="cargando">Cargando productos...</div>
+                    </div>
+                </div>
+
+                <!-- Mensaje de resultado -->
+                <div id="mensajeCancelacion" class="mensaje-cancelacion" style="display: none;"></div>
+
+            </div>
+
+            <!-- Pie del Modal -->
+            <div class="modal-footer-cancelacion">
+                <button class="btn-cancelacion btn-secundario" onclick="cerrarModalCancelacion()">
+                    Cancelar Acción
+                </button>
+                <button id="btnConfirmarCancelacion" class="btn-cancelacion btn-peligro" disabled>
+                    ⚠️ Confirmar Cancelación
+                </button>
             </div>
         </div>
     </div>
