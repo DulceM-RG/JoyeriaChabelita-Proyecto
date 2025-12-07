@@ -66,7 +66,7 @@ CREATE TABLE `cliente` (
 
 LOCK TABLES `cliente` WRITE;
 /*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
-INSERT INTO `cliente` VALUES (1,1,NULL,NULL,NULL,NULL),(2,2,'Maria','Hernandez','Garcia','5551234562'),(3,2,'Juan','Perez','Martinez','9541234563'),(4,2,'Ana','Lopez','Ruiz','2811234564'),(5,2,'Luis','Martinez','Santos','9511234565');
+INSERT INTO `cliente` VALUES (1,1,Público General,NULL,NULL,NULL),(2,2,'Maria','Hernandez','Garcia','5551234562'),(3,2,'Juan','Perez','Martinez','9541234563'),(4,2,'Ana','Lopez','Ruiz','2811234564'),(5,2,'Luis','Martinez','Santos','9511234565');
 /*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 
