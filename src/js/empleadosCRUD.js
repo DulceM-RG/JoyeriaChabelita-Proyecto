@@ -163,7 +163,7 @@ function mostrarEmpleados(empleados) {
         // Estado con badge
         const estadoBadge = empleado.activo === 'Activo'
             ? '<span class="badge badge-activo">Activo</span>'
-            : '<span class="badge badge-inactivo">Inactivo</span>';
+            : '<span class="badge badge-inactivo">Baja</span>';
 
         // Deshabilitar edición/eliminación si está inactivo
         const botonesAccion = empleado.activo === 'Activo'
@@ -173,7 +173,10 @@ function mostrarEmpleados(empleados) {
                <button class="btn-accion btn-eliminar" onclick="confirmarEliminar(${empleado.idEmpleado}, '${nombreCompleto}')" title="Eliminar">
                     <img src="./src/assets/icon/borrar126.png" alt="Eliminar" width="20" height="20">
                </button>`
-            : '<span style="color: #999;">Sin acciones</span>';
+            : `<button class="btn-accion btn-editar" onclick="abrirModalEditar(${empleado.idEmpleado})" title="Editar">
+                    <img src="./src/assets/icon/editar.png" alt="Editar" width="20" height="20">
+               </button>
+               <span style="color: #999; font-size: 12px;">Sin eliminar</span>`;
 
         tr.innerHTML = `
             <td>${empleado.idControl || 'N/A'}</td>
@@ -188,7 +191,7 @@ function mostrarEmpleados(empleados) {
         `;
 
         // Resaltar fila si está inactivo
-        if (empleado.activo === 'Inactivo') {
+        if (empleado.activo === 'Baja') {
             tr.style.backgroundColor = '#f5f5f5';
             tr.style.opacity = '0.7';
         }
@@ -227,11 +230,13 @@ async function abrirModalEditar(idEmpleado) {
             // Llenar campos del formulario
             document.getElementById('editIdEmpleado').value = empleado.idEmpleado;
             document.getElementById('editIdDireccion').value = empleado.idDireccion;
+            document.getElementById('editIdControl').value = empleado.idControl;
             document.getElementById('editNombre').value = empleado.nombre;
             document.getElementById('editApellidoPaterno').value = empleado.apellidoPaterno;
             document.getElementById('editApellidoMaterno').value = empleado.apellidoMaterno;
             document.getElementById('editTelefono').value = empleado.telefono;
             document.getElementById('editPuesto').value = empleado.nombrePuesto;
+            document.getElementById('editEstado').value = empleado.activo;
 
             // Dirección
             document.getElementById('editCalle').value = empleado.nombreCalle;
@@ -271,7 +276,8 @@ async function actualizarEmpleado(e) {
         nombreCalle: document.getElementById('editCalle').value.trim(),
         numeroCalle: document.getElementById('editNumeroCalle').value.trim(),
         localidad: document.getElementById('editLocalidad').value.trim(),
-        codigoPostal: document.getElementById('editCodigoPostal').value.trim()
+        codigoPostal: document.getElementById('editCodigoPostal').value.trim(),
+        activo: document.getElementById('editEstado').value
     };
 
     // Validaciones
@@ -287,6 +293,11 @@ async function actualizarEmpleado(e) {
 
     if (datos.codigoPostal.length !== 5) {
         mostrarError('El código postal debe tener exactamente 5 dígitos');
+        return;
+    }
+
+    if (!datos.activo) {
+        mostrarError('Debe seleccionar un estado válido');
         return;
     }
 

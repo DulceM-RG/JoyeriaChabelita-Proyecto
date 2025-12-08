@@ -74,6 +74,7 @@
                 <form id="formEditar">
                     <input type="hidden" id="editIdEmpleado">
                     <input type="hidden" id="editIdDireccion">
+                    <input type="hidden" id="editIdControl">
 
                     <h3 class="section-subtitle">Datos Personales</h3>
 
@@ -140,6 +141,17 @@
                             <input type="text" id="editCodigoPostal" class="form-input" placeholder="5 dígitos"
                                 maxlength="5" inputmode="numeric" required>
                         </div>
+                    </div>
+
+                    <h3 class="section-subtitle">Estado Laboral</h3>
+
+                    <div class="form-group">
+                        <label>Estado del Empleado</label>
+                        <select id="editEstado" class="form-input" required>
+                            <option value="">-- Seleccionar Estado --</option>
+                            <option value="Activo">Activo</option>
+                            <option value="Baja">Baja</option>
+                        </select>
                     </div>
 
                     <div class="modal-footer">
