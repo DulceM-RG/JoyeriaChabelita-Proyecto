@@ -96,6 +96,7 @@ try {
         $apellidoPaterno = trim($data['apellidoPaterno']);
         $apellidoMaterno = trim($data['apellidoMaterno']);
         $telefono = trim($data['telefono']);
+        $activo = isset($data['activo']) ? trim($data['activo']) : 'Activo';
         
         // Datos de dirección
         $nombreCalle = trim($data['nombreCalle']);
@@ -128,7 +129,7 @@ try {
             exit;
         }
         
-        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $nombre)) {
+        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\'\\s]+$/', $nombre)) {
             echo json_encode([
                 'success' => false,
                 'message' => 'El nombre solo puede contener letras'
@@ -145,7 +146,7 @@ try {
             exit;
         }
         
-        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $apellidoPaterno)) {
+        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\'\\s]+$/', $apellidoPaterno)) {
             echo json_encode([
                 'success' => false,
                 'message' => 'El apellido paterno solo puede contener letras'
@@ -161,7 +162,7 @@ try {
             exit;
         }
         
-        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/', $apellidoMaterno)) {
+        if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\'\\s]+$/', $apellidoMaterno)) {
             echo json_encode([
                 'success' => false,
                 'message' => 'El apellido materno solo puede contener letras'
@@ -198,6 +199,15 @@ try {
             exit;
         }
         
+        // Validar estado
+        if (!in_array($activo, ['Activo', 'Baja'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'El estado debe ser "Activo" o "Baja"'
+            ], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        
         // ============================================
         // ACTUALIZAR DATOS
         // ============================================
@@ -217,6 +227,13 @@ try {
                              WHERE idDireccion = ?";
             $stmtDireccion = $conn->prepare($sqlDireccion);
             $stmtDireccion->execute([$nombreCalle, $numeroCalle, $localidad, $codigoPostal, $idDireccion]);
+            
+            // Actualizar estado en credenciales
+            $sqlCredenciales = "UPDATE credenciales 
+                               SET activo = ?, ultimoCambio = CURDATE()
+                               WHERE idEmpleado = ?";
+            $stmtCredenciales = $conn->prepare($sqlCredenciales);
+            $stmtCredenciales->execute([$activo, $idEmpleado]);
             
             $conn->commit();
             
