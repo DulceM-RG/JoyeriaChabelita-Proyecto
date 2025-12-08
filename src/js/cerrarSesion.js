@@ -6,7 +6,7 @@ function cerrarSesion() {
     console.log("Sesión cerrada");
 
     // 2. Redirigir al usuario al login
-    window.location.href = "login.html";
+    window.location.href = "index.html";
 }
 
 // 2. Función que maneja la confirmación
