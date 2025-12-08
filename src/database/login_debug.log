@@ -1,0 +1,122 @@
+2025-12-04 05:01:53 - === INICIO DE LOGIN ===
+2025-12-04 05:01:53 - Intentando login con ID: G25100101
+2025-12-04 05:01:53 - Conexión a BD establecida
+2025-12-04 05:01:53 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 05:01:53 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 05:01:53 - Resultado bloqueo: {"bloqueado":1,"fechaBloqueo":"2025-12-04","activo":1}
+2025-12-04 05:01:53 - ⛔ DÍA BLOQUEADO - Login rechazado
+2025-12-04 05:02:04 - === INICIO DE LOGIN ===
+2025-12-04 05:02:04 - Intentando login con ID: V25100202
+2025-12-04 05:02:04 - Conexión a BD establecida
+2025-12-04 05:02:04 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 05:02:04 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 05:02:04 - Resultado bloqueo: {"bloqueado":1,"fechaBloqueo":"2025-12-04","activo":1}
+2025-12-04 05:02:04 - ⛔ DÍA BLOQUEADO - Login rechazado
+2025-12-04 05:02:13 - === INICIO DE LOGIN ===
+2025-12-04 05:02:13 - Intentando login con ID: A25100303
+2025-12-04 05:02:13 - Conexión a BD establecida
+2025-12-04 05:02:13 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 05:02:13 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 05:02:13 - Resultado bloqueo: {"bloqueado":1,"fechaBloqueo":"2025-12-04","activo":1}
+2025-12-04 05:02:13 - ⛔ DÍA BLOQUEADO - Login rechazado
+2025-12-04 05:02:43 - === INICIO DE LOGIN ===
+2025-12-04 05:02:43 - Intentando login con ID: A25100303
+2025-12-04 05:02:43 - Conexión a BD establecida
+2025-12-04 05:02:43 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 05:02:43 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 05:02:43 - Resultado bloqueo: {"bloqueado":1,"fechaBloqueo":"2025-12-04","activo":1}
+2025-12-04 05:02:43 - ⛔ DÍA BLOQUEADO - Login rechazado
+2025-12-04 05:04:04 - === INICIO DE LOGIN ===
+2025-12-04 05:04:04 - Intentando login con ID: G25100101
+2025-12-04 05:04:04 - Conexión a BD establecida
+2025-12-04 05:04:04 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 05:04:04 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 05:04:04 - Resultado bloqueo: {"bloqueado":0,"fechaBloqueo":null,"activo":null}
+2025-12-04 05:04:04 - ✅ Día NO bloqueado, continuando...
+2025-12-04 05:04:04 - Usuario encontrado: Carlos
+2025-12-04 05:04:04 - ✅ Contraseña correcta
+2025-12-04 05:04:04 - ✅ LOGIN EXITOSO - Usuario: Carlos - Puesto: Gerente
+2025-12-04 05:04:57 - === INICIO DE LOGIN ===
+2025-12-04 05:04:57 - Intentando login con ID: A25100303
+2025-12-04 05:04:57 - Conexión a BD establecida
+2025-12-04 05:04:57 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 05:04:57 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 05:04:57 - Resultado bloqueo: {"bloqueado":0,"fechaBloqueo":null,"activo":null}
+2025-12-04 05:04:57 - ✅ Día NO bloqueado, continuando...
+2025-12-04 05:04:57 - Usuario encontrado: José
+2025-12-04 05:04:57 - ✅ Contraseña correcta
+2025-12-04 05:04:57 - ✅ LOGIN EXITOSO - Usuario: José - Puesto: Almacén
+2025-12-04 05:05:22 - === INICIO DE LOGIN ===
+2025-12-04 05:05:22 - Intentando login con ID: V25100202
+2025-12-04 05:05:22 - Conexión a BD establecida
+2025-12-04 05:05:22 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 05:05:22 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 05:05:22 - Resultado bloqueo: {"bloqueado":0,"fechaBloqueo":null,"activo":null}
+2025-12-04 05:05:22 - ✅ Día NO bloqueado, continuando...
+2025-12-04 05:05:22 - Usuario encontrado: María
+2025-12-04 05:05:22 - ✅ Contraseña correcta
+2025-12-04 05:05:22 - ✅ LOGIN EXITOSO - Usuario: María - Puesto: Venta
+2025-12-04 05:06:33 - === INICIO DE LOGIN ===
+2025-12-04 05:06:33 - Intentando login con ID: G25100101
+2025-12-04 05:06:33 - Conexión a BD establecida
+2025-12-04 05:06:33 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 05:06:33 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 05:06:33 - Resultado bloqueo: {"bloqueado":0,"fechaBloqueo":null,"activo":null}
+2025-12-04 05:06:33 - ✅ Día NO bloqueado, continuando...
+2025-12-04 05:06:33 - Usuario encontrado: Carlos
+2025-12-04 05:06:33 - ✅ Contraseña correcta
+2025-12-04 05:06:33 - ✅ LOGIN EXITOSO - Usuario: Carlos - Puesto: Gerente
+2025-12-04 05:07:50 - === INICIO DE LOGIN ===
+2025-12-04 05:07:50 - Intentando login con ID: A25100303
+2025-12-04 05:07:50 - Conexión a BD establecida
+2025-12-04 05:07:50 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 05:07:50 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 05:07:50 - Resultado bloqueo: {"bloqueado":0,"fechaBloqueo":null,"activo":null}
+2025-12-04 05:07:50 - ✅ Día NO bloqueado, continuando...
+2025-12-04 05:07:50 - Usuario encontrado: José
+2025-12-04 05:07:50 - ✅ Contraseña correcta
+2025-12-04 05:07:50 - ✅ LOGIN EXITOSO - Usuario: José - Puesto: Almacén
+2025-12-04 16:05:50 - === INICIO DE LOGIN ===
+2025-12-04 16:05:50 - ERROR: Datos de entrada inválidos
+2025-12-04 16:05:50 - === INICIO DE LOGIN ===
+2025-12-04 16:05:50 - ERROR: Datos de entrada inválidos
+2025-12-04 16:05:52 - === INICIO DE LOGIN ===
+2025-12-04 16:05:52 - Intentando login con ID: G25100101
+2025-12-04 16:05:52 - Conexión a BD establecida
+2025-12-04 16:05:52 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 16:05:52 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 16:05:52 - Resultado bloqueo: {"bloqueado":0,"fechaBloqueo":null,"activo":null}
+2025-12-04 16:05:52 - ✅ Día NO bloqueado, continuando...
+2025-12-04 16:05:52 - Usuario encontrado: Carlos
+2025-12-04 16:05:53 - ✅ Contraseña correcta
+2025-12-04 16:05:53 - ✅ LOGIN EXITOSO - Usuario: Carlos - Puesto: Gerente
+2025-12-04 16:06:12 - === INICIO DE LOGIN ===
+2025-12-04 16:06:12 - Intentando login con ID: A25100303
+2025-12-04 16:06:12 - Conexión a BD establecida
+2025-12-04 16:06:12 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 16:06:12 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 16:06:12 - Resultado bloqueo: {"bloqueado":0,"fechaBloqueo":null,"activo":null}
+2025-12-04 16:06:12 - ✅ Día NO bloqueado, continuando...
+2025-12-04 16:06:12 - Usuario encontrado: José
+2025-12-04 16:06:12 - ✅ Contraseña correcta
+2025-12-04 16:06:12 - ✅ LOGIN EXITOSO - Usuario: José - Puesto: Almacén
+2025-12-04 16:32:08 - === INICIO DE LOGIN ===
+2025-12-04 16:32:08 - Intentando login con ID: A25100303
+2025-12-04 16:32:08 - Conexión a BD establecida
+2025-12-04 16:32:08 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 16:32:08 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 16:32:08 - Resultado bloqueo: {"bloqueado":0,"fechaBloqueo":null,"activo":null}
+2025-12-04 16:32:08 - ✅ Día NO bloqueado, continuando...
+2025-12-04 16:32:08 - Usuario encontrado: José
+2025-12-04 16:32:09 - ✅ Contraseña correcta
+2025-12-04 16:32:09 - ✅ LOGIN EXITOSO - Usuario: José - Puesto: Almacén
+2025-12-04 16:34:56 - === INICIO DE LOGIN ===
+2025-12-04 16:34:56 - Intentando login con ID: V25100202
+2025-12-04 16:34:56 - Conexión a BD establecida
+2025-12-04 16:34:56 - Verificando bloqueo para fecha: 2025-12-04
+2025-12-04 16:34:56 - Tabla bloqueos_sesion existe, verificando...
+2025-12-04 16:34:56 - Resultado bloqueo: {"bloqueado":0,"fechaBloqueo":null,"activo":null}
+2025-12-04 16:34:56 - ✅ Día NO bloqueado, continuando...
+2025-12-04 16:34:56 - Usuario encontrado: María
+2025-12-04 16:34:56 - ✅ Contraseña correcta
+2025-12-04 16:34:56 - ✅ LOGIN EXITOSO - Usuario: María - Puesto: Venta

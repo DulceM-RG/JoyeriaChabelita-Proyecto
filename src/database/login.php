@@ -1,12 +1,21 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require_once 'connection.php';  // Asegúrate de que este archivo tenga las credenciales de la BD configuradas correctamente
+require_once 'connection.php';
+
+// 📝 Función para escribir logs (para debugging)
+function escribirLog($mensaje) {
+    $log = date('Y-m-d H:i:s') . " - " . $mensaje . "\n";
+    file_put_contents('login_debug.log', $log, FILE_APPEND);
+}
 
 try {
+    escribirLog("=== INICIO DE LOGIN ===");
+    
     // Recibir y validar JSON de entrada
     $entrada = json_decode(file_get_contents('php://input'), true);
     if ($entrada === null) {
+        escribirLog("ERROR: Datos de entrada inválidos");
         http_response_code(400);
         echo json_encode([
             "success" => false,
@@ -18,8 +27,11 @@ try {
     $idControl = $entrada['idControl'] ?? '';
     $contrasena = $entrada['contrasena'] ?? '';
     
+    escribirLog("Intentando login con ID: " . $idControl);
+    
     // Validar que los campos no estén vacíos
     if (empty($idControl) || empty($contrasena)) {
+        escribirLog("ERROR: Campos vacíos");
         http_response_code(400);
         echo json_encode([
             "success" => false,
@@ -29,8 +41,50 @@ try {
     }
     
     $conn = ConexionDB::setConnection();
+    escribirLog("Conexión a BD establecida");
     
-    // Consulta para obtener datos del usuario con su puesto (optimizada, sin sueldo en respuesta por seguridad)
+    // 🔒 VERIFICAR SI EL DÍA ESTÁ BLOQUEADO (DÍA YA CERRADO)
+    $fechaHoy = date('Y-m-d');
+    escribirLog("Verificando bloqueo para fecha: " . $fechaHoy);
+    
+    try {
+        // Primero verificar si la tabla existe
+        $checkTable = $conn->query("SHOW TABLES LIKE 'bloqueos_sesion'");
+        if ($checkTable->rowCount() > 0) {
+            escribirLog("Tabla bloqueos_sesion existe, verificando...");
+            
+            $stmtBloqueo = $conn->prepare("
+                SELECT COUNT(*) as bloqueado, fechaBloqueo, activo
+                FROM bloqueos_sesion
+                WHERE fechaBloqueo = :fecha AND activo = 1
+            ");
+            $stmtBloqueo->execute(['fecha' => $fechaHoy]);
+            $bloqueado = $stmtBloqueo->fetch(PDO::FETCH_ASSOC);
+            
+            escribirLog("Resultado bloqueo: " . json_encode($bloqueado));
+            
+            if ($bloqueado && $bloqueado['bloqueado'] > 0) {
+                escribirLog("⛔ DÍA BLOQUEADO - Login rechazado");
+                http_response_code(403);
+                echo json_encode([
+                    "success" => false,
+                    "errorLogin" => "⛔ TURNO CERRADO\n\nEl día de hoy ya fue cerrado. No se permiten nuevos ingresos hasta mañana.",
+                    "diaBloqueado" => true,
+                    "fechaBloqueada" => $fechaHoy
+                ]);
+                exit;
+            } else {
+                escribirLog("✅ Día NO bloqueado, continuando...");
+            }
+        } else {
+            escribirLog("⚠️ Tabla bloqueos_sesion NO existe, continuando sin validación");
+        }
+    } catch (PDOException $e) {
+        escribirLog("⚠️ Error al verificar bloqueo: " . $e->getMessage());
+        // Si hay error, continuar sin bloqueo (no queremos romper el login)
+    }
+    
+    // Consulta para obtener datos del usuario con su puesto
     $sql = "SELECT 
                 c.idControl,
                 c.idEmpleado,
@@ -54,6 +108,7 @@ try {
     
     // Verificar si el usuario existe
     if (!$usuario) {
+        escribirLog("ERROR: Usuario no encontrado");
         http_response_code(401);
         echo json_encode([
             "success" => false,
@@ -62,8 +117,11 @@ try {
         exit;
     }
     
+    escribirLog("Usuario encontrado: " . $usuario['nombre']);
+    
     // Verificar si la cuenta está activa
     if ($usuario['activo'] !== 'Activo') {
+        escribirLog("ERROR: Cuenta desactivada");
         http_response_code(403);
         echo json_encode([
             "success" => false,
@@ -72,8 +130,9 @@ try {
         exit;
     }
     
-    // Verificar intentos fallidos (bloqueo después de 5)
+    // Verificar intentos fallidos (bloqueo después de 3)
     if ($usuario['intentosFallidos'] >= 3) {
+        escribirLog("ERROR: Cuenta bloqueada por intentos");
         http_response_code(403);
         echo json_encode([
             "success" => false,
@@ -82,19 +141,19 @@ try {
         exit;
     }
     
-    // Verificar contraseña (IMPORTANTE: Debe estar hasheada en la BD con password_hash())
+    // Verificar contraseña
     if (password_verify($contrasena, $usuario['contrasena'])) {
-        // Contraseña correcta
+        escribirLog("✅ Contraseña correcta");
         
         // Resetear intentos fallidos
         $sqlReset = "UPDATE credenciales SET intentosFallidos = 0 WHERE idControl = :idControl";
         $stmtReset = $conn->prepare($sqlReset);
         $stmtReset->execute([':idControl' => $idControl]);
         
-        // Regenerar ID de sesión por seguridad (previene fixation attacks)
+        // Regenerar ID de sesión por seguridad
         session_regenerate_id(true);
         
-        // Crear sesión (almacena datos del usuario, pero no expone sueldo)
+        // Crear sesión
         $_SESSION['usuario'] = [
             'idControl' => $usuario['idControl'],
             'idEmpleado' => $usuario['idEmpleado'],
@@ -103,8 +162,11 @@ try {
             'apellidoMaterno' => $usuario['apellidoMaterno'],
             'nombreCompleto' => $usuario['nombre'] . ' ' . $usuario['apellidoPaterno'] . ' ' . $usuario['apellidoMaterno'],
             'puesto' => strtolower($usuario['puesto']),
-            'idPuesto' => $usuario['idPuesto']
+            'idPuesto' => $usuario['idPuesto'],
+            'fechaLogin' => date('Y-m-d H:i:s')
         ];
+        
+        escribirLog("✅ LOGIN EXITOSO - Usuario: " . $usuario['nombre'] . " - Puesto: " . $usuario['puesto']);
         
         // Respuesta exitosa
         http_response_code(200);
@@ -124,7 +186,7 @@ try {
         ]);
         
     } else {
-        // Contraseña incorrecta
+        escribirLog("ERROR: Contraseña incorrecta");
         
         // Incrementar intentos fallidos
         $intentos = $usuario['intentosFallidos'] + 1;
@@ -145,16 +207,18 @@ try {
     }
     
 } catch (PDOException $e) {
+    escribirLog("ERROR PDO: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "errorLogin" => "Error del servidor: " . $e->getMessage()  // En producción, no expongas detalles
+        "errorLogin" => "Error del servidor. Por favor, intente más tarde."
     ]);
 } catch (Exception $e) {
+    escribirLog("ERROR General: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         "success" => false,
-        "errorLogin" => "Error inesperado: " . $e->getMessage()
+        "errorLogin" => "Error inesperado. Por favor, intente más tarde."
     ]);
 }
 ?>

@@ -1,0 +1,12 @@
+2025-12-04 05:04:14 - === INICIO CORTE DE CAJA ===
+2025-12-04 05:04:14 - Datos recibidos: {"action":"cerrarDia","fecha":"2025-12-04"}
+2025-12-04 05:04:14 - Fecha a cerrar: 2025-12-04
+2025-12-04 05:04:14 - ✅ Tabla bloqueos_sesion verificada/creada
+2025-12-04 05:04:14 - ✅ Tabla corte_caja verificada/creada
+2025-12-04 05:04:14 - ⚠️ El día ya fue cerrado anteriormente
+2025-12-04 05:04:45 - === INICIO CORTE DE CAJA ===
+2025-12-04 05:04:45 - Datos recibidos: {"action":"cerrarDia","fecha":"2025-12-04"}
+2025-12-04 05:04:45 - Fecha a cerrar: 2025-12-04
+2025-12-04 05:04:45 - ✅ Tabla bloqueos_sesion verificada/creada
+2025-12-04 05:04:45 - ✅ Tabla corte_caja verificada/creada
+2025-12-04 05:04:45 - ⚠️ El día ya fue cerrado anteriormente

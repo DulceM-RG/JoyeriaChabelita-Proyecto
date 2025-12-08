@@ -6,13 +6,19 @@ const URL_BASE = "http://localhost/JoyeriaChabelita-Proyecto/src/database/";
 const RUTAS_POR_PUESTO = {
   gerente: "menuAdministracion.html",
   venta: "menuVentas.html",
-  almacén: "menuAlmacen.html",
+  almacén: "menuAlmacen.html"
 };
 
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   const inputIdControl = document.getElementById("txtIdControl");
   const inputContrasena = document.getElementById("txtContrasena");
+
+  // 🧹 LIMPIAR FORMULARIO AL CARGAR LA PÁGINA
+  limpiarFormulario();
+
+  // 🚫 PREVENIR AUTOCOMPLETADO DE CONTRASEÑA
+  inputContrasena.setAttribute('autocomplete', 'off');
 
   if (loginForm) {
     loginForm.addEventListener("submit", async function (e) {
@@ -73,15 +79,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Verificar si existe la ruta para este puesto
             if (RUTAS_POR_PUESTO[puestoNormalizado]) {
+              // 🧹 LIMPIAR FORMULARIO ANTES DE REDIRIGIR
+              limpiarFormulario();
               redirigirSegunPuesto(puestoNormalizado);
             } else {
-              console.error(
-                "❌ Puesto no encontrado en RUTAS_POR_PUESTO:",
-                puestoNormalizado
-              );
-              mostrarError(
-                `Error: Puesto "${puestoOriginal}" no tiene ruta configurada. Contacte al administrador.`
-              );
+              console.error("❌ Puesto no encontrado en RUTAS_POR_PUESTO:", puestoNormalizado);
+              mostrarError(`Error: Puesto "${puestoOriginal}" no tiene ruta configurada. Contacte al administrador.`);
               btnLogin.disabled = false;
               btnLogin.textContent = textoOriginal;
             }
@@ -130,9 +133,7 @@ function redirigirSegunPuesto(puesto) {
   } else {
     console.error("❌ Puesto no reconocido:", puesto);
     console.error("🗺️ Rutas disponibles:", Object.keys(RUTAS_POR_PUESTO));
-    mostrarError(
-      `Error: Puesto "${puesto}" no válido. Contacte al administrador.`
-    );
+    mostrarError(`Error: Puesto "${puesto}" no válido. Contacte al administrador.`);
   }
 }
 
@@ -146,4 +147,24 @@ function mostrarError(mensaje) {
 function mostrarExito(mensaje) {
   alert("✅ " + mensaje);
   console.log("Éxito:", mensaje);
+}
+
+// 🧹 Limpiar formulario
+function limpiarFormulario() {
+  const loginForm = document.getElementById("loginForm");
+  if (loginForm) {
+    loginForm.reset();
+    
+    // Limpiar campos individualmente por si acaso
+    const inputIdControl = document.getElementById("txtIdControl");
+    const inputContrasena = document.getElementById("txtContrasena");
+    
+    if (inputIdControl) inputIdControl.value = "";
+    if (inputContrasena) inputContrasena.value = "";
+    
+    // Enfocar en el primer campo
+    if (inputIdControl) inputIdControl.focus();
+    
+    console.log("🧹 Formulario limpiado");
+  }
 }

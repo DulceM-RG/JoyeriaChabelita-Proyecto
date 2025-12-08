@@ -134,6 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function cerrarDia() {
         const fechaSeleccionada = fechaCorteEl.value;
         btnConfirmarCierre.disabled = true;
+        btnConfirmarCierre.textContent = 'Cerrando día...';
+        
         fetch(API_CERRAR_DIA_URL, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -145,18 +147,41 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(data => {
             btnConfirmarCierre.disabled = false;
+            btnConfirmarCierre.textContent = 'Confirmar cierre';
+            
             if(data.success) {
-                mostrarMensaje('El día se cerró correctamente', 'exito');
+                // Cerrar el modal
                 modalCerrarDia.classList.remove('active');
-                cargarResumenCaja(fechaSeleccionada);
-                cargarVentas(fechaSeleccionada);
+                
+                // Mostrar mensaje de éxito
+                mostrarMensaje('✅ ' + data.message, 'exito');
+                
+                // Si la sesión fue cerrada, redirigir al login
+                if(data.sesionCerrada) {
+                    console.log('🔒 Sesión cerrada por cierre de día');
+                    
+                    // Mostrar mensaje adicional antes de redirigir
+                    setTimeout(() => {
+                        mostrarMensaje('🚪 Redirigiendo al login...', 'info');
+                        
+                        // Redirigir al login después de 2 segundos
+                        setTimeout(() => {
+                            window.location.href = '/JoyeriaChabelita-Proyecto/login.html';
+                        }, 2000);
+                    }, 1500);
+                } else {
+                    // Si no se cerró la sesión, recargar los datos
+                    cargarResumenCaja(fechaSeleccionada);
+                    cargarVentas(fechaSeleccionada);
+                }
             } else {
-                mostrarMensaje(data.message || 'Error al cerrar el día', 'error');
+                mostrarMensaje('❌ ' + (data.message || 'Error al cerrar el día'), 'error');
             }
         })
         .catch(err => {
             btnConfirmarCierre.disabled = false;
-            mostrarMensaje('Error: ' + err.message, 'error');
+            btnConfirmarCierre.textContent = 'Confirmar cierre';
+            mostrarMensaje('❌ Error: ' + err.message, 'error');
         });
     }
 
@@ -166,10 +191,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function mostrarMensaje(texto, tipo) {
+        const colores = {
+            'exito': '#4CAF50',
+            'error': '#f44336',
+            'info': '#2196F3',
+            'warning': '#ff9800'
+        };
+        
         const mensaje = document.createElement('div');
         mensaje.className = 'mensaje mensaje-' + tipo;
         mensaje.textContent = texto;
-        mensaje.style.cssText = 'position: fixed; top: 20px; right: 20px; padding: 15px 25px; background-color: ' + (tipo === 'exito' ? '#4CAF50' : '#f44336') + '; color: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10000; animation: slideIn 0.3s ease-out; max-width: 400px; font-weight: 500;';
+        mensaje.style.cssText = `
+            position: fixed; 
+            top: 20px; 
+            right: 20px; 
+            padding: 15px 25px; 
+            background-color: ${colores[tipo] || '#333'}; 
+            color: white; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            z-index: 10000; 
+            animation: slideIn 0.3s ease-out; 
+            max-width: 400px; 
+            font-weight: 500;
+        `;
 
         document.body.appendChild(mensaje);
 
@@ -195,4 +240,4 @@ style.textContent = `
     to { transform: translateX(100%); opacity: 0; }
 }
 `;
-document.head.appendChild(style);
+document.head.appendChild(style);z
