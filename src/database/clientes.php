@@ -33,6 +33,7 @@ try {
     // Conectar a base de datos
     $conn = ConexionDB::setConnection();
     
+<<<<<<< HEAD
     // ==================== OBTENER TODOS LOS CLIENTES ====================
     if ($accion === 'obtenerTodos') {
         error_log("=== OBTENER TODOS LOS CLIENTES ===");
@@ -125,6 +126,78 @@ try {
         
         try {
             $stmtBuscar = $conn->prepare($sqlBuscar);
+=======
+    
+// ==================== BUSCAR CLIENTE ====================
+if ($accion === 'buscar') {
+    $busqueda = $entrada['busqueda'] ?? '';
+    
+    // 🔹 LOG inicial
+    error_log("=== INICIO BÚSQUEDA ===");
+    error_log("Término recibido: " . $busqueda);
+    
+    if (empty($busqueda)) {
+        http_response_code(400);
+        echo json_encode([
+            "success" => false,
+            "error" => "Debe proporcionar un término de búsqueda."
+        ]);
+        exit;
+    }
+    
+    // 🔹 Preparar término de búsqueda
+    $terminoBusqueda = '%' . $busqueda . '%';
+    
+    error_log("Término con wildcards: " . $terminoBusqueda);
+    
+    // 🔹 SQL CORREGIDA - Usamos parámetros DIFERENTES para cada condición
+    $sqlBuscar = "SELECT 
+                    c.idCliente,
+                    c.nombre,
+                    c.apellidoPaterno,
+                    c.apellidoMaterno,
+                    c.telefono,
+                    tc.tipo as tipoCliente,
+                    c.idTipoCliente,
+                    CONCAT_WS(' ', c.nombre, c.apellidoPaterno, c.apellidoMaterno) as nombreCompleto
+                  FROM cliente c
+                  INNER JOIN tipocliente tc ON c.idTipoCliente = tc.idTipoCliente
+                  WHERE c.idTipoCliente = 2
+                  AND (
+                      c.telefono LIKE :busqueda1 
+                      OR CONCAT_WS(' ', c.nombre, c.apellidoPaterno, c.apellidoMaterno) LIKE :busqueda2
+                      OR c.nombre LIKE :busqueda3
+                      OR c.apellidoPaterno LIKE :busqueda4
+                      OR c.apellidoMaterno LIKE :busqueda5
+                  )
+                  ORDER BY c.nombre ASC
+                  LIMIT 20";
+    
+    error_log("SQL preparado");
+    
+    try {
+        $stmtBuscar = $conn->prepare($sqlBuscar);
+        
+        // 🔹 CRÍTICO: Vincular CADA parámetro por separado
+        $stmtBuscar->bindValue(':busqueda1', $terminoBusqueda, PDO::PARAM_STR);
+        $stmtBuscar->bindValue(':busqueda2', $terminoBusqueda, PDO::PARAM_STR);
+        $stmtBuscar->bindValue(':busqueda3', $terminoBusqueda, PDO::PARAM_STR);
+        $stmtBuscar->bindValue(':busqueda4', $terminoBusqueda, PDO::PARAM_STR);
+        $stmtBuscar->bindValue(':busqueda5', $terminoBusqueda, PDO::PARAM_STR);
+        
+        error_log("Parámetros vinculados: " . $terminoBusqueda);
+        
+        $stmtBuscar->execute();
+        
+        error_log("Query ejecutada exitosamente");
+        
+        $clientes = $stmtBuscar->fetchAll(PDO::FETCH_ASSOC);
+        
+        error_log("Clientes encontrados: " . count($clientes));
+        
+        if (empty($clientes)) {
+            error_log("⚠️ Sin resultados para: " . $busqueda);
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
             
             // CRÍTICO: Vincular CADA parámetro por separado
             $stmtBuscar->bindValue(':busqueda1', $terminoBusqueda, PDO::PARAM_STR);
@@ -170,12 +243,43 @@ try {
             http_response_code(500);
             echo json_encode([
                 "success" => false,
+<<<<<<< HEAD
                 "error" => "Error en la base de datos: " . $e->getMessage()
+=======
+                "error" => "No se encontraron clientes con ese criterio.",
+                "clientes" => [],
+                "busqueda" => $busqueda
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
             ]);
         }
+<<<<<<< HEAD
         exit;
     }
     
+=======
+        
+        error_log("✅ Éxito: " . count($clientes) . " clientes encontrados");
+        
+        http_response_code(200);
+        echo json_encode([
+            "success" => true,
+            "clientes" => $clientes,
+            "cantidad" => count($clientes)
+        ]);
+        
+    } catch (PDOException $e) {
+        error_log("❌ Error SQL: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            "success" => false,
+            "error" => "Error en la base de datos: " . $e->getMessage()
+        ]);
+    }
+    
+    
+}
+
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
     // ==================== CREAR CLIENTE ====================
     elseif ($accion === 'crear') {
         error_log("=== CREAR NUEVO CLIENTE ===");

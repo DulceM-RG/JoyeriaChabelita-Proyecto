@@ -890,11 +890,17 @@ inputEfectivoRecibido.addEventListener('input', function (e) {
 });
 
 // ============================================
+<<<<<<< HEAD
 // FUNCIÓN: GENERAR TICKET - CON FOLIO
 // ============================================
 function generarTicket(folioVenta) {
     console.log('🎫 Generando ticket con folio:', folioVenta);
 
+=======
+// FUNCIÓN: GENERAR TICKET 
+// ============================================
+function generarTicket() {
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
     const ahora = new Date();
     const fecha = ahora.toLocaleDateString('es-MX', {
         timeZone: 'America/Mexico_City',
@@ -1087,7 +1093,11 @@ function generarTicket(folioVenta) {
             </div>
             <div class="info-row">
                 <span class="info-label">Cliente:</span>
+<<<<<<< HEAD
                 <span>${window.nombreClienteVenta || 'Público General'}</span>
+=======
+                <span>${window.nombreClienteVenta || modalCliente.textContent}</span>
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
             </div>
             <div class="info-row">
                 <span class="info-label">Atendió:</span>
@@ -1180,6 +1190,7 @@ function generarTicket(folioVenta) {
 
     console.log('✅ Ticket generado con folio:', folioFormateado);
 }
+<<<<<<< HEAD
 // ============================================
 // FUNCIÓN: CONFIRMAR VENTA - MODIFICADA PARA PASAR FOLIO
 // ============================================
@@ -1233,6 +1244,71 @@ btnConfirmarVenta.addEventListener('click', async function () {
 async function guardarVentaBD() {
     console.log('💾 Entrando a guardarVentaBD()');
 
+=======
+//
+//============================================
+// FUNCIÓN: CONFIRMAR VENTA - CON DEBUG
+// ============================================
+btnConfirmarVenta.addEventListener('click', async function () {
+    console.log('🔵 Botón Confirmar clickeado');
+
+    if (!metodoPagoSeleccionado) {
+        alert('⚠️ Por favor, selecciona un método de pago');
+        return;
+    }
+
+    if (metodoPagoSeleccionado === 'efectivo') {
+        const efectivoRecibido = parseFloat(inputEfectivoRecibido.value) || 0;
+        if (efectivoRecibido < totalVenta) {
+            alert('⚠️ El efectivo recibido es insuficiente');
+            return;
+        }
+    }
+
+    console.log('🔵 Iniciando guardado de venta...');
+
+    try {
+        // ✅ 1. Guardar nombre del cliente ANTES de todo
+        let nombreClienteCompleto = 'Público General';
+
+        if (tipoClienteActual === 'mayorista') {
+            if (window.clienteSeleccionado && window.clienteSeleccionado.idCliente !== 1) {
+                nombreClienteCompleto = window.clienteSeleccionado.nombreCompleto;
+            }
+        }
+
+        window.nombreClienteVenta = nombreClienteCompleto;
+        console.log('✅ Nombre cliente guardado:', nombreClienteCompleto);
+
+        // ✅ 2. GENERAR TICKET PRIMERO (mientras productosEnVenta[] tiene datos)
+        console.log('🎫 Generando ticket con', productosEnVenta.length, 'productos...');
+        generarTicket();
+
+        // ✅ 3. LUEGO guardar en BD (esto limpia productosEnVenta[])
+        const ventaExitosa = await guardarVentaBD();
+        console.log('🔵 Resultado guardarVentaBD():', ventaExitosa);
+
+        if (ventaExitosa) {
+            console.log('✅ Venta guardada exitosamente');
+            cerrarModalCobrar();
+            console.log('✅ Modal cerrado');
+        } else {
+            console.error('❌ La venta NO fue exitosa');
+            alert('❌ No se pudo completar la venta. Revisa la consola (F12).');
+        }
+    } catch (error) {
+        console.error('❌ Error en confirmar venta:', error);
+        alert('❌ Error al procesar la venta: ' + error.message);
+    }
+});
+// ============================================
+// FUNCIÓN: GUARDAR VENTA - VERSIÓN CORREGIDA CON RETURN
+// ============================================
+async function guardarVentaBD() {
+    console.log('💾 Entrando a guardarVentaBD()');
+
+    // Determinar ID del cliente
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
     let idCliente = 1;
     let nombreClienteCompleto = 'Público General';
 
@@ -1242,9 +1318,17 @@ async function guardarVentaBD() {
             nombreClienteCompleto = window.clienteSeleccionado.nombreCompleto;
             console.log('✅ Cliente mayorista:', nombreClienteCompleto);
         } else {
+<<<<<<< HEAD
             alert('⚠️ Por favor, selecciona un cliente mayorista.');
             return { success: false }; // ✅ OBJETO, no booleano
         }
+=======
+            alert('⚠️ Por favor, selecciona un cliente mayorista antes de procesar la venta.');
+            return false;
+        }
+    } else {
+        console.log('✅ Cliente público general');
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
     }
 
     const productos = productosEnVenta.map(p => ({
@@ -1275,7 +1359,11 @@ async function guardarVentaBD() {
         cambio: cambio
     };
 
+<<<<<<< HEAD
     console.log('📤 Enviando datos:', datosVenta);
+=======
+    console.log('📤 Enviando datos al servidor:', datosVenta);
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
 
     try {
         const response = await fetch(URL_BASE + 'guardarVenta.php', {
@@ -1284,6 +1372,7 @@ async function guardarVentaBD() {
             body: JSON.stringify(datosVenta)
         });
 
+<<<<<<< HEAD
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
             const textoRespuesta = await response.text();
@@ -1300,6 +1389,28 @@ async function guardarVentaBD() {
             console.log('✅ FOLIO OBTENIDO:', folioVenta);
 
             alert(`✅ Venta registrada!\n\nFolio: ${folioVenta}\nTotal: $${resultado.venta.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`);
+=======
+        console.log('📥 Respuesta recibida, status:', response.status);
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const textoRespuesta = await response.text();
+            console.error('❌ Respuesta no es JSON:', textoRespuesta);
+            alert('❌ Error del servidor: La respuesta no es JSON válida.');
+            return false;
+        }
+
+        const resultado = await response.json();
+        console.log('📦 Resultado parseado:', resultado);
+
+        if (resultado.success) {
+            console.log('✅ Venta registrada exitosamente');
+
+            alert(`✅ Venta registrada exitosamente!\n\n` +
+                `ID Venta: ${resultado.venta.idVenta}\n` +
+                `Total: $${resultado.venta.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}\n` +
+                `Productos: ${resultado.venta.productos}`);
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
 
             // Resetear cliente
             window.clienteSeleccionado = null;
@@ -1323,6 +1434,7 @@ async function guardarVentaBD() {
                 folio: folioVenta
             };
 
+<<<<<<< HEAD
         } else {
             console.error('❌ Error:', resultado.error);
             alert('❌ Error: ' + resultado.error);
@@ -1334,6 +1446,39 @@ async function guardarVentaBD() {
         return { success: false }; // ✅ OBJETO
     }
 }
+=======
+            // Resetear cliente y tipo
+            window.clienteSeleccionado = null;
+            tipoClienteActual = null;
+
+            const btnPublico = document.getElementById('btnPublico');
+            const btnMayorista = document.getElementById('btnMayorista');
+            if (btnPublico) btnPublico.classList.remove('active');
+            if (btnMayorista) btnMayorista.classList.remove('active');
+
+            const acordeonBuscar = document.getElementById('acordeonBuscar');
+            const acordeonNuevo = document.getElementById('acordeonNuevo');
+            if (acordeonBuscar) acordeonBuscar.classList.remove('show');
+            if (acordeonNuevo) acordeonNuevo.classList.remove('show');
+
+            limpiarResultadosClientes();
+
+            console.log('✅ Retornando TRUE');
+            return true; // ✅ IMPORTANTE: Retornar true
+
+        } else {
+            console.error('❌ Error del servidor:', resultado.error);
+            alert('❌ Error al registrar venta:\n\n' + resultado.error);
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Error de conexión:', error);
+        alert('❌ Error de conexión al registrar la venta.');
+        return false;
+    }
+}
+
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
 // ============================================
 // FUNCIÓN CORREGIDA: LIMPIAR RESULTADOS DE CLIENTES
 // ============================================

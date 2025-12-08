@@ -8,11 +8,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // Variable para rastrear la fila que está editando
     let filaEnEdicion = null;
 
+<<<<<<< HEAD
 
     const API_URL = './src/database/clientes.php';
 
     console.log('✅ Iniciando carga de clientes...');
     console.log('📍 API URL:', API_URL);
+=======
+    // Configuracion de la API
+    const API_URL = '/JoyeriaChabelita-Proyecto/src/database/clientesMayoristas.php';
+
+    console.log('Iniciando carga de clientes...');
+    console.log('API URL:', API_URL);
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
 
     // Cargar los datos al iniciar
     cargarClientesDesdeDB();
@@ -47,11 +55,14 @@ document.addEventListener('DOMContentLoaded', function () {
     function cargarClientesDesdeDB() {
         const tbody = document.getElementById('tbodyClientes');
 
+<<<<<<< HEAD
         if (!tbody) {
             console.error('❌ No se encontró el elemento tbodyClientes');
             return;
         }
 
+=======
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
         tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 30px;">Cargando clientes...</td></tr>';
 
         console.log('📡 Enviando solicitud: obtenerTodos');
@@ -67,8 +78,13 @@ document.addEventListener('DOMContentLoaded', function () {
             })
         })
             .then(response => {
+<<<<<<< HEAD
                 console.log('📩 Respuesta recibida:', response.status);
                 console.log('🌐 URL:', response.url);
+=======
+                console.log('Respuesta recibida:', response.status);
+                console.log('URL:', response.url);
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
 
                 if (!response.ok) {
                     throw new Error('Error HTTP: ' + response.status);
@@ -76,7 +92,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
+<<<<<<< HEAD
                 console.log('📦 Datos recibidos:', data);
+=======
+                console.log('Datos recibidos:', data);
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
 
                 if (data.success) {
                     if (data.clientes && data.clientes.length > 0) {
@@ -350,6 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify(datosActualizados)
         })
             .then(response => {
+<<<<<<< HEAD
                 console.log('📩 Respuesta actualización:', response.status);
 
                 if (!response.ok) {
@@ -378,13 +399,44 @@ document.addEventListener('DOMContentLoaded', function () {
                     mostrarMensaje('✅ Cliente actualizado exitosamente', 'exito');
                 } else {
                     mostrarMensaje(data.error || data.message || 'Error al guardar', 'error');
+=======
+                console.log('Respuesta:', response.status);
+                if (!response.ok) {
+                    throw new Error('Error HTTP: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Respuesta del servidor:', data);
+
+                if (data.success) {
+                    celdas[0].textContent = datosNuevos.nombre;
+                    celdas[1].textContent = datosNuevos.apellidoPaterno;
+                    celdas[2].textContent = datosNuevos.apellidoMaterno;
+                    celdas[3].textContent = datosNuevos.telefono;
+
+                    restaurarBotonesAccion(celdas[4], fila.dataset.idCliente);
+                    agregarEventosFila(fila, fila.dataset.idCliente);
+
+                    fila.classList.remove('modo-edicion');
+                    filaEnEdicion = null;
+
+                    mostrarMensaje('Cliente actualizado exitosamente', 'exito');
+                } else {
+                    mostrarMensaje(data.message || 'Error al guardar', 'error');
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
                     btnGuardar.disabled = false;
                     btnGuardar.style.opacity = '1';
                 }
             })
             .catch(error => {
+<<<<<<< HEAD
                 console.error('❌ Error:', error);
                 mostrarMensaje('Error de conexión: ' + error.message, 'error');
+=======
+                console.error('Error:', error);
+                mostrarMensaje('Error de conexion: ' + error.message, 'error');
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
                 btnGuardar.disabled = false;
                 btnGuardar.style.opacity = '1';
             });
@@ -496,22 +548,33 @@ document.addEventListener('DOMContentLoaded', function () {
             })
         })
             .then(response => {
+<<<<<<< HEAD
                 console.log('📩 Respuesta eliminación:', response.status);
 
+=======
+                console.log('Respuesta:', response.status);
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
                 if (!response.ok) {
                     throw new Error('Error HTTP: ' + response.status);
                 }
                 return response.json();
             })
             .then(data => {
+<<<<<<< HEAD
                 console.log('📦 Respuesta del servidor:', data);
 
                 if (data.success) {
                     // Animar eliminación
+=======
+                console.log('Respuesta del servidor:', data);
+
+                if (data.success) {
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
                     fila.style.transition = 'all 0.3s ease';
                     fila.style.opacity = '0';
                     fila.style.transform = 'translateX(-100%)';
 
+<<<<<<< HEAD
                     // Remover fila
                     setTimeout(() => {
                         fila.remove();
@@ -519,13 +582,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     }, 300);
                 } else {
                     mostrarMensaje(data.error || data.message || 'Error al eliminar', 'error');
+=======
+                    setTimeout(() => {
+                        fila.remove();
+                        mostrarMensaje('Cliente ' + nombreCompleto + ' eliminado', 'exito');
+                    }, 300);
+                } else {
+                    mostrarMensaje(data.message || 'Error al eliminar', 'error');
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
                     btnEliminar.disabled = false;
                     btnEliminar.style.opacity = '1';
                 }
             })
             .catch(error => {
+<<<<<<< HEAD
                 console.error('❌ Error:', error);
                 mostrarMensaje('Error de conexión: ' + error.message, 'error');
+=======
+                console.error('Error:', error);
+                mostrarMensaje('Error de conexion: ' + error.message, 'error');
+>>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
                 btnEliminar.disabled = false;
                 btnEliminar.style.opacity = '1';
             });
