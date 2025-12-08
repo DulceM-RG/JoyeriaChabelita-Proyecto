@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vista de Empleados</title>
+    <link rel="shortcut icon" href="./src/assets/image/chabelitanegro.png" type="image/x-icon" />
+    <link rel="stylesheet" href="./src/css/empleado.css" />
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-image" style="background-image: url('./src/assets/image/header.png');"></div>
+    </header>
+
+    <div class="salir-container">
+        <button class="btn-salir" onclick="window.location.href='menuAdministracion.html'">
+            <img src="src/assets/icon/menu-principal.png" alt="Ícono Salir" width="20" height="20">
+            Menu
+        </button>
+    </div>
+
+    <main class="main-content">
+        <div class="empleado-container">
+            <h1 class="page-title">EMPLEADOS</h1>
+
+            <!-- BUSCADOR -->
+            <div class="search-container">
+                <input type="text" id="txtBuscar" class="search-input"
+                    placeholder="Buscar por nombre, apellido, teléfono, puesto o usuario..." autocomplete="off">
+                <button id="btnBuscar" class="btn-search">Buscar</button>
+                <button id="btnLimpiar" class="btn-clear">Limpiar</button>
+
+                <label class="checkbox-container">
+                    <input type="checkbox" id="chkMostrarInactivos">
+                    <span>Mostrar inactivos</span>
+                </label>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="empleado-table">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Nombre Completo</th>
+                            <th>Teléfono</th>
+                            <th>Puesto</th>
+                            <th>Dirección</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyEmpleado">
+                        <!-- Filas agregadas por JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="noResultados" style="display: none; text-align: center; padding: 30px; color: #999;">
+                No se encontraron empleados
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL PARA EDITAR EMPLEADO -->
+    <div id="modalEditar" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Empleado</h2>
+                <span class="close" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="formEditar">
+                    <input type="hidden" id="editIdEmpleado">
+                    <input type="hidden" id="editIdDireccion">
+
+                    <h3 class="section-subtitle">Datos Personales</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="editNombre" class="form-input" placeholder="Nombre" maxlength="30"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Apellido Paterno</label>
+                            <input type="text" id="editApellidoPaterno" class="form-input"
+                                placeholder="Apellido Paterno" maxlength="30" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Apellido Materno</label>
+                            <input type="text" id="editApellidoMaterno" class="form-input"
+                                placeholder="Apellido Materno" maxlength="30" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" id="editTelefono" class="form-input" placeholder="10 dígitos"
+                                maxlength="10" inputmode="numeric" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Puesto (No editable)</label>
+                        <input type="text" id="editPuesto" class="form-input" disabled
+                            style="background-color: #f5f5f5; cursor: not-allowed;">
+                        <small style="color: #ff9800; display: block; margin-top: 5px;">
+                            ⚠️ El puesto no se puede editar. Si necesita cambiar de puesto, cree un nuevo empleado.
+                        </small>
+                    </div>
+
+                    <h3 class="section-subtitle">Dirección</h3>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Calle</label>
+                            <input type="text" id="editCalle" class="form-input" placeholder="Nombre de la calle"
+                                required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Número</label>
+                            <input type="text" id="editNumeroCalle" class="form-input" placeholder="Número" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Localidad</label>
+                            <input type="text" id="editLocalidad" class="form-input" placeholder="Localidad" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Código Postal</label>
+                            <input type="text" id="editCodigoPostal" class="form-input" placeholder="5 dígitos"
+                                maxlength="5" inputmode="numeric" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                        <button type="submit" class="btn-save">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-image" style="background-image: url('src/assets/image/header.png');"></div>
+        <div class="footer-bar">
+            <div class="footer-content">
+                <img src="src/assets/image/dorado.png" alt="Logo Joyería Chabelita" class="footer-logo">
+            </div>
+        </div>
+    </footer>
+
+    <script src="./src/js/empleadosCRUD.js"></script>
+</body>
+
+</html>

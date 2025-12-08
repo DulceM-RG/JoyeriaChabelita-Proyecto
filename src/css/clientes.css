@@ -226,3 +226,215 @@ body {
     border-color: #dbc16a;
     box-shadow: 0 0 0 2px rgba(219, 193, 106, 0.2);
 }
+
+/* ===== BÚSQUEDA DE CLIENTES ===== */
+
+.busqueda-container {
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 0;
+}
+
+.busqueda-wrapper {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #b18212;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.label-busqueda {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group-busqueda {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+/* INPUT BÚSQUEDA */
+.input-busqueda {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 15px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #333;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.input-busqueda:focus {
+    outline: none;
+    border-color: #b18212;
+    box-shadow: 0 0 0 3px rgba(177, 130, 18, 0.1);
+    background-color: #fafafa;
+}
+
+.input-busqueda::placeholder {
+    color: #999;
+}
+
+/* BOTÓN BUSCAR */
+.btn-buscar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    background-color: #b18212;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-buscar:hover {
+    background-color: #8f6910;
+    box-shadow: 0 4px 8px rgba(177, 130, 18, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-buscar:active {
+    transform: translateY(0);
+}
+
+.btn-buscar img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+}
+
+/* BOTÓN LIMPIAR */
+.btn-limpiar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: #e8e8e8;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-limpiar:hover {
+    background-color: #d8d8d8;
+    border-color: #999;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-limpiar:active {
+    transform: translateY(0);
+}
+
+.btn-limpiar img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0.4);
+}
+
+/* ===== MENSAJE DE BÚSQUEDA ===== */
+.mensaje-busqueda {
+    background-color: #e3f2fd;
+    border-left: 4px solid #2196F3;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #1565c0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mensaje-busqueda.sin-resultados {
+    background-color: #fff3cd;
+    border-left-color: #ffc107;
+    color: #856404;
+}
+
+/* ===== RESPONSIVE - BÚSQUEDA ===== */
+
+@media (max-width: 768px) {
+    .busqueda-wrapper {
+        padding: 15px;
+    }
+
+    .input-group-busqueda {
+        flex-direction: column;
+    }
+
+    .input-busqueda {
+        min-width: 100%;
+    }
+
+    .btn-buscar,
+    .btn-limpiar {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .label-busqueda {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .busqueda-container {
+        margin-bottom: 20px;
+    }
+
+    .busqueda-wrapper {
+        padding: 12px;
+        border-radius: 6px;
+    }
+
+    .label-busqueda {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .input-group-busqueda {
+        gap: 8px;
+    }
+
+    .input-busqueda {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .btn-buscar,
+    .btn-limpiar {
+        font-size: 12px;
+        padding: 10px 15px;
+        gap: 6px;
+    }
+
+    .btn-buscar img,
+    .btn-limpiar img {
+        width: 14px;
+        height: 14px;
+    }
+}

@@ -318,3 +318,348 @@ body {
         padding: 20px 10px;
     }
 }
+
+/* ===== BÚSQUEDA DE CREDENCIALES ===== */
+
+.busqueda-container {
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 0;
+}
+
+.busqueda-wrapper {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #c9a661;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.label-busqueda {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-group-busqueda {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: stretch;
+}
+
+/* INPUT BÚSQUEDA */
+.input-busqueda {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 15px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: #333;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.input-busqueda:focus {
+    outline: none;
+    border-color: #c9a661;
+    box-shadow: 0 0 0 3px rgba(201, 166, 97, 0.1);
+    background-color: #fafafa;
+}
+
+.input-busqueda::placeholder {
+    color: #999;
+}
+
+/* BOTÓN BUSCAR */
+.btn-buscar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    background-color: #c9a661;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-buscar:hover {
+    background-color: #b8903b;
+    box-shadow: 0 4px 8px rgba(201, 166, 97, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-buscar:active {
+    transform: translateY(0);
+}
+
+.btn-buscar img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+}
+
+/* BOTÓN LIMPIAR */
+.btn-limpiar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: #e8e8e8;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-limpiar:hover {
+    background-color: #d8d8d8;
+    border-color: #999;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-limpiar:active {
+    transform: translateY(0);
+}
+
+.btn-limpiar img {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0.4);
+}
+
+/* ===== ICONO EDITAR Y BOTONES DE ACCIÓN ===== */
+
+.btn-editar,
+.btn-guardar,
+.btn-cancelar {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-editar img,
+.btn-guardar img,
+.btn-cancelar img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.btn-editar:hover {
+    transform: scale(1.2);
+}
+
+.btn-guardar:hover {
+    transform: scale(1.2);
+}
+
+.btn-cancelar:hover {
+    transform: scale(1.2);
+}
+
+/* ===== CONTENEDOR DE BOTONES DE ACCIÓN ===== */
+
+.botones-accion {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* ===== VALIDACIÓN DE CONTRASEÑA EN MODO EDICIÓN ===== */
+
+.input-contrasena {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.input-contrasena:focus {
+    outline: none;
+    border-color: #c9a661;
+    box-shadow: 0 0 0 3px rgba(201, 166, 97, 0.1);
+}
+
+/* Verde cuando es válido (4 dígitos) */
+.input-contrasena[style*="borderColor: #4CAF50"] {
+    background-color: #f1f8f4;
+}
+
+/* Naranja cuando está incompleto */
+.input-contrasena[style*="borderColor: #ff9800"] {
+    background-color: #fff8f0;
+}
+
+/* ===== SELECT EDICIÓN ===== */
+
+.select-editar {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.select-editar:focus {
+    outline: none;
+    border-color: #c9a661;
+    box-shadow: 0 0 0 3px rgba(201, 166, 97, 0.1);
+}
+
+.select-editar:hover {
+    border-color: #c9a661;
+}
+
+/* ===== FILA EN MODO EDICIÓN ===== */
+
+tr.modo-edicion {
+    background-color: #fffaed;
+}
+
+tr.modo-edicion td {
+    padding: 10px 8px;
+}
+
+/* ===== MENSAJE FLOTANTE ===== */
+
+.mensaje-flotante {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: translateX(400px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+    max-width: 300px;
+    word-break: break-word;
+}
+
+.mensaje-flotante.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.mensaje-exito {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.mensaje-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* ===== RESPONSIVE - BÚSQUEDA ===== */
+
+@media (max-width: 768px) {
+    .busqueda-wrapper {
+        padding: 15px;
+    }
+
+    .input-group-busqueda {
+        flex-direction: column;
+    }
+
+    .input-busqueda {
+        min-width: 100%;
+    }
+
+    .btn-buscar,
+    .btn-limpiar {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .label-busqueda {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .busqueda-container {
+        margin-bottom: 20px;
+    }
+
+    .busqueda-wrapper {
+        padding: 12px;
+        border-radius: 6px;
+    }
+
+    .label-busqueda {
+        font-size: 12px;
+        margin-bottom: 10px;
+    }
+
+    .input-group-busqueda {
+        gap: 8px;
+    }
+
+    .input-busqueda {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+
+    .btn-buscar,
+    .btn-limpiar {
+        font-size: 12px;
+        padding: 10px 15px;
+        gap: 6px;
+    }
+
+    .btn-buscar img,
+    .btn-limpiar img {
+        width: 14px;
+        height: 14px;
+    }
+
+    .mensaje-flotante {
+        top: 10px;
+        right: 10px;
+        max-width: 280px;
+        font-size: 12px;
+        padding: 12px 15px;
+    }
+}

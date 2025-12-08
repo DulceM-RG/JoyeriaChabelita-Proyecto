@@ -1,222 +1,341 @@
+// ============================================
+// IMPORTACIONES SOLO MOSTRAR CREDENCIALES
+// ============================================
+import apiEndPoints from "./apiEndPoints.js";
+import Buttons from "./buttonsCredenciales.js";
+import DataManager from "./dataManagerCredenciales.js";
 
-// ===== CREDENCIALES - INTERACTIVIDAD =====
+// ============================================
+// UTILIDADES
+// ============================================
+const dataManager = new DataManager("credenciales");
+let datosCeldas = [];
 
-document.addEventListener('DOMContentLoaded', function () {
+function createCell(row, text) {
+  const cell = document.createElement("td");
+  cell.textContent = text;
+  row.appendChild(cell);
+}
 
-    // Obtener todos los botones de editar
-    const botonesEditar = document.querySelectorAll('.btn-editar');
+// ============================================
+// FUNCIÓN PRINCIPAL: DIBUJAR TABLA
+// ============================================
+const agregarFilaTabla = (dataDB, tbody) => {
+  tbody.textContent = ""; // Limpiar tabla
 
-    // Variable para rastrear la fila que se está editando actualmente
-    let filaEnEdicion = null;
+  if (!dataDB || dataDB.length === 0) {
+    const emptyRow = document.createElement("tr");
+    const emptyCell = document.createElement("td");
+    emptyCell.colSpan = 8;
+    emptyCell.textContent = "No hay datos disponibles";
+    emptyCell.style.textAlign = "center";
+    emptyRow.appendChild(emptyCell);
+    tbody.appendChild(emptyRow);
+    return;
+  }
 
-    // Agregar evento click a cada botón de editar
-    botonesEditar.forEach(boton => {
-        boton.addEventListener('click', function () {
-            const fila = this.closest('tr');
+  for (const data of dataDB) {
+    const newRow = document.createElement("tr");
+    newRow.dataset.idEmpleado = data.idEmpleado;
 
-            // Si ya hay una fila en edición, restaurarla primero
-            if (filaEnEdicion && filaEnEdicion !== fila) {
-                cancelarEdicion(filaEnEdicion);
-            }
+    // Convertir 'Activo'/'Baja' a badges
+    const estadoTexto = data.activo;
+    const badgeClass =
+      data.activo === "Activo" ? "badge-activo" : "badge-inactivo";
 
-            // Alternar entre modo edición y modo normal
-            if (fila.classList.contains('modo-edicion')) {
-                cancelarEdicion(fila);
+    // Crear celdas de datos
+    createCell(newRow, data.nombreCompleto || "N/A");
+    createCell(newRow, data.usuario);
+    createCell(newRow, "••••"); // Contraseña oculta
+    createCell(newRow, data.fechaCreacion);
+    createCell(newRow, data.ultimoCambio);
+
+    // Celda de Estado con Badge
+    const estadoCell = document.createElement("td");
+    estadoCell.innerHTML = `<span class="badge ${badgeClass}">${estadoTexto}</span>`;
+    newRow.appendChild(estadoCell);
+
+    createCell(newRow, data.intentosFallidos);
+
+    // Celda de ACCIONES (solo botón Editar)
+    const actionsCell = document.createElement("td");
+    const editButton = document.createElement("img");
+    Buttons.crearBotonesAcciones(
+      actionsCell,
+      editButton,
+      Buttons.botones.btnEdit.id,
+      Buttons.botones.btnEdit.ruta,
+      Buttons.botones.btnEdit.title
+    );
+
+    newRow.appendChild(actionsCell);
+    tbody.appendChild(newRow);
+  }
+};
+
+// ============================================
+// FUNCIÓN DE BÚSQUEDA
+// ============================================
+function buscarCredenciales(terminoBusqueda, tbody) {
+  const credenciales = dataManager.readData();
+
+  if (!terminoBusqueda || terminoBusqueda.trim() === "") {
+    agregarFilaTabla(credenciales, tbody);
+    return;
+  }
+
+  const termino = terminoBusqueda.toLowerCase().trim();
+  const resultados = credenciales.filter((cred) => {
+    const nombreCompleto = (cred.nombreCompleto || "").toLowerCase();
+    const usuario = (cred.usuario || "").toLowerCase();
+    return nombreCompleto.includes(termino) || usuario.includes(termino);
+  });
+
+  agregarFilaTabla(resultados, tbody);
+}
+
+// ============================================
+// INICIALIZACIÓN
+// ============================================
+document.addEventListener("DOMContentLoaded", async function () {
+  const tbody = document.getElementById("tbodyCredenciales");
+  const inputBusqueda = document.getElementById("inputBusqueda");
+  const btnBuscar = document.getElementById("btnBuscar");
+  const btnLimpiar = document.getElementById("btnLimpiar");
+
+  console.log("📄 Iniciando carga de credenciales...");
+
+  // Cargar datos al iniciar
+  try {
+    const resultCredenciales = await apiEndPoints.selectAllCredenciales();
+
+    console.log("Datos recibidos:", resultCredenciales);
+
+    if (
+      resultCredenciales &&
+      Array.isArray(resultCredenciales) &&
+      resultCredenciales.length > 0
+    ) {
+      dataManager.saveAllData(resultCredenciales);
+      agregarFilaTabla(resultCredenciales, tbody);
+      console.log(
+        "Credenciales cargadas:",
+        resultCredenciales.length,
+        "registros"
+      );
+    } else {
+      console.warn("No se recibieron datos del servidor");
+      const credencialesLocal = dataManager.readData();
+      if (credencialesLocal.length > 0) {
+        agregarFilaTabla(credencialesLocal, tbody);
+        console.log("Cargando desde localStorage");
+      } else {
+        agregarFilaTabla([], tbody);
+        console.log("No hay datos disponibles");
+      }
+    }
+  } catch (error) {
+    console.error("Error al cargar credenciales:", error);
+    agregarFilaTabla([], tbody);
+  }
+
+  // ============================================
+  // EVENT LISTENERS - BÚSQUEDA
+  // ============================================
+
+  // Buscar al hacer clic en el botón
+  btnBuscar.addEventListener("click", function () {
+    buscarCredenciales(inputBusqueda.value, tbody);
+  });
+
+  // Buscar al presionar Enter
+  inputBusqueda.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      buscarCredenciales(inputBusqueda.value, tbody);
+    }
+  });
+
+  // Limpiar búsqueda
+  btnLimpiar.addEventListener("click", function () {
+    inputBusqueda.value = "";
+    const credenciales = dataManager.readData();
+    agregarFilaTabla(credenciales, tbody);
+  });
+
+  // ============================================
+  // EVENT LISTENER - ACCIONES DE LA TABLA
+  // ============================================
+  tbody.addEventListener("click", async function (event) {
+    // ========== ACCIÓN EDITAR ==========
+    if (event.target.id === Buttons.botones.btnEdit.id) {
+      const rowEdit = event.target.closest("tr");
+      const cells = rowEdit.querySelectorAll("td");
+      datosCeldas = [];
+
+      cells.forEach((cell, index) => {
+        if (index >= cells.length - 1) return;
+
+        const valorActual = cell.textContent.trim();
+        datosCeldas.push(valorActual);
+
+        // SOLO EDITAR COLUMNA 2 (CONTRASEÑA)
+        if (index === 2) {
+          cell.textContent = "";
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.value = "";
+          input.placeholder = "4 dígitos";
+          input.className = "input-contrasena";
+          input.maxLength = 4;
+          input.inputMode = "numeric";
+          input.autocomplete = "off";
+
+          // Validación en tiempo real
+          input.addEventListener("input", function (e) {
+            // Solo permitir números
+            this.value = this.value.replace(/[^0-9]/g, "");
+
+            // Cambiar color del borde según validación
+            if (this.value.length === 4) {
+              this.style.borderColor = "#4CAF50"; // Verde cuando es válido
+              this.style.backgroundColor = "#f1f8f4";
+            } else if (this.value.length > 0) {
+              this.style.borderColor = "#ff9800"; // Naranja cuando está incompleto
+              this.style.backgroundColor = "#fff8f0";
             } else {
-                activarModoEdicion(fila);
-                filaEnEdicion = fila;
+              this.style.borderColor = "#ddd"; // Gris por defecto
+              this.style.backgroundColor = "#fff";
             }
-        });
-    });
+          });
 
-    // Función para activar el modo edición
-    function activarModoEdicion(fila) {
-        // Marcar la fila como en edición
-        fila.classList.add('modo-edicion');
+          cell.appendChild(input);
 
-        // Obtener todas las celdas de la fila
-        const celdas = fila.querySelectorAll('td');
+          // Enfocar automáticamente el input
+          setTimeout(() => input.focus(), 100);
+        }
+        // LOS DEMÁS CAMPOS NO SE MODIFICAN
+      });
 
-        // Índices de las columnas editables: 2: Contraseña, 5: Activo, 6: Intentos fallidos
+      // Cambiar botón Editar por Guardar
+      Buttons.changeButtonEvent(
+        event,
+        Buttons.botones.btnSave.id,
+        Buttons.botones.btnSave.ruta,
+        Buttons.botones.btnSave.title
+      );
 
-        // Guardar valores originales
-        fila.dataset.valorOriginalPassword = celdas[2].textContent;
-        // fila.dataset.valorOriginalFecha = celdas[4].textContent; // ELIMINADO
-        fila.dataset.valorOriginalActivo = celdas[5].querySelector('.badge').textContent;
-        fila.dataset.valorOriginalIntentos = celdas[6].textContent;
+      // Agregar botón Cancelar
+      const btnCancelar = document.createElement("img");
+      Buttons.crearBotonesAcciones(
+        cells[cells.length - 1],
+        btnCancelar,
+        Buttons.botones.btnCancel.id,
+        Buttons.botones.btnCancel.ruta,
+        Buttons.botones.btnCancel.title
+      );
 
-        // CONTRASEÑA (índice 2) - Input password
-        const passwordActual = celdas[2].textContent;
-        celdas[2].innerHTML = `
-            <input type="password" 
-                   class="input-editar" 
-                   value="${passwordActual}" 
-                   placeholder="Nueva contraseña">
-        `;
-
-        // FECHA ÚLTIMO CAMBIO (índice 4) - NO SE TOCA
-
-        // ACTIVO (índice 5) - Select Activo/Baja
-        const activoActual = celdas[5].querySelector('.badge').textContent;
-        celdas[5].innerHTML = `
-            <select class="select-editar">
-                <option value="Activo" ${activoActual === 'Activo' ? 'selected' : ''}>Activo</option>
-                <option value="Baja" ${activoActual === 'Baja' ? 'selected' : ''}>Baja</option>
-            </select>
-        `;
-
-        // INTENTOS FALLIDOS (índice 6) - Select 0,1,2,3
-        const intentosActual = celdas[6].textContent;
-        celdas[6].innerHTML = `
-            <select class="select-editar">
-                <option value="0" ${intentosActual === '0' ? 'selected' : ''}>0</option>
-                <option value="1" ${intentosActual === '1' ? 'selected' : ''}>1</option>
-                <option value="2" ${intentosActual === '2' ? 'selected' : ''}>2</option>
-                <option value="3" ${intentosActual === '3' ? 'selected' : ''}>3</option>
-            </select>
-        `;
-
-        // ACCIONES (índice 7) - Cambiar botones a Guardar y Cancelar
-        celdas[7].innerHTML = `
-            <div class="botones-accion">
-                <button class="btn-guardar" title="Guardar cambios">
-                    <img src="./images/save-icon.png" alt="Guardar">
-                </button>
-                <button class="btn-cancelar" title="Cancelar">
-                    <img src="./images/cancel-icon.png" alt="Cancelar">
-                </button>
-            </div>
-        `;
-
-        // Agregar eventos a los nuevos botones
-        const btnGuardar = celdas[7].querySelector('.btn-guardar');
-        const btnCancelar = celdas[7].querySelector('.btn-cancelar');
-
-        btnGuardar.addEventListener('click', function () {
-            guardarCambios(fila);
-        });
-
-        btnCancelar.addEventListener('click', function () {
-            cancelarEdicion(fila);
-        });
+      console.log(" Modo edición activado - Solo contraseña");
+      return;
     }
 
-    // Función para guardar los cambios
-    function guardarCambios(fila) {
-        const celdas = fila.querySelectorAll('td');
+    // ========== ACCIÓN GUARDAR ==========
+    if (event.target.id === Buttons.botones.btnSave.id) {
+      const rowSave = event.target.closest("tr");
+      const idEmpleado = rowSave.dataset.idEmpleado;
 
-        // Obtener nuevos valores
-        const nuevaPassword = celdas[2].querySelector('input').value;
-        // const nuevaFecha = celdas[4].querySelector('input').value; // ELIMINADO
-        const nuevoActivo = celdas[5].querySelector('select').value;
-        const nuevosIntentos = celdas[6].querySelector('select').value;
+      const inputContrasena = rowSave.querySelector("td:nth-child(3) input");
 
-        // Validar que la contraseña no esté vacía
-        if (nuevaPassword.trim() === '') {
-            alert('La contraseña no puede estar vacía');
-            return;
+      // Validación de contraseña
+      const contrasenaValue = inputContrasena.value.trim();
+
+      if (contrasenaValue === "") {
+        alert("❌ Debe ingresar una contraseña.");
+        inputContrasena.focus();
+        return;
+      }
+
+      if (!/^\d{4}$/.test(contrasenaValue)) {
+        alert("❌ La contraseña debe ser exactamente 4 dígitos numéricos.");
+        inputContrasena.focus();
+        inputContrasena.select();
+        return;
+      }
+
+      const objCredencialActualizada = {
+        idEmpleado: parseInt(idEmpleado),
+        contrasena: contrasenaValue
+      };
+
+      console.log("💾 Guardando contraseña para empleado:", idEmpleado);
+
+      try {
+        const response = await apiEndPoints.updateCredencial(
+          idEmpleado,
+          objCredencialActualizada
+        );
+
+        if (response.errorDB || response.errorServer) {
+          alert("❌ Error: " + (response.errorDB || response.errorServer));
+          return;
         }
 
-        // VALIDACIÓN DE FECHA ELIMINADA
+        // Actualizar datos locales
+        dataManager.updateData(parseInt(idEmpleado), objCredencialActualizada);
 
-        // Actualizar las celdas con los nuevos valores
-        celdas[2].textContent = '••••••••'; // Ocultar contraseña
-        // celdas[4].textContent = '...'; // NO SE TOCA
+        // Recargar tabla
+        const credenciales = await apiEndPoints.selectAllCredenciales();
+        dataManager.saveAllData(credenciales);
+        agregarFilaTabla(credenciales, tbody);
 
-        // Actualizar badge de Activo
-        const badgeClass = nuevoActivo === 'Activo' ? 'badge-activo' : 'badge-inactivo';
-        celdas[5].innerHTML = `<span class="badge ${badgeClass}">${nuevoActivo}</span>`; // Muestra "Activo" o "Baja"
+        alert("Contraseña actualizada correctamente");
+        console.log(" Actualización exitosa");
+      } catch (error) {
+        console.error("❌ Error:", error);
+        alert("❌ Error de conexión con el servidor");
+      }
 
-        celdas[6].textContent = nuevosIntentos;
-
-        // Restaurar botón de editar
-        celdas[7].innerHTML = `
-            <button class="btn-editar">
-                <img src="./src/assets/icon/22.png" alt="Editar">
-            </button>
-        `;
-
-        // Volver a agregar el evento click al nuevo botón
-        const nuevoBotonEditar = celdas[7].querySelector('.btn-editar');
-        nuevoBotonEditar.addEventListener('click', function () {
-            const fila = this.closest('tr');
-            if (filaEnEdicion && filaEnEdicion !== fila) {
-                cancelarEdicion(filaEnEdicion);
-            }
-            if (fila.classList.contains('modo-edicion')) {
-                cancelarEdicion(fila);
-            } else {
-                activarModoEdicion(fila);
-                filaEnEdicion = fila;
-            }
-        });
-
-        // Quitar clase de edición
-        fila.classList.remove('modo-edicion');
-        filaEnEdicion = null;
-
-        // Mostrar mensaje de éxito
-        mostrarMensaje('Cambios guardados exitosamente', 'exito');
-
-        // Aquí puedes agregar código para enviar los datos al servidor (PHP)
-        console.log('Datos a guardar:', {
-            empleado: celdas[0].textContent,
-            usuario: celdas[1].textContent,
-            password: nuevaPassword,
-            fechaCreacion: celdas[3].textContent,
-            // fechaUltimoCambio: ELIMINADO
-            activo: nuevoActivo,
-            intentosFallidos: nuevosIntentos
-        });
+      return;
     }
 
-    // Función para cancelar la edición
-    function cancelarEdicion(fila) {
-        const celdas = fila.querySelectorAll('td');
+    // ========== ACCIÓN CANCELAR ==========
+    if (event.target.id === Buttons.botones.btnCancel.id) {
+      const rowCancel = event.target.closest("tr");
+      const cells = rowCancel.querySelectorAll("td");
 
-        // Restaurar valores originales
-        celdas[2].textContent = fila.dataset.valorOriginalPassword;
-        // celdas[4].textContent = fila.dataset.valorOriginalFecha; // ELIMINADO
+      // Restaurar valores originales
+      cells.forEach((cell, index) => {
+        if (index < cells.length - 1) {
+          if (index === 5) {
+            const estadoOriginal = datosCeldas[index];
+            const badgeClass =
+              estadoOriginal === "Activo" ? "badge-activo" : "badge-inactivo";
+            cell.innerHTML = `<span class="badge ${badgeClass}">${estadoOriginal}</span>`;
+          } else {
+            cell.textContent = datosCeldas[index];
+          }
+        }
+      });
 
-        const activoOriginal = fila.dataset.valorOriginalActivo;
+      // Remover botón Cancelar
+      const btnCancelar = cells[cells.length - 1].querySelector(
+        "#" + Buttons.botones.btnCancel.id
+      );
+      if (btnCancelar) btnCancelar.remove();
 
-        //// Actualizar badge de Activo
-        // CORREGIDO: Usar activoOriginal en lugar de nuevoActivo
-        const badgeClass = activoOriginal === 'Activo' ? 'badge-activo' : 'badge-inactivo';
-        celdas[5].innerHTML = `<span class="badge ${badgeClass}">${activoOriginal}</span>`;
+      // Restaurar botón Editar
+      const btnGuardar = cells[cells.length - 1].querySelector(
+        "#" + Buttons.botones.btnSave.id
+      );
+      Buttons.changeButtonNotEvent(
+        btnGuardar,
+        Buttons.botones.btnEdit.id,
+        Buttons.botones.btnEdit.ruta,
+        Buttons.botones.btnEdit.title
+      );
 
-
-        celdas[6].textContent = fila.dataset.valorOriginalIntentos;
-
-        // Restaurar botón de editar
-        celdas[7].innerHTML = `
-            <button class="btn-editar">
-                <img src="./src/assets/icon/22.png" alt="Editar">
-            </button>
-        `;
-
-        // Volver a agregar el evento click al nuevo botón
-        const nuevoBotonEditar = celdas[7].querySelector('.btn-editar');
-        nuevoBotonEditar.addEventListener('click', function () {
-            const fila = this.closest('tr');
-            if (filaEnEdicion && filaEnEdicion !== fila) {
-                cancelarEdicion(filaEnEdicion);
-            }
-            if (fila.classList.contains('modo-edicion')) {
-                cancelarEdicion(fila);
-            } else {
-                activarModoEdicion(fila);
-                filaEnEdicion = fila;
-            }
-        });
-
-        // Quitar clase de edición
-        fila.classList.remove('modo-edicion');
-        filaEnEdicion = null;
+      console.log("❌ Edición cancelada");
+      return;
     }
-
-    // Función para mostrar mensajes (Mantener sin cambios)
-    function mostrarMensaje(texto, tipo) {
-        // ... (Tu código)
-    }
+  });
 });
