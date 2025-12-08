@@ -49,9 +49,9 @@ DROP TABLE IF EXISTS `cliente`;
 CREATE TABLE `cliente` (
   `idCliente` int(11) NOT NULL AUTO_INCREMENT,
   `idTipoCliente` int(11) NOT NULL,
-  `nombre` varchar(15) DEFAULT NULL,
-  `apellidoPaterno` varchar(15) DEFAULT NULL,
-  `apellidoMaterno` varchar(15) DEFAULT NULL,
+  `nombre` varchar(30) DEFAULT NULL,
+  `apellidoPaterno` varchar(30) DEFAULT NULL,
+  `apellidoMaterno` varchar(30) DEFAULT NULL,
   `telefono` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`idCliente`),
   UNIQUE KEY `telefono` (`telefono`),
@@ -66,7 +66,7 @@ CREATE TABLE `cliente` (
 
 LOCK TABLES `cliente` WRITE;
 /*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
-INSERT INTO `cliente` VALUES (1,1,Público General,NULL,NULL,NULL),(2,2,'Maria','Hernandez','Garcia','5551234562'),(3,2,'Juan','Perez','Martinez','9541234563'),(4,2,'Ana','Lopez','Ruiz','2811234564'),(5,2,'Luis','Martinez','Santos','9511234565');
+INSERT INTO `cliente` VALUES (1,1,'Público General',NULL,NULL,NULL),(2,2,'Maria','Hernandez','Garcia','5551234562'),(3,2,'Juan','Perez','Martinez','9541234563'),(4,2,'Ana','Lopez','Ruiz','2811234564'),(5,2,'Luis','Martinez','Santos','9511234565');
 /*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 
