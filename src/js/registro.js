@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const registroForm = document.getElementById('registroForm');
     const inputTelefono = document.getElementById('txtTelefono');
     const inputCodigoPostal = document.getElementById('txtCP');
+    const inputContrasena = document.getElementById('txtContraseña');
 
     // 🔹 VALIDACIÓN EN TIEMPO REAL PARA TELÉFONO
     if (inputTelefono) {
@@ -57,6 +58,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // 🔹 VALIDACIÓN EN TIEMPO REAL PARA CONTRASEÑA (4 DÍGITOS)
+    if (inputContrasena) {
+        inputContrasena.addEventListener('input', function (e) {
+            // Eliminar cualquier carácter que no sea número
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            // Limitar a 4 dígitos
+            if (this.value.length > 4) {
+                this.value = this.value.slice(0, 4);
+            }
+
+            // Validación visual
+            if (this.value.length === 4) {
+                this.style.borderColor = '#4CAF50'; // Verde = correcto
+            } else if (this.value.length > 0) {
+                this.style.borderColor = '#ff9800'; // Naranja = incompleto
+            } else {
+                this.style.borderColor = ''; // Default
+            }
+        });
+
+        // Validación al perder el foco
+        inputContrasena.addEventListener('blur', function () {
+            if (this.value.length > 0 && this.value.length !== 4) {
+                alert('❌ La contraseña debe tener exactamente 4 dígitos');
+                this.focus();
+            }
+        });
+    }
+
     if (registroForm) {
         registroForm.addEventListener('submit', async function (e) {
             e.preventDefault();
@@ -84,10 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // Validar contraseña
-            if (datosFormulario.contrasena.length < 4) {
-                alert('❌ La contraseña debe tener al menos 4 caracteres.');
-                document.getElementById('txtContraseña').focus();
+            // Validar contraseña (exactamente 4 dígitos numéricos)
+            if (!/^[0-9]{4}$/.test(datosFormulario.contrasena)) {
+                alert('❌ La contraseña debe contener exactamente 4 dígitos numéricos.');
+                inputContrasena.focus();
                 return;
             }
 
@@ -98,11 +129,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            console.log('📤 Datos a enviar:', datosFormulario);
+            console.log('🤖 Datos a enviar:', datosFormulario);
 
             try {
                 // 2. ENVÍO DIRECTO
-                console.log('📤 Enviando datos:', datosFormulario);
+                console.log('🤖 Enviando datos:', datosFormulario);
 
                 const respuesta = await apiEndPoints.registrarUsuario(datosFormulario);
 
@@ -119,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Resetear estilos de validación
                     if (inputTelefono) inputTelefono.style.borderColor = '';
                     if (inputCodigoPostal) inputCodigoPostal.style.borderColor = '';
+                    if (inputContrasena) inputContrasena.style.borderColor = '';
 
                 } else if (respuesta.errorDB || respuesta.errorServer) {
                     alert('❌ Error en el registro:\n\n' + (respuesta.errorDB || respuesta.errorServer));

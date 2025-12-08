@@ -43,49 +43,49 @@ document.addEventListener('DOMContentLoaded', () => {
     // Funciones
     function cargarResumenDia(fecha) {
         fetch(`${API_RESUMEN_URL}?action=obtenerResumen&fecha=${fecha}&t=${Date.now()}`)
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                totalVendidoEl.textContent = `$${formatNumero(data.totalVendido)}`;
-                ventasRealizadasEl.textContent = data.ventasRealizadas;
-                productosVendidosEl.textContent = data.productosVendidos;
-            } else {
-                mostrarMensaje('Error al cargar resumen: ' + (data.message || ''), 'error');
-            }
-        })
-        .catch(err => {
-            mostrarMensaje('Error de conexión: ' + err.message, 'error');
-        });
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    totalVendidoEl.textContent = `$${formatNumero(data.totalVendido)}`;
+                    ventasRealizadasEl.textContent = data.ventasRealizadas;
+                    productosVendidosEl.textContent = data.productosVendidos;
+                } else {
+                    mostrarMensaje('Error al cargar resumen: ' + (data.message || ''), 'error');
+                }
+            })
+            .catch(err => {
+                mostrarMensaje('Error de conexión: ' + err.message, 'error');
+            });
     }
 
     function cargarVentas(fecha) {
         tablaVentasBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">Cargando ventas...</td></tr>';
         fetch(`${API_VENTAS_URL}?action=obtenerVentasDelDia&fecha=${fecha}&t=${Date.now()}`)
-        .then(res => {
-            if(!res.ok) throw new Error(res.statusText);
-            return res.json();
-        })
-        .then(data => {
-            if(data.success && data.ventas.length > 0) {
-                tablaVentasBody.innerHTML = '';
-                data.ventas.forEach(venta => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
+            .then(res => {
+                if (!res.ok) throw new Error(res.statusText);
+                return res.json();
+            })
+            .then(data => {
+                if (data.success && data.ventas.length > 0) {
+                    tablaVentasBody.innerHTML = '';
+                    data.ventas.forEach(venta => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
                         <td>${venta.idVenta}</td>
                         <td>${venta.fecha}</td>
                         <td>${venta.cliente}</td>
                         <td>${venta.productos}</td>
                         <td>$${formatNumero(venta.total)}</td>
                     `;
-                    tablaVentasBody.appendChild(tr);
-                });
-            } else {
-                tablaVentasBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay ventas para esta fecha</td></tr>';
-            }
-        })
-        .catch(err => {
-            tablaVentasBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error: ${err.message}</td></tr>`;
-        });
+                        tablaVentasBody.appendChild(tr);
+                    });
+                } else {
+                    tablaVentasBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay ventas para esta fecha</td></tr>';
+                }
+            })
+            .catch(err => {
+                tablaVentasBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Error: ${err.message}</td></tr>`;
+            });
     }
 
     function mostrarMensaje(texto, tipo) {

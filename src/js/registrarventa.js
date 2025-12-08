@@ -890,9 +890,11 @@ inputEfectivoRecibido.addEventListener('input', function (e) {
 });
 
 // ============================================
-// FUNCIÓN: GENERAR TICKET 
+// FUNCIÓN: GENERAR TICKET - CON FOLIO
 // ============================================
-function generarTicket() {
+function generarTicket(folioVenta) {
+    console.log('🎫 Generando ticket con folio:', folioVenta);
+
     const ahora = new Date();
     const fecha = ahora.toLocaleDateString('es-MX', {
         timeZone: 'America/Mexico_City',
@@ -908,13 +910,18 @@ function generarTicket() {
         hour12: false
     });
 
-    // Crear contenido del ticket
+    const folioFormateado = String(folioVenta).padStart(6, '0');
+
+    // ✅ FORMATO DEL NOMBRE DEL PDF: Fecha_Folio
+    const fechaFormateada = fecha.replace(/\//g, '-'); // 06/12/2025 → 06-12-2025
+    const nombrePDF = `Ticket_${fechaFormateada}_Folio-${folioFormateado}`;
+
     let ticketHTML = `
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Ticket de Venta - Joyería Chabelita</title>
+    <title>${nombrePDF}</title>
     <style>
         * {
             margin: 0;
@@ -951,6 +958,24 @@ function generarTicket() {
             color: #666;
             margin-bottom: 5px;
         }
+        .divider { 
+            border-top: 1px dashed #333; 
+            margin: 15px 0; 
+        }
+        .divider-double { 
+            border-top: 2px solid #333; 
+            margin: 15px 0; 
+        }
+        
+        /* ✅ FOLIO DISCRETO */
+        .folio-discreto {
+            text-align: right;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        
         .info { 
             margin-bottom: 15px; 
             font-size: 12px; 
@@ -963,14 +988,6 @@ function generarTicket() {
         }
         .info-label {
             font-weight: bold;
-        }
-        .divider { 
-            border-top: 1px dashed #333; 
-            margin: 15px 0; 
-        }
-        .divider-double { 
-            border-top: 2px solid #333; 
-            margin: 15px 0; 
         }
         .productos { 
             margin: 15px 0; 
@@ -1049,13 +1066,15 @@ function generarTicket() {
 <body>
     <div class="ticket-container">
         <div class="header">
-            <!-- LOGO - Cambia la ruta por la tuya -->
             <img src="src/assets/image/chabelitanegro.png" alt="Logo Joyería Chabelita" class="logo">
             <h1>JOYERÍA CHABELITA</h1>
             <div class="subtitle">Ticket de Venta</div>
         </div>
         
         <div class="divider"></div>
+        
+        <!-- ✅ FOLIO DISCRETO (después del divisor, antes de Fecha) -->
+        <div class="folio-discreto">Folio: #${folioFormateado}</div>
         
         <div class="info">
             <div class="info-row">
@@ -1068,7 +1087,7 @@ function generarTicket() {
             </div>
             <div class="info-row">
                 <span class="info-label">Cliente:</span>
-                <span>${window.nombreClienteVenta || modalCliente.textContent}</span>
+                <span>${window.nombreClienteVenta || 'Público General'}</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Atendió:</span>
@@ -1082,7 +1101,6 @@ function generarTicket() {
             <div class="productos-header">PRODUCTOS</div>
 `;
 
-    // Agregar productos con más detalle
     productosEnVenta.forEach((producto, index) => {
         ticketHTML += `
             <div class="producto-item">
@@ -1115,7 +1133,6 @@ function generarTicket() {
             </div>
 `;
 
-    // Si es efectivo, agregar detalles de pago
     if (metodoPagoSeleccionado === 'efectivo') {
         const efectivoRecibido = parseFloat(inputEfectivoRecibido.value);
         const cambio = efectivoRecibido - totalVenta;
@@ -1146,21 +1163,25 @@ function generarTicket() {
 </html>
 `;
 
-    // Abrir ticket en nueva ventana
     const ventanaTicket = window.open('', '_blank', 'width=400,height=700');
     ventanaTicket.document.write(ticketHTML);
     ventanaTicket.document.close();
 
-    // Imprimir automáticamente después de cargar
     ventanaTicket.onload = function () {
         setTimeout(() => {
             ventanaTicket.print();
         }, 250);
     };
+
+    // Limpiar carrito
+    productosEnVenta = [];
+    actualizarTablaVenta();
+    actualizarTotal();
+
+    console.log('✅ Ticket generado con folio:', folioFormateado);
 }
-//
-//============================================
-// FUNCIÓN: CONFIRMAR VENTA - CON DEBUG
+// ============================================
+// FUNCIÓN: CONFIRMAR VENTA - MODIFICADA PARA PASAR FOLIO
 // ============================================
 btnConfirmarVenta.addEventListener('click', async function () {
     console.log('🔵 Botón Confirmar clickeado');
@@ -1181,46 +1202,37 @@ btnConfirmarVenta.addEventListener('click', async function () {
     console.log('🔵 Iniciando guardado de venta...');
 
     try {
-        // ✅ 1. Guardar nombre del cliente ANTES de todo
+        // Guardar nombre del cliente
         let nombreClienteCompleto = 'Público General';
-
-        if (tipoClienteActual === 'mayorista') {
-            if (window.clienteSeleccionado && window.clienteSeleccionado.idCliente !== 1) {
-                nombreClienteCompleto = window.clienteSeleccionado.nombreCompleto;
-            }
+        if (tipoClienteActual === 'mayorista' && window.clienteSeleccionado && window.clienteSeleccionado.idCliente !== 1) {
+            nombreClienteCompleto = window.clienteSeleccionado.nombreCompleto;
         }
-
         window.nombreClienteVenta = nombreClienteCompleto;
         console.log('✅ Nombre cliente guardado:', nombreClienteCompleto);
 
-        // ✅ 2. GENERAR TICKET PRIMERO (mientras productosEnVenta[] tiene datos)
-        console.log('🎫 Generando ticket con', productosEnVenta.length, 'productos...');
-        generarTicket();
+        // ✅ CAMBIO CLAVE: Esperar resultado con folio
+        const resultado = await guardarVentaBD();
+        console.log('🔵 Resultado completo:', resultado);
 
-        // ✅ 3. LUEGO guardar en BD (esto limpia productosEnVenta[])
-        const ventaExitosa = await guardarVentaBD();
-        console.log('🔵 Resultado guardarVentaBD():', ventaExitosa);
-
-        if (ventaExitosa) {
-            console.log('✅ Venta guardada exitosamente');
+        if (resultado && resultado.success && resultado.folio) {
+            console.log('🎫 Generando ticket con folio:', resultado.folio);
+            generarTicket(resultado.folio); // ✅ PASAR FOLIO AQUÍ
             cerrarModalCobrar();
-            console.log('✅ Modal cerrado');
         } else {
-            console.error('❌ La venta NO fue exitosa');
-            alert('❌ No se pudo completar la venta. Revisa la consola (F12).');
+            console.error('❌ No se obtuvo folio o venta falló');
+            alert('❌ No se pudo completar la venta.');
         }
     } catch (error) {
-        console.error('❌ Error en confirmar venta:', error);
-        alert('❌ Error al procesar la venta: ' + error.message);
+        console.error('❌ Error:', error);
+        alert('❌ Error: ' + error.message);
     }
 });
 // ============================================
-// FUNCIÓN: GUARDAR VENTA - VERSIÓN CORREGIDA CON RETURN
+// FUNCIÓN: GUARDAR VENTA - MODIFICADA PARA RETORNAR FOLIO
 // ============================================
 async function guardarVentaBD() {
     console.log('💾 Entrando a guardarVentaBD()');
 
-    // Determinar ID del cliente
     let idCliente = 1;
     let nombreClienteCompleto = 'Público General';
 
@@ -1230,14 +1242,11 @@ async function guardarVentaBD() {
             nombreClienteCompleto = window.clienteSeleccionado.nombreCompleto;
             console.log('✅ Cliente mayorista:', nombreClienteCompleto);
         } else {
-            alert('⚠️ Por favor, selecciona un cliente mayorista antes de procesar la venta.');
-            return false;
+            alert('⚠️ Por favor, selecciona un cliente mayorista.');
+            return { success: false }; // ✅ OBJETO, no booleano
         }
-    } else {
-        console.log('✅ Cliente público general');
     }
 
-    // Preparar productos
     const productos = productosEnVenta.map(p => ({
         codigo: p.codigo,
         descripcion: p.descripcion,
@@ -1266,7 +1275,7 @@ async function guardarVentaBD() {
         cambio: cambio
     };
 
-    console.log('📤 Enviando datos al servidor:', datosVenta);
+    console.log('📤 Enviando datos:', datosVenta);
 
     try {
         const response = await fetch(URL_BASE + 'guardarVenta.php', {
@@ -1275,33 +1284,24 @@ async function guardarVentaBD() {
             body: JSON.stringify(datosVenta)
         });
 
-        console.log('📥 Respuesta recibida, status:', response.status);
-
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
             const textoRespuesta = await response.text();
-            console.error('❌ Respuesta no es JSON:', textoRespuesta);
-            alert('❌ Error del servidor: La respuesta no es JSON válida.');
-            return false;
+            console.error('❌ No es JSON:', textoRespuesta);
+            alert('❌ Error del servidor.');
+            return { success: false }; // ✅ OBJETO
         }
 
         const resultado = await response.json();
-        console.log('📦 Resultado parseado:', resultado);
+        console.log('📦 Resultado del servidor:', resultado);
 
         if (resultado.success) {
-            console.log('✅ Venta registrada exitosamente');
+            const folioVenta = resultado.venta.idVenta;
+            console.log('✅ FOLIO OBTENIDO:', folioVenta);
 
-            alert(`✅ Venta registrada exitosamente!\n\n` +
-                `ID Venta: ${resultado.venta.idVenta}\n` +
-                `Total: $${resultado.venta.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}\n` +
-                `Productos: ${resultado.venta.productos}`);
+            alert(`✅ Venta registrada!\n\nFolio: ${folioVenta}\nTotal: $${resultado.venta.total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`);
 
-            // Limpiar carrito
-            productosEnVenta = [];
-            actualizarTablaVenta();
-            actualizarTotal();
-
-            // Resetear cliente y tipo
+            // Resetear cliente
             window.clienteSeleccionado = null;
             tipoClienteActual = null;
 
@@ -1317,21 +1317,23 @@ async function guardarVentaBD() {
 
             limpiarResultadosClientes();
 
-            console.log('✅ Retornando TRUE');
-            return true; // ✅ IMPORTANTE: Retornar true
+            // ✅ RETORNAR OBJETO CON FOLIO
+            return {
+                success: true,
+                folio: folioVenta
+            };
 
         } else {
-            console.error('❌ Error del servidor:', resultado.error);
-            alert('❌ Error al registrar venta:\n\n' + resultado.error);
-            return false;
+            console.error('❌ Error:', resultado.error);
+            alert('❌ Error: ' + resultado.error);
+            return { success: false }; // ✅ OBJETO
         }
     } catch (error) {
         console.error('❌ Error de conexión:', error);
-        alert('❌ Error de conexión al registrar la venta.');
-        return false;
+        alert('❌ Error de conexión.');
+        return { success: false }; // ✅ OBJETO
     }
 }
-
 // ============================================
 // FUNCIÓN CORREGIDA: LIMPIAR RESULTADOS DE CLIENTES
 // ============================================

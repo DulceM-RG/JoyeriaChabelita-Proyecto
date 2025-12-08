@@ -66,7 +66,7 @@ CREATE TABLE `cliente` (
 
 LOCK TABLES `cliente` WRITE;
 /*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
-INSERT INTO `cliente` VALUES (1,1,NULL,NULL,NULL,NULL),(2,2,'Maria','Hernandez','Garcia','5551234562'),(3,2,'Juan','Perez','Martinez','9541234563'),(4,2,'Ana','Lopez','Ruiz','2811234564'),(5,2,'Luis','Martinez','Santos','9511234565');
+INSERT INTO `cliente` VALUES (1,1,Público General,NULL,NULL,NULL),(2,2,'Maria','Hernandez','Garcia','5551234562'),(3,2,'Juan','Perez','Martinez','9541234563'),(4,2,'Ana','Lopez','Ruiz','2811234564'),(5,2,'Luis','Martinez','Santos','9511234565');
 /*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +87,9 @@ CREATE TABLE `credenciales` (
   `activo` enum('Activo','Baja') DEFAULT 'Activo',
   PRIMARY KEY (`idControl`),
   KEY `idEmpleado` (`idEmpleado`),
-  CONSTRAINT `credenciales_ibfk_1` FOREIGN KEY (`idEmpleado`) REFERENCES `empleado` (`idEmpleado`)
+  CONSTRAINT `credenciales_ibfk_1` FOREIGN KEY (`idEmpleado`) REFERENCES `empleado` (`idEmpleado`) 
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -291,7 +293,7 @@ DROP TABLE IF EXISTS `puestoempleado`;
 CREATE TABLE `puestoempleado` (
   `idPuesto` int(11) NOT NULL AUTO_INCREMENT,
   `puesto` varchar(50) NOT NULL,
-  `sueldo` decimal(7,2) NOT NULL,
+  
   PRIMARY KEY (`idPuesto`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -302,7 +304,7 @@ CREATE TABLE `puestoempleado` (
 
 LOCK TABLES `puestoempleado` WRITE;
 /*!40000 ALTER TABLE `puestoempleado` DISABLE KEYS */;
-INSERT INTO `puestoempleado` VALUES (1,'Gerente',5000.00),(2,'Venta',4000.00),(3,'Almacén',8000.00);
+INSERT INTO `puestoempleado` VALUES (1,'Gerente'),(2,'Venta'),(3,'Almacén');
 /*!40000 ALTER TABLE `puestoempleado` ENABLE KEYS */;
 UNLOCK TABLES;
 

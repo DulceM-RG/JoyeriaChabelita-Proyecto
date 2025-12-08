@@ -1,5 +1,5 @@
 <?php
-// updateCredenciales.php - VERSIÓN CORREGIDA FINAL
+// updateCredenciales.php - SOLO ACTUALIZA CONTRASEÑA
 header('Content-Type: application/json');
 require_once 'connection.php'; 
 
@@ -18,47 +18,53 @@ try {
     }
 
     $idEmpleado = $datosFormulario['idEmpleado'];
+    
+    // 3. Validar contraseña
+    if (empty($datosFormulario['contrasena'])) {
+        http_response_code(400);
+        echo json_encode(["errorDB" => "Contraseña no proporcionada."]);
+        exit;
+    }
+
     $contrasenaPlana = $datosFormulario['contrasena'];
     
-    // ✅ HASHEAR LA CONTRASEÑA (SÓLO UNA VEZ, AQUÍ)
+    // Validar que sea exactamente 4 dígitos numéricos
+    if (!preg_match('/^\d{4}$/', $contrasenaPlana)) {
+        http_response_code(400);
+        echo json_encode(["errorDB" => "La contraseña debe ser exactamente 4 dígitos numéricos."]);
+        exit;
+    }
+    
+    // HASHEAR LA CONTRASEÑA
     $contrasenaHash = password_hash($contrasenaPlana, PASSWORD_DEFAULT);
-    // -------------------------------------------------------------------
 
-    // Asignar los demás datos
-    $activo = $datosFormulario['activo'];
-    $intentosFallidos = $datosFormulario['intentosFallidos'];
     $ultimoCambio = date("Y-m-d H:i:s"); 
 
-    // 3. Preparar consulta SQL
+    // 4. Preparar consulta SQL - SOLO ACTUALIZA CONTRASEÑA Y FECHA
     $sql = "UPDATE credenciales 
             SET contrasena = :contrasena, 
-                activo = :activo, 
-                intentosFallidos = :intentosFallidos,
                 ultimoCambio = :ultimoCambio 
             WHERE idEmpleado = :idEmpleado";
             
     $stmt = $conn->prepare($sql);
 
-    // 4. Ejecutar actualización
+    // 5. Ejecutar actualización
     $stmt->execute([
-        // PASAR EL HASH DE LA CONTRASEÑA A LA CONSULTA
         ':contrasena' => $contrasenaHash, 
-        ':activo' => $activo,
-        ':intentosFallidos' => $intentosFallidos,
         ':ultimoCambio' => $ultimoCambio,
         ':idEmpleado' => $idEmpleado
     ]);
 
-    // 5. Verificar resultado
+    // 6. Verificar resultado
     if ($stmt->rowCount() > 0) {
         echo json_encode([
-            "mensaje" => "Credencial actualizada exitosamente", 
+            "mensaje" => "Contraseña actualizada exitosamente", 
             "actualizado" => true, 
             "ultimoCambio" => date('d/m/Y', strtotime($ultimoCambio))
         ]);
     } else {
         echo json_encode([
-            "errorDB" => "No se realizó actualización. Verifica el ID o que los datos sean diferentes."
+            "errorDB" => "No se realizó actualización. Verifica el ID del empleado."
         ]);
     }
 
