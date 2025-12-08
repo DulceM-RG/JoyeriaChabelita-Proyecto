@@ -120,3 +120,62 @@
 2025-12-04 16:34:56 - Usuario encontrado: María
 2025-12-04 16:34:56 - ✅ Contraseña correcta
 2025-12-04 16:34:56 - ✅ LOGIN EXITOSO - Usuario: María - Puesto: Venta
+2025-12-08 00:21:51 - === INICIO DE LOGIN ===
+2025-12-08 00:21:51 - ERROR: Datos de entrada inválidos
+2025-12-08 00:33:19 - === INICIO DE LOGIN ===
+2025-12-08 00:33:19 - Intentando login con ID: G25100101
+2025-12-08 00:33:19 - Conexión a BD establecida
+2025-12-08 00:33:19 - Verificando bloqueo para fecha: 2025-12-08
+2025-12-08 00:33:19 - Tabla bloqueos_sesion existe, verificando...
+2025-12-08 00:33:23 - ⚠️ Error al verificar bloqueo: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+2025-12-08 00:33:23 - ERROR PDO: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+2025-12-08 00:33:31 - === INICIO DE LOGIN ===
+2025-12-08 00:33:31 - Intentando login con ID: G25100101
+2025-12-08 00:33:32 - Conexión a BD establecida
+2025-12-08 00:33:32 - Verificando bloqueo para fecha: 2025-12-08
+2025-12-08 00:33:32 - Tabla bloqueos_sesion existe, verificando...
+2025-12-08 00:33:32 - ⚠️ Error al verificar bloqueo: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+2025-12-08 00:33:32 - ERROR PDO: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away
+2025-12-08 00:52:05 - === INICIO DE LOGIN ===
+2025-12-08 00:52:05 - Intentando login con ID: G25100101
+2025-12-08 00:52:05 - Conexión a BD establecida
+2025-12-08 00:52:05 - Verificando bloqueo para fecha: 2025-12-08
+2025-12-08 00:52:05 - Tabla bloqueos_sesion existe, verificando...
+2025-12-08 00:52:05 - ⚠️ Error al verificar bloqueo: SQLSTATE[42S02]: Base table or view not found: 1932 Table 'chabelitadb.bloqueos_sesion' doesn't exist in engine
+2025-12-08 00:52:05 - ERROR PDO: SQLSTATE[42S02]: Base table or view not found: 1932 Table 'chabelitadb.credenciales' doesn't exist in engine
+2025-12-08 00:52:15 - === INICIO DE LOGIN ===
+2025-12-08 00:52:15 - Intentando login con ID: G25100101
+2025-12-08 00:52:15 - Conexión a BD establecida
+2025-12-08 00:52:15 - Verificando bloqueo para fecha: 2025-12-08
+2025-12-08 00:52:15 - Tabla bloqueos_sesion existe, verificando...
+2025-12-08 00:52:15 - ⚠️ Error al verificar bloqueo: SQLSTATE[42S02]: Base table or view not found: 1932 Table 'chabelitadb.bloqueos_sesion' doesn't exist in engine
+2025-12-08 00:52:15 - ERROR PDO: SQLSTATE[42S02]: Base table or view not found: 1932 Table 'chabelitadb.credenciales' doesn't exist in engine
+2025-12-08 00:52:57 - === INICIO DE LOGIN ===
+2025-12-08 00:52:57 - Intentando login con ID: G25100101
+2025-12-08 00:52:57 - Conexión a BD establecida
+2025-12-08 00:52:57 - Verificando bloqueo para fecha: 2025-12-08
+2025-12-08 00:52:57 - Tabla bloqueos_sesion existe, verificando...
+2025-12-08 00:52:57 - ⚠️ Error al verificar bloqueo: SQLSTATE[42S02]: Base table or view not found: 1932 Table 'chabelitadb.bloqueos_sesion' doesn't exist in engine
+2025-12-08 00:52:57 - ERROR PDO: SQLSTATE[42S02]: Base table or view not found: 1932 Table 'chabelitadb.credenciales' doesn't exist in engine
+2025-12-08 00:59:30 - === INICIO DE LOGIN ===
+2025-12-08 00:59:30 - Intentando login con ID: G25100101
+2025-12-08 00:59:30 - Conexión a BD establecida
+2025-12-08 00:59:30 - Verificando bloqueo para fecha: 2025-12-08
+2025-12-08 00:59:30 - Tabla bloqueos_sesion existe, verificando...
+2025-12-08 00:59:30 - ⚠️ Error al verificar bloqueo: SQLSTATE[42S02]: Base table or view not found: 1932 Table 'chabelitadb.bloqueos_sesion' doesn't exist in engine
+2025-12-08 00:59:30 - ERROR PDO: SQLSTATE[42S02]: Base table or view not found: 1932 Table 'chabelitadb.credenciales' doesn't exist in engine
+2025-12-08 01:11:18 - === INICIO DE LOGIN ===
+2025-12-08 01:11:18 - Intentando login con ID: G25100101
+2025-12-08 01:11:18 - Conexión a BD establecida
+2025-12-08 01:11:18 - Verificando bloqueo para fecha: 2025-12-08
+2025-12-08 01:11:18 - ⚠️ Tabla bloqueos_sesion NO existe, continuando sin validación
+2025-12-08 01:11:18 - Usuario encontrado: Carlos
+2025-12-08 01:11:18 - ERROR: Contraseña incorrecta
+2025-12-08 01:11:34 - === INICIO DE LOGIN ===
+2025-12-08 01:11:34 - Intentando login con ID: G25100101
+2025-12-08 01:11:34 - Conexión a BD establecida
+2025-12-08 01:11:34 - Verificando bloqueo para fecha: 2025-12-08
+2025-12-08 01:11:34 - ⚠️ Tabla bloqueos_sesion NO existe, continuando sin validación
+2025-12-08 01:11:34 - Usuario encontrado: Carlos
+2025-12-08 01:11:35 - ✅ Contraseña correcta
+2025-12-08 01:11:35 - ✅ LOGIN EXITOSO - Usuario: Carlos - Puesto: Gerente
