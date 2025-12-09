@@ -22,7 +22,7 @@ async function cargarDatosEmpleado() {
         } else {
             console.error('❌ Error al cargar empleado');
             alert('Error al cargar datos del empleado. Redirigiendo al login...');
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         }
     } catch (error) {
         console.error('❌ Error de conexión:', error);
