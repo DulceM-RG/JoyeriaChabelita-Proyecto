@@ -165,18 +165,18 @@ function mostrarEmpleados(empleados) {
             ? '<span class="badge badge-activo">Activo</span>'
             : '<span class="badge badge-inactivo">Baja</span>';
 
-        // Deshabilitar edición/eliminación si está inactivo
-        const botonesAccion = empleado.activo === 'Activo'
-            ? `<button class="btn-accion btn-editar" onclick="abrirModalEditar(${empleado.idEmpleado})" title="Editar">
-                    <img src="./src/assets/icon/editar.png" alt="Editar" width="20" height="20">
-               </button>
-               <button class="btn-accion btn-eliminar" onclick="confirmarEliminar(${empleado.idEmpleado}, '${nombreCompleto}')" title="Eliminar">
-                    <img src="./src/assets/icon/borrar126.png" alt="Eliminar" width="20" height="20">
-               </button>`
-            : `<button class="btn-accion btn-editar" onclick="abrirModalEditar(${empleado.idEmpleado})" title="Editar">
-                    <img src="./src/assets/icon/editar.png" alt="Editar" width="20" height="20">
-               </button>
-               <span style="color: #999; font-size: 12px;">Sin eliminar</span>`;
+        // ============================================
+        // CAMBIO IMPORTANTE: Permitir editar y eliminar
+        // en cualquier estado (Activo o Baja)
+        // ============================================
+        const botonesAccion = `
+            <button class="btn-accion btn-editar" onclick="abrirModalEditar(${empleado.idEmpleado})" title="Editar">
+                <img src="./src/assets/icon/editar.png" alt="Editar" width="20" height="20">
+            </button>
+            <button class="btn-accion btn-eliminar" onclick="confirmarEliminar(${empleado.idEmpleado}, '${nombreCompleto}')" title="Eliminar">
+                <img src="./src/assets/icon/borrar126.png" alt="Eliminar" width="20" height="20">
+            </button>
+        `;
 
         tr.innerHTML = `
             <td>${empleado.idControl || 'N/A'}</td>
@@ -190,7 +190,7 @@ function mostrarEmpleados(empleados) {
             </td>
         `;
 
-        // Resaltar fila si está inactivo
+        // Resaltar fila si está inactivo (Baja)
         if (empleado.activo === 'Baja') {
             tr.style.backgroundColor = '#f5f5f5';
             tr.style.opacity = '0.7';
@@ -216,7 +216,11 @@ function formatearTelefono(telefono) {
 // ============================================
 async function abrirModalEditar(idEmpleado) {
     try {
-        const response = await fetch(`${API_URL}?busqueda=${idEmpleado}`);
+        // ============================================
+        // CAMBIO IMPORTANTE: Buscar empleado ACTIVO Y BAJA
+        // Antes solo buscaba activos
+        // ============================================
+        const response = await fetch(`${API_URL}?busqueda=${idEmpleado}&inactivos=1`);
         const resultado = await response.json();
 
         if (resultado.success && resultado.data.length > 0) {
@@ -321,7 +325,10 @@ async function actualizarEmpleado(e) {
         if (resultado.success) {
             mostrarExito(resultado.message);
             cerrarModal();
-            cargarEmpleados();
+            // Recargar con el mismo filtro que estaba activo
+            const busqueda = document.getElementById('txtBuscar').value.trim();
+            const inactivos = document.getElementById('chkMostrarInactivos').checked;
+            cargarEmpleados(busqueda, inactivos);
         } else {
             mostrarError(resultado.message);
         }
@@ -380,7 +387,10 @@ async function eliminarEmpleado(idEmpleado) {
 
         if (resultado.success) {
             mostrarExito(resultado.message);
-            cargarEmpleados();
+            // Recargar con el mismo filtro que estaba activo
+            const busqueda = document.getElementById('txtBuscar').value.trim();
+            const inactivos = document.getElementById('chkMostrarInactivos').checked;
+            cargarEmpleados(busqueda, inactivos);
         } else {
             mostrarError(resultado.message);
         }
