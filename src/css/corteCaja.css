@@ -251,13 +251,9 @@ body {
     background-color: #d1b34f;
 }
 
-<<<<<<< HEAD
 
 /* FOOTER */
 .footer {
-=======
-* FOOTER */ .footer {
->>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
     width: 100%;
     margin-top: auto;
 }
@@ -268,28 +264,6 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-<<<<<<< HEAD
-=======
-}
-
-.footer-bar {
-    width: 100%;
-    background-color: #1a1a1a;
-    padding: 5px;
-}
-
-.footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-.footer-logo {
-    max-width: 150px;
-    height: auto;
->>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
 }
 
 .footer-bar {
@@ -850,4 +824,4 @@ body {
     }
 }
 
-/*826*/
+/*si*/
