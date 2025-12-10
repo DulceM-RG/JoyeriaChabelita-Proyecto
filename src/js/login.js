@@ -1,16 +1,12 @@
 // login.js
 
-const URL_BASE = "http://localhost/JoyeriaChabelita-Proyecto/src/database/";
+const URL_BASE = "./src/database/";
 
 // 🎯 MAPEO DE RUTAS POR PUESTO
 const RUTAS_POR_PUESTO = {
   gerente: "menuAdministracion.html",
   venta: "menuVentas.html",
-<<<<<<< HEAD
   almacén: "menuAlmacen.html",
-=======
-  almacen: "menuAlmacen.html",
->>>>>>> edbb1291e403ad1605072d72dac4f44e8ba7a5c1
 
 };
 
